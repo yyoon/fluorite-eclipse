@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="EventLogger Plugin Update Site" url="http://www.cs.cmu.edu/~yyoon1/software/eventlogger/update">
+      Fluorite Event Logger plug-in for Eclipse logs the user(developer)&apos;s
+behavior while they are editing code. The log file is automatically
+written when the Eclipse is shut down. The logged files can be
+found at &quot;.metadata/.plugins/edu.cmu.scs.fluorite/Logs&quot; under
+the current Eclipse Workspace.
+This plugin is developed based on the &quot;Practically Macro&quot; plugin
+for Eclipse, which is a macro recording plugin for Eclipse text
+editor (http://practicalmacro.sourceforge.net/).
+   </description>
+   <feature url="features/edu.cmu.scs.fluorite_0.3.4.201108191103.jar" id="edu.cmu.scs.fluorite" version="0.3.4.201108191103">
+      <category name="Fluorite"/>
+   </feature>
+   <category-def name="Fluorite" label="Fluorite"/>
+</site>

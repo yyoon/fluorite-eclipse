@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="edu.cmu.scs.fluorite.preferences.Initializer">
+      </initializer>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.none.playActionSet"
+            label="EditorMacros.PlayActionSet"
+            visible="true">
+         <action
+               class="edu.cmu.scs.fluorite.actions.ViewLastLogAction"
+               definitionId="eventlogger.actions.viewLastLog"
+               icon="icons/viewlog.gif"
+               id="eventlogger.actions.viewLastLogAction"
+               label="&amp;View Last Log"
+               retarget="false"
+               state="false"
+               style="push"
+               toolbarPath="Normal/additions"
+               tooltip="View Last Log">
+         </action>
+         <action
+               class="edu.cmu.scs.fluorite.actions.AnnotateAction"
+               definitionId="eventlogger.actions.annotate"
+               icon="icons/annotation.png"
+               id="eventlogger.actions.annotateAction"
+               label="Annotate"
+               retarget="false"
+               state="false"
+               style="push"
+               toolbarPath="Normal/additions"
+               tooltip="Annotate">
+         </action>
+      </actionSet>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Annotate current intention"
+            id="eventlogger.actions.annotate"
+            name="Annotate">
+      </command>
+      <command
+            description="View the last recorded log file in xml format"
+            id="eventlogger.actions.viewLastLog"
+            name="View Last Log">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="eventlogger.actions.viewLastLog"
+            contextId="org.eclipse.ui.textEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+V">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="edu.cmu.scs.fluorite.dialogs.OptionsPage"
+            id="eventlogger.editormacros.optionsPage"
+            name="EventLogger">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="edu.cmu.scs.fluorite.plugin.EventLoggerStartup">
+      </startup>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="edu.cmu.scs.fluorite.category"
+            class="edu.cmu.scs.fluorite.viewpart.IDViewPart"
+            id="edu.cmu.scs.fluorite.idview"
+            name="Current ID"
+            restorable="true">
+      </view>
+      <category
+            id="edu.cmu.scs.fluorite.category"
+            name="EventLogger">
+      </category>
+   </extension>
+
+
+</plugin>
