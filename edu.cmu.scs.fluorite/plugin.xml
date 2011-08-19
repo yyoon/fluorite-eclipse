@@ -11,14 +11,14 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            id="com.none.playActionSet"
-            label="EditorMacros.PlayActionSet"
+            id="edu.cmu.scs.fluorite.playActionSet"
+            label="Fluorite.PlayActionSet"
             visible="true">
          <action
                class="edu.cmu.scs.fluorite.actions.ViewLastLogAction"
-               definitionId="eventlogger.actions.viewLastLog"
+               definitionId="edu.cmu.scs.fluorite.actions.viewLastLog"
                icon="icons/viewlog.gif"
-               id="eventlogger.actions.viewLastLogAction"
+               id="edu.cmu.scs.fluorite.actions.viewLastLogAction"
                label="&amp;View Last Log"
                retarget="false"
                state="false"
@@ -28,9 +28,9 @@
          </action>
          <action
                class="edu.cmu.scs.fluorite.actions.AnnotateAction"
-               definitionId="eventlogger.actions.annotate"
+               definitionId="edu.cmu.scs.fluorite.actions.annotate"
                icon="icons/annotation.png"
-               id="eventlogger.actions.annotateAction"
+               id="edu.cmu.scs.fluorite.actions.annotateAction"
                label="Annotate"
                retarget="false"
                state="false"
@@ -45,19 +45,19 @@
          point="org.eclipse.ui.commands">
       <command
             description="Annotate current intention"
-            id="eventlogger.actions.annotate"
+            id="edu.cmu.scs.fluorite.actions.annotate"
             name="Annotate">
       </command>
       <command
             description="View the last recorded log file in xml format"
-            id="eventlogger.actions.viewLastLog"
+            id="edu.cmu.scs.fluorite.actions.viewLastLog"
             name="View Last Log">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="eventlogger.actions.viewLastLog"
+            commandId="edu.cmu.scs.fluorite.actions.viewLastLog"
             contextId="org.eclipse.ui.textEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M3+V">
@@ -67,8 +67,8 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="edu.cmu.scs.fluorite.dialogs.OptionsPage"
-            id="eventlogger.editormacros.optionsPage"
-            name="EventLogger">
+            id="edu.cmu.scs.fluorite.optionsPage"
+            name="Fluorite">
       </page>
    </extension>
    <extension
@@ -89,7 +89,7 @@
       </view>
       <category
             id="edu.cmu.scs.fluorite.category"
-            name="EventLogger">
+            name="Fluorite">
       </category>
    </extension>
 
