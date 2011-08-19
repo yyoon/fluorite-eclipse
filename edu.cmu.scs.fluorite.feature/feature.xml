@@ -216,7 +216,7 @@ litigation.
    </license>
 
    <url>
-      <update label="Fluorite Event Logger for Eclipse Update Site" url="http://www.cs.cmu.edu/~yyoon1/software/eventlogger/update"/>
+      <update label="Fluorite Event Logger for Eclipse Update Site" url="http://fluorite-eclipse.googlecode.com/hg/edu.cmu.scs.fluorite.update/"/>
    </url>
 
    <plugin
