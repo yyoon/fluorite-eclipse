@@ -2,6 +2,7 @@ package edu.cmu.scs.fluorite.viewpart;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
@@ -30,8 +31,10 @@ public class IDViewPart extends ViewPart implements ICommandIndexListener {
 		this.label.setText(Integer.toString(id));
 	}
 
-	public void commandIndexIncreased(int currentIndex) {
-		setID(currentIndex);
+	public void commandIndexIncreased(final int currentIndex) {
+		// This should be always run in the UI thread.
+		// If not, SWTException is thrown. (e.g., when the RunCommand is executed)
+		Display.getDefault().syncExec(new Runnable() { public void run() { setID(currentIndex); } });
 	}
 
 }

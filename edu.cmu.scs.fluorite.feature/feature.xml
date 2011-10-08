@@ -2,7 +2,7 @@
 <feature
       id="edu.cmu.scs.fluorite"
       label="Fluorite Event Logger for Eclipse"
-      version="0.3.4.qualifier"
+      version="0.3.5.qualifier"
       provider-name="School of Computer Science, Carnegie Mellon University">
 
    <description>
