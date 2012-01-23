@@ -1,8 +1,10 @@
 package edu.cmu.scs.fluorite.model;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -115,43 +117,43 @@ public class EventRecorder {
 	public boolean isCurrentlyExecutingCommand() {
 		return mCurrentlyExecutingCommand;
 	}
-	
+
 	public void setIncrementalFindForward(boolean incrementalFindForward) {
 		mIncrementalFindForward = incrementalFindForward;
 	}
-	
+
 	public boolean isIncrementalFindForward() {
 		return mIncrementalFindForward;
 	}
-	
+
 	public void setIncrementalFindMode(boolean incrementalFindMode) {
 		mIncrementalFindMode = incrementalFindMode;
 	}
-	
+
 	public boolean isIncrementalFindMode() {
 		return mIncrementalFindMode;
 	}
-	
+
 	public void setIncrementalListener(Listener incrementalListener) {
 		mIncrementalListener = incrementalListener;
 	}
-	
+
 	public int getLastCaretOffset() {
 		return mLastCaretOffset;
 	}
-	
+
 	public int getLastSelectionStart() {
 		return mLastSelectionStart;
 	}
-	
+
 	public int getLastSelectionEnd() {
 		return mLastSelectionEnd;
 	}
-	
+
 	public void setAssistSession(boolean assistSession) {
 		mAssistSession = assistSession;
 	}
-	
+
 	public boolean isAssistSession() {
 		return mAssistSession;
 	}
@@ -164,20 +166,20 @@ public class EventRecorder {
 		mEditor = editor;
 		final StyledText styledText = Utilities.getStyledText(mEditor);
 		final ISourceViewer viewer = Utilities.getSourceViewer(mEditor);
-		
+
 		if (styledText == null || viewer == null)
 			return;
-		
+
 		StyledTextEventRecorder.getInstance().addListeners(editor);
 
 		DocumentRecorder.getInstance().addListeners(editor);
 
 		ExecutionRecorder.getInstance().addListeners(editor);
-		
+
 		CompletionRecorder.getInstance().addListeners(editor);
-		
+
 		registerFindAction();
-		
+
 		styledText.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				mLastCaretOffset = styledText.getCaretOffset();
@@ -188,7 +190,8 @@ public class EventRecorder {
 					recordCommand(new SelectTextCommand(mLastSelectionStart,
 							mLastSelectionEnd, mLastCaretOffset));
 				} else {
-					recordCommand(new MoveCaretCommand(mLastCaretOffset, viewer.getSelectedRange().x));
+					recordCommand(new MoveCaretCommand(mLastCaretOffset, viewer
+							.getSelectedRange().x));
 				}
 			}
 		});
@@ -201,11 +204,11 @@ public class EventRecorder {
 
 		try {
 			StyledTextEventRecorder.getInstance().removeListeners(mEditor);
-			
+
 			DocumentRecorder.getInstance().removeListeners(mEditor);
-			
+
 			ExecutionRecorder.getInstance().removeListeners(mEditor);
-			
+
 			CompletionRecorder.getInstance().removeListeners(mEditor);
 
 			unregisterFindAction();
@@ -272,12 +275,14 @@ public class EventRecorder {
 				service.addPartListener(PartRecorder.getInstance());
 
 				if (service.getActivePart() instanceof IEditorPart) {
-					PartRecorder.getInstance().partActivated(service.getActivePart());
+					PartRecorder.getInstance().partActivated(
+							service.getActivePart());
 				}
 			}
 		}
 
-		DebugPlugin.getDefault().addDebugEventListener(DebugEventSetRecorder.getInstance());
+		DebugPlugin.getDefault().addDebugEventListener(
+				DebugEventSetRecorder.getInstance());
 
 		mStarted = true;
 	}
@@ -316,16 +321,18 @@ public class EventRecorder {
 				if (window != null) {
 					IPartService partService = window.getPartService();
 					if (partService != null) {
-						partService.removePartListener(PartRecorder.getInstance());
+						partService.removePartListener(PartRecorder
+								.getInstance());
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
-			DebugPlugin.getDefault().removeDebugEventListener(DebugEventSetRecorder.getInstance());
+			DebugPlugin.getDefault().removeDebugEventListener(
+					DebugEventSetRecorder.getInstance());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -337,18 +344,26 @@ public class EventRecorder {
 	}
 
 	private void saveAsFile(List<ICommand> commands, boolean autosave) {
-		FileWriter writer = null;
+		Writer writer = null;
 
 		try {
-			String xmlContent = persistMacro(getRecordedEventsSoFar());
-
 			File logLocation = getLogLocation();
 
 			File outputFile = new File(logLocation,
 					EventRecorder.getUniqueMacroNameByTimestamp(
 							getStartTimestamp(), autosave));
+			
+			String xmlContent = persistMacro(getRecordedEventsSoFar());
 
-			writer = new FileWriter(outputFile);
+			// If the file already exists, append the elements to the end.
+			if (outputFile.exists()) {
+				writer = new OutputStreamWriter(new FileOutputStream(outputFile, true), "UTF-8");
+			}
+			// Else, create a new one with the top element declaration.
+			else {
+				writer = new OutputStreamWriter(new FileOutputStream(outputFile, false), "UTF-8");
+			}
+
 			writer.write(xmlContent);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -364,8 +379,8 @@ public class EventRecorder {
 	}
 
 	private File getLogLocation() throws Exception {
-		File logLocation = edu.cmu.scs.fluorite.plugin.Activator
-				.getDefault().getStateLocation().append("Logs").toFile();
+		File logLocation = edu.cmu.scs.fluorite.plugin.Activator.getDefault()
+				.getStateLocation().append("Logs").toFile();
 		if (!logLocation.exists()) {
 			if (!logLocation.mkdirs()) {
 				throw new Exception("Could not make log directory!");
@@ -459,7 +474,7 @@ public class EventRecorder {
 		if (newCommand instanceof BaseDocumentChangeEvent) {
 			commands = mDocumentChangeCommands;
 		}
-		
+
 		boolean combined = false;
 		if (commands.size() > 0) {
 			ICommand lastCommand = commands.get(commands.size() - 1);
