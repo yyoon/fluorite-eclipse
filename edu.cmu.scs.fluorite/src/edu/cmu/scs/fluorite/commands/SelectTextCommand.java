@@ -5,38 +5,35 @@ import java.util.Map;
 
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IEditorPart;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.util.Utilities;
 
-
-
 public class SelectTextCommand extends AbstractCommand {
-	public static final String XML_SelectText_Type = "SelectTextCommand";
-	
-	private int mStart;
-	private int mEnd;
-	private int mCaretOffset;
-	
+
 	public SelectTextCommand(int start, int end, int caretOffset) {
 		mStart = start;
 		mEnd = end;
 		mCaretOffset = caretOffset;
 	}
 
+	private int mStart;
+	private int mEnd;
+	private int mCaretOffset;
+
 	public boolean execute(IEditorPart target) {
 		StyledText styledText = Utilities.getStyledText(target);
-		if (styledText == null) { return false; }
+		if (styledText == null) {
+			return false;
+		}
 
 		if (mStart == mCaretOffset) {
 			styledText.setSelection(mEnd, mStart);
-		}
-		else {
+		} else {
 			styledText.setSelection(mStart, mEnd);
 		}
-		
+
 		return true;
 	}
 
@@ -45,13 +42,20 @@ public class SelectTextCommand extends AbstractCommand {
 
 	}
 
-	public void persist(Document doc, Element commandElement) {
+	public Map<String, String> getAttributesMap() {
 		Map<String, String> attrMap = new HashMap<String, String>();
 		attrMap.put("start", Integer.toString(mStart));
 		attrMap.put("end", Integer.toString(mEnd));
 		attrMap.put("caretOffset", Integer.toString(mCaretOffset));
-		
-		Utilities.persistCommand(doc, commandElement, XML_SelectText_Type, attrMap, null, this);
+		return attrMap;
+	}
+
+	public Map<String, String> getDataMap() {
+		return null;
+	}
+
+	public String getCommandType() {
+		return "SelectTextCommand";
 	}
 
 	public AbstractCommand createFrom(Element commandElement) {
@@ -60,7 +64,8 @@ public class SelectTextCommand extends AbstractCommand {
 	}
 
 	public String getName() {
-		return "Select Text (" + mStart + ", " + mEnd + ", " + mCaretOffset + ")";
+		return "Select Text (" + mStart + ", " + mEnd + ", " + mCaretOffset
+				+ ")";
 	}
 
 	public String getDescription() {

@@ -50,15 +50,7 @@ public class Events {
         for (ICommand command : mCommands)
 		{
         	try {
-	        	String commandTag = EventRecorder.XML_Command_Tag;
-	        	String categoryID = command.getCategoryID();
-	        	if (categoryID == null) {
-	        		// do nothing
-	        	} else if (categoryID.equals(EventRecorder.DocumentChangeCategoryID)) {
-	        		commandTag = EventRecorder.XML_DocumentChange_Tag;
-	        	} else if (categoryID.equals(EventRecorder.AnnotationCategoryID)) {
-	        		commandTag = EventRecorder.XML_Annotation_Tag;
-	        	}
+	        	String commandTag = command.getCommandTag();
 	        	
 	            Element child = doc.createElement(commandTag);
 	            command.persist(doc, child);

@@ -3,24 +3,19 @@ package edu.cmu.scs.fluorite.commands;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.eclipse.ui.IEditorPart;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.dialogs.AddAnnotationDialog;
 import edu.cmu.scs.fluorite.model.EventRecorder;
-import edu.cmu.scs.fluorite.util.Utilities;
-
-
 
 public class AnnotateCommand extends AbstractCommand {
-	
+
 	public AnnotateCommand(int id, String comment) {
 		mId = id;
 		mComment = comment;
 	}
-	
+
 	private int mId;
 	private String mComment;
 
@@ -31,18 +26,24 @@ public class AnnotateCommand extends AbstractCommand {
 
 	public void dump() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public void persist(Document doc, Element commandElement) {
+	public Map<String, String> getAttributesMap() {
 		Map<String, String> attrMap = new HashMap<String, String>();
 		String selectionString = getSelectionString();
 		attrMap.put("selection", selectionString);
-		
+		return attrMap;
+	}
+
+	public Map<String, String> getDataMap() {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		dataMap.put("comment", mComment);
-		
-		Utilities.persistCommand(doc, commandElement, "Annotation", attrMap, dataMap, this);
+		return dataMap;
+	}
+
+	public String getCommandType() {
+		return "Annotation";
 	}
 
 	private String getSelectionString() {
@@ -51,11 +52,11 @@ public class AnnotateCommand extends AbstractCommand {
 		case AddAnnotationDialog.BACKTRACKING:
 			selectionString = "Backtracking";
 			break;
-			
+
 		case AddAnnotationDialog.WRITING_NEW_CODE:
 			selectionString = "WritingNewCode";
 			break;
-			
+
 		case AddAnnotationDialog.CANCEL:
 			selectionString = "Cancel";
 		}

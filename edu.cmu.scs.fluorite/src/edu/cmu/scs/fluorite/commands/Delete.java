@@ -5,35 +5,34 @@ import java.util.Map;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
-import edu.cmu.scs.fluorite.util.Utilities;
 
 public class Delete extends BaseDocumentChangeEvent {
-	public static final String XML_Delete_Type="Delete";
-	
-	private int mOffset;
-	private int mLength;
-	private int mStartLine;
-	private int mEndLine;
-	
-	private String mText;
 
-	public Delete(int offset, int length, int startLine, int endLine, String text, IDocument document) {
+	public Delete(int offset, int length, int startLine, int endLine,
+			String text, IDocument document) {
 		mOffset = offset;
 		mLength = length;
 		mStartLine = startLine;
 		mEndLine = endLine;
-		
+
 		mText = text;
-		
+
 		// We want the AST for the source code AFTER the deletion is completed.
 		String documentContent = document.get();
-		documentContent = documentContent.substring(0, mOffset) + documentContent.substring(mOffset + mLength);
+		documentContent = documentContent.substring(0, mOffset)
+				+ documentContent.substring(mOffset + mLength);
 		calcNumericalValues(documentContent);
 	}
+
+	private int mOffset;
+	private int mLength;
+	private int mStartLine;
+	private int mEndLine;
+
+	private String mText;
 
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
@@ -45,23 +44,31 @@ public class Delete extends BaseDocumentChangeEvent {
 
 	}
 
-	public void persist(Document doc, Element commandElement) {
+	public Map<String, String> getAttributesMap() {
 		Map<String, String> attrMap = new HashMap<String, String>();
 		attrMap.put("offset", Integer.toString(mOffset));
 		attrMap.put("length", Integer.toString(mLength));
 		attrMap.put("startLine", Integer.toString(mStartLine));
 		attrMap.put("endLine", Integer.toString(mEndLine));
-		
+
 		for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
 			attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
 		}
-		
+
+		return attrMap;
+	}
+
+	public Map<String, String> getDataMap() {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		if (getText() != null) {
 			dataMap.put("text", getText());
 		}
-		
-		Utilities.persistCommand(doc, commandElement, XML_Delete_Type, attrMap, dataMap, this);
+
+		return dataMap;
+	}
+
+	public String getCommandType() {
+		return "Delete";
 	}
 
 	public AbstractCommand createFrom(Element commandElement) {
@@ -71,10 +78,9 @@ public class Delete extends BaseDocumentChangeEvent {
 
 	public String getName() {
 		return "Delete text (offset: " + Integer.toString(mOffset)
-			+ ", length: " + Integer.toString(mLength)
-			+ ", startLine: " + Integer.toString(mStartLine)
-			+ ", endLine: " + Integer.toString(mEndLine)
-			+ ")";
+				+ ", length: " + Integer.toString(mLength) + ", startLine: "
+				+ Integer.toString(mStartLine) + ", endLine: "
+				+ Integer.toString(mEndLine) + ")";
 	}
 
 	public String getDescription() {
@@ -89,60 +95,60 @@ public class Delete extends BaseDocumentChangeEvent {
 	public String getCategoryID() {
 		return EventRecorder.DocumentChangeCategoryID;
 	}
-	
+
 	public void setOffset(int offset) {
 		mOffset = offset;
 	}
-	
+
 	public int getOffset() {
 		return mOffset;
 	}
-	
+
 	public void setLength(int length) {
 		mLength = length;
 	}
-	
+
 	public int getLength() {
 		return mLength;
 	}
-	
+
 	public void setStartLine(int startLine) {
 		mStartLine = startLine;
 	}
-	
+
 	public int getStartLine() {
 		return mStartLine;
 	}
-	
+
 	public void setEndLine(int endLine) {
 		mEndLine = endLine;
 	}
-	
+
 	public int getEndLine() {
 		return mEndLine;
 	}
-	
+
 	public String getText() {
 		return mText;
 	}
-	
+
 	public boolean combine(ICommand anotherCommand) {
 		if (!(anotherCommand instanceof Delete)) {
 			return false;
 		}
 
-		Delete nextCommand = (Delete)anotherCommand;
-		
-		if (nextCommand.getOffset() != getOffset() &&
-			nextCommand.getOffset() + nextCommand.getLength() != getOffset()) {
+		Delete nextCommand = (Delete) anotherCommand;
+
+		if (nextCommand.getOffset() != getOffset()
+				&& nextCommand.getOffset() + nextCommand.getLength() != getOffset()) {
 			return false;
 		}
-		
-		if (nextCommand.getText() == null && getText() != null ||
-			nextCommand.getText() != null && getText() == null) {
+
+		if (nextCommand.getText() == null && getText() != null
+				|| nextCommand.getText() != null && getText() == null) {
 			return false;
 		}
-		
+
 		if (nextCommand.getOffset() == getOffset()) {
 			mEndLine += nextCommand.getEndLine() - nextCommand.getStartLine();
 			if (getText() != null) {
@@ -155,11 +161,11 @@ public class Delete extends BaseDocumentChangeEvent {
 				mText = nextCommand.getText() + getText();
 			}
 		}
-		
+
 		mLength += nextCommand.getLength();
-		
+
 		replaceNumericalValues(nextCommand);
-		
+
 		return true;
 	}
 }

@@ -3,33 +3,29 @@ package edu.cmu.scs.fluorite.commands;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.ui.IEditorPart;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.util.Utilities;
 
-
-
 public class InsertStringCommand extends AbstractCommand {
+
+	public InsertStringCommand(String data) {
+		mData = data;
+	}
+
 	public static final String XML_Data_Tag = "data";
-	public static final String XML_InsertStringType = "InsertStringCommand";
 
 	private String mData;
 	// private MyTextChangeListener mTextChangeListener=new
 	// MyTextChangeListener();
 	private MyExtendedModifyListener mExtendedModifyListener = new MyExtendedModifyListener();
-
-	public InsertStringCommand(String data) {
-		mData = data;
-	}
 
 	// for serialization only
 	public InsertStringCommand() {
@@ -110,35 +106,6 @@ public class InsertStringCommand extends AbstractCommand {
 		return false;
 	}
 
-	// private static class MyTextChangeListener implements TextChangeListener
-	// {
-	// private StyledText mWidget;
-	// private int mCaretPos;
-	// public void setWidget(StyledText widget)
-	// {
-	// mWidget=widget;
-	// }
-	// public void textChanged(TextChangedEvent event)
-	// {
-	// // mCaretPos=event.mWidget.getCaretOffset();
-	// }
-	//
-	// public void textChanging(TextChangingEvent event)
-	// {
-	// //nothing to do
-	// }
-	//
-	// public void textSet(TextChangedEvent event)
-	// {
-	//
-	// }
-	//
-	// public int getCaretOffset()
-	// {
-	// return mCaretPos;
-	// }
-	// }
-
 	private static class MyExtendedModifyListener implements
 			ExtendedModifyListener {
 		private int mCaretPos;
@@ -156,23 +123,22 @@ public class InsertStringCommand extends AbstractCommand {
 		}
 	}
 
-	public void persist(Document doc, Element commandElement) {
-		Map<String, String> dataMap = new HashMap<String, String>();
-		if (mData != null)
-			dataMap.put(XML_Data_Tag, mData);
-
+	public Map<String, String> getAttributesMap() {
 		Map<String, String> attrMap = new HashMap<String, String>();
 		attrMap.put("timestamp2", Long.toString(getTimestamp2()));
-		Utilities.persistCommand(doc, commandElement, XML_InsertStringType,
-				attrMap, dataMap, this);
-		// if (mData!=null)
-		// {
-		// Element child = doc.createElement(XML_Data_Tag);
-		// child.setTextContent(mData);
-		// commandElement.appendChild(child);
-		// }
-		// commandElement.setAttribute(MacroManager.XML_CommandType_ATTR,
-		// XML_InsertStringType);
+		return attrMap;
+	}
+
+	public Map<String, String> getDataMap() {
+		Map<String, String> dataMap = new HashMap<String, String>();
+		if (mData != null) {
+			dataMap.put(XML_Data_Tag, mData);
+		}
+		return dataMap;
+	}
+
+	public String getCommandType() {
+		return "InsertStringCommand";
 	}
 
 	public AbstractCommand createFrom(Element commandElement) {
@@ -215,14 +181,14 @@ public class InsertStringCommand extends AbstractCommand {
 	public String getCategoryID() {
 		return EventRecorder.MacroCommandCategoryID;
 	}
-	
+
 	public boolean combine(ICommand anotherCommand) {
 		if (!(anotherCommand instanceof InsertStringCommand)) {
 			return false;
 		}
-		
-		InsertStringCommand nextCommand = (InsertStringCommand)anotherCommand;
-		
+
+		InsertStringCommand nextCommand = (InsertStringCommand) anotherCommand;
+
 		if (mData.indexOf('\n') >= 0 || nextCommand.mData.indexOf('\n') >= 0
 				|| mData.indexOf('\r') >= 0
 				|| nextCommand.mData.indexOf('\r') >= 0)

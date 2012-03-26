@@ -417,6 +417,11 @@ public class Utilities {
 		return target;
 	}
 	
+	public static String persistCommand(String type, Map<String, String> attrs, Map<String, String> data, ICommand command)
+	{
+		return "";
+	}
+	
 	public static void persistCommand(Document doc, Element commandElement, String type, Map<String, String> attrs, Map<String, String> data, ICommand command)
 	{
 		commandElement.setAttribute(EventRecorder.XML_ID_Tag, Integer.toString(command.getCommandIndex()));

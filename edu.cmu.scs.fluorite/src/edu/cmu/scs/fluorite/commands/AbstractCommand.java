@@ -4,8 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.preferences.Initializer;
+import edu.cmu.scs.fluorite.util.Utilities;
 
 
 public abstract class AbstractCommand implements edu.cmu.scs.fluorite.commands.ICommand {
@@ -44,6 +48,14 @@ public abstract class AbstractCommand implements edu.cmu.scs.fluorite.commands.I
 	
 	private int mRepeatCount;
 	private int mCommandIndex;
+	
+	public String persist() {
+		return Utilities.persistCommand(getCommandType(), getAttributesMap(), getDataMap(), this);
+	}
+	
+	public void persist(Document doc, Element commandElement) {
+		Utilities.persistCommand(doc, commandElement, getCommandType(), getAttributesMap(), getDataMap(), this);
+	}
 
 	public void setTimestamp(long timestamp) {
 		mTimestamp = timestamp;
@@ -101,4 +113,18 @@ public abstract class AbstractCommand implements edu.cmu.scs.fluorite.commands.I
 	}
 	
 	public abstract boolean combine(ICommand anotherCommand);
+	
+	public String getCommandTag() {
+    	String commandTag = EventRecorder.XML_Command_Tag;
+    	String categoryID = getCategoryID();
+    	if (categoryID == null) {
+    		// do nothing
+    	} else if (categoryID.equals(EventRecorder.DocumentChangeCategoryID)) {
+    		commandTag = EventRecorder.XML_DocumentChange_Tag;
+    	} else if (categoryID.equals(EventRecorder.AnnotationCategoryID)) {
+    		commandTag = EventRecorder.XML_Annotation_Tag;
+    	}
+    	
+    	return commandTag;
+	}
 }
