@@ -10,7 +10,7 @@ This plugin is developed based on the &quot;Practically Macro&quot; plugin
 for Eclipse, which is a macro recording plugin for Eclipse text
 editor (http://practicalmacro.sourceforge.net/).
    </description>
-   <feature url="features/edu.cmu.scs.fluorite_0.4.1.201204061432.jar" id="edu.cmu.scs.fluorite" version="0.4.1.201204061432">
+   <feature url="features/edu.cmu.scs.fluorite_0.4.1.201204061436.jar" id="edu.cmu.scs.fluorite" version="0.4.1.201204061436">
       <category name="Fluorite"/>
    </feature>
    <category-def name="Fluorite" label="Fluorite"/>
