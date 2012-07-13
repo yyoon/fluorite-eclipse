@@ -88,7 +88,6 @@ public class EventRecorder {
 	private int mLastSelectionEnd;
 
 	private long mStartTimestamp;
-	private int mRecordCount;
 
 	private boolean mStarted;
 	private boolean mAssistSession;
@@ -268,7 +267,6 @@ public class EventRecorder {
 		mCurrentlyExecutingCommand = false;
 		mRecordCommands = true;
 		mStartTimestamp = Calendar.getInstance().getTime().getTime();
-		mRecordCount = 0;
 
 		for (IWorkbenchWindow window : PlatformUI.getWorkbench()
 				.getWorkbenchWindows()) {
@@ -474,8 +472,6 @@ public class EventRecorder {
 			commands.removeFirst();
 			mCommands.removeFirst();
 		}
-
-		++mRecordCount;
 
 		StyledText styledText = Utilities.getStyledText(Utilities
 				.getActiveEditor());

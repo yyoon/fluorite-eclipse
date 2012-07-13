@@ -22,6 +22,13 @@ public class IDViewPart extends ViewPart implements ICommandIndexListener {
 	}
 
 	@Override
+	public void dispose() {
+		super.dispose();
+		
+		AbstractCommand.removeCommandIndexListener(this);
+	}
+
+	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
 
