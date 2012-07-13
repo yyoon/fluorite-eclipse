@@ -47,7 +47,7 @@ import edu.cmu.scs.fluorite.plugin.Activator;
 public class Utilities {
 	private static Map<Integer, Command> mFillInCommands = new HashMap<Integer, Command>();
 	public static final String FillInPrefix = "eventLogger.styledTextCommand";
-	
+
 	public static String NewLine = System.getProperty("line.separator");
 
 	private static Set<String> mEditCategories;
@@ -495,11 +495,11 @@ public class Utilities {
 
 		// Opening Tag
 		buf.append("  <" + command.getCommandTag());
-		
+
 		if (attrs == null) {
 			attrs = new HashMap<String, String>();
 		}
-		
+
 		// Add common attributes
 		attrs.put("__id", Integer.toString(command.getCommandIndex()));
 		attrs.put("_type", command.getCommandType());
@@ -508,30 +508,31 @@ public class Utilities {
 			attrs.put("timestamp2", Long.toString(command.getTimestamp2()));
 			attrs.put("repeat", Integer.toString(command.getRepeatCount()));
 		}
-		
+
 		// write the attributes to the buffer
 		TreeSet<String> sortedAttrKeys = new TreeSet<String>(attrs.keySet());
 		for (String attrKey : sortedAttrKeys) {
 			String attrValue = attrs.get(attrKey);
 			buf.append(" " + attrKey + "=\"" + attrValue + "\"");
 		}
-		
+
 		// if there's no data
 		if (data == null || data.size() == 0) {
 			buf.append(" />" + NewLine);
 		} else {
 			buf.append(">" + NewLine);
-			
+
 			// write each data element
 			for (String dataKey : data.keySet()) {
 				String dataValue = data.get(dataKey);
-				
+
 				buf.append("    <" + dataKey + ">");
-				String adjustedDataValue = dataValue.replace("]]>", "]]]]><![CDATA[>");
+				String adjustedDataValue = dataValue.replace("]]>",
+						"]]]]><![CDATA[>");
 				buf.append("<![CDATA[" + adjustedDataValue + "]]>");
 				buf.append("</" + dataKey + ">" + NewLine);
 			}
-			
+
 			// close the tag
 			buf.append("  </" + command.getCommandTag() + ">" + NewLine);
 		}

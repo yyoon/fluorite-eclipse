@@ -11,8 +11,8 @@ import edu.cmu.scs.fluorite.commands.AnnotateCommand;
 import edu.cmu.scs.fluorite.dialogs.AddAnnotationDialog;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
-
-public class AnnotateAction extends Action implements IWorkbenchWindowActionDelegate {
+public class AnnotateAction extends Action implements
+		IWorkbenchWindowActionDelegate {
 
 	public void run(IAction action) {
 		run();
@@ -20,25 +20,29 @@ public class AnnotateAction extends Action implements IWorkbenchWindowActionDele
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void init(IWorkbenchWindow window) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void run() {
-		AddAnnotationDialog dialog = new AddAnnotationDialog(Display.getDefault().getActiveShell());
+		AddAnnotationDialog dialog = new AddAnnotationDialog(Display
+				.getDefault().getActiveShell());
 		dialog.open();
-		
-		EventRecorder.getInstance().recordCommand(new AnnotateCommand(dialog.getReturnCode(), dialog.getComment()));
+
+		EventRecorder.getInstance()
+				.recordCommand(
+						new AnnotateCommand(dialog.getReturnCode(), dialog
+								.getComment()));
 	}
 
 }

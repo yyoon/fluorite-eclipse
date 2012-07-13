@@ -14,17 +14,17 @@ import edu.cmu.scs.fluorite.commands.RunCommand;
 
 public class DebugEventSetRecorder extends BaseRecorder implements
 		IDebugEventSetListener {
-	
+
 	private static DebugEventSetRecorder instance = null;
-	
+
 	public static DebugEventSetRecorder getInstance() {
 		if (instance == null) {
 			instance = new DebugEventSetRecorder();
 		}
-		
+
 		return instance;
 	}
-	
+
 	private DebugEventSetRecorder() {
 		super();
 	}
@@ -50,7 +50,7 @@ public class DebugEventSetRecorder extends BaseRecorder implements
 					IProcess process = (IProcess) source;
 					ILaunchConfiguration config = process.getLaunch()
 							.getLaunchConfiguration();
-					
+
 					if (config == null) {
 						return;
 					}
@@ -68,10 +68,12 @@ public class DebugEventSetRecorder extends BaseRecorder implements
 					String projectName = (String) (attributes
 							.get("org.eclipse.jdt.launching.PROJECT_ATTR"));
 
-					getRecorder().recordCommand(new RunCommand(false, terminate, projectName));
+					getRecorder().recordCommand(
+							new RunCommand(false, terminate, projectName));
 
 				} else if (source instanceof IDebugTarget) {
-					getRecorder().recordCommand(new RunCommand(true, terminate, null));
+					getRecorder().recordCommand(
+							new RunCommand(true, terminate, null));
 				}
 			}
 		}

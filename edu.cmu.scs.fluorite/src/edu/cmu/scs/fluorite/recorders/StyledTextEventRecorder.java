@@ -19,9 +19,9 @@ import edu.cmu.scs.fluorite.commands.SelectTextCommand;
 import edu.cmu.scs.fluorite.util.Utilities;
 
 public class StyledTextEventRecorder extends BaseRecorder implements Listener {
-	
+
 	private static StyledTextEventRecorder instance;
-	
+
 	public static StyledTextEventRecorder getInstance() {
 		if (instance == null) {
 			instance = new StyledTextEventRecorder();
@@ -29,17 +29,17 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 
 		return instance;
 	}
-	
+
 	private StyledTextEventRecorder() {
 		super();
 	}
-	
+
 	@Override
 	public void addListeners(IEditorPart editor) {
 		final StyledText styledText = Utilities.getStyledText(editor);
 		if (styledText == null)
 			return;
-		
+
 		styledText.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				StyledTextEventRecorder styledTextEventRecorder = getInstance();
@@ -51,7 +51,7 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 			}
 		});
 	}
-	
+
 	@Override
 	public void removeListeners(IEditorPart editor) {
 		try {
@@ -100,7 +100,7 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 			break;
 		}
 
-			// case SWT.MouseDown:
+		// case SWT.MouseDown:
 		case SWT.MouseUp: {
 			IEditorPart editor = Utilities.getActiveEditor();
 			StyledText styledText = Utilities.getStyledText(editor);
@@ -109,16 +109,20 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 				break;
 
 			if ((styledText.getSelection().x != styledText.getSelection().y)
-					&& (styledText.getSelection().x != getRecorder().getLastSelectionStart() || styledText
-							.getSelection().y != getRecorder().getLastSelectionEnd())) {
+					&& (styledText.getSelection().x != getRecorder()
+							.getLastSelectionStart() || styledText
+							.getSelection().y != getRecorder()
+							.getLastSelectionEnd())) {
 				AbstractCommand command = new SelectTextCommand(
 						styledText.getSelection().x,
 						styledText.getSelection().y,
 						styledText.getCaretOffset());
 				getRecorder().recordCommand(command);
-			} else if (getRecorder().getLastCaretOffset() != styledText.getCaretOffset()) {
+			} else if (getRecorder().getLastCaretOffset() != styledText
+					.getCaretOffset()) {
 				AbstractCommand command = new MoveCaretCommand(
-						styledText.getCaretOffset(), viewer.getSelectedRange().x);
+						styledText.getCaretOffset(),
+						viewer.getSelectedRange().x);
 				getRecorder().recordCommand(command);
 			}
 

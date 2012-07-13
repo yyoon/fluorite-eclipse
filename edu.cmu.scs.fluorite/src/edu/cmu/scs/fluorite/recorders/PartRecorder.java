@@ -10,17 +10,17 @@ import edu.cmu.scs.fluorite.model.FileSnapshotManager;
 import edu.cmu.scs.fluorite.util.Utilities;
 
 public class PartRecorder extends BaseRecorder implements IPartListener {
-	
+
 	private static PartRecorder instance = null;
-	
+
 	public static PartRecorder getInstance() {
 		if (instance == null) {
 			instance = new PartRecorder();
 		}
-		
+
 		return instance;
 	}
-	
+
 	private PartRecorder() {
 		super();
 	}
@@ -42,13 +42,16 @@ public class PartRecorder extends BaseRecorder implements IPartListener {
 			}
 
 			if (getRecorder().getEditor() != null) {
-				String filePath = Utilities.getFilePathFromEditor(getRecorder().getEditor());
-				IDocument currentDoc = Utilities.getDocument(getRecorder().getEditor());
-				
+				String filePath = Utilities.getFilePathFromEditor(getRecorder()
+						.getEditor());
+				IDocument currentDoc = Utilities.getDocument(getRecorder()
+						.getEditor());
+
 				if (filePath != null && currentDoc != null) {
-					FileSnapshotManager.getInstance().updateSnapshot(filePath, currentDoc.get());
+					FileSnapshotManager.getInstance().updateSnapshot(filePath,
+							currentDoc.get());
 				}
-				
+
 				getRecorder().removeListeners();
 			}
 

@@ -12,17 +12,17 @@ import edu.cmu.scs.fluorite.util.Utilities;
 
 public class CompletionRecorder extends BaseRecorder implements
 		ICompletionListener {
-	
+
 	private static CompletionRecorder instance = null;
-	
+
 	public static CompletionRecorder getInstance() {
 		if (instance == null) {
 			instance = new CompletionRecorder();
 		}
-		
+
 		return instance;
 	}
-	
+
 	private CompletionRecorder() {
 		super();
 	}
@@ -59,7 +59,7 @@ public class CompletionRecorder extends BaseRecorder implements
 							.removeCompletionListener(this);
 				}
 			}
-		
+
 			ISourceViewerExtension4 sourceViewerExtension4 = Utilities
 					.getSourceViewerExtension4(getRecorder().getEditor());
 			if (sourceViewerExtension4 != null) {
@@ -84,8 +84,9 @@ public class CompletionRecorder extends BaseRecorder implements
 				.getCanonicalName().indexOf("QuickAssist") != -1) ? AssistCommand.AssistType.QUICK_ASSIST
 				: AssistCommand.AssistType.CONTENT_ASSIST;
 
-		getRecorder().recordCommand(new AssistCommand(assistType,
-				AssistCommand.StartEndType.START, event.isAutoActivated, null));
+		getRecorder().recordCommand(
+				new AssistCommand(assistType, AssistCommand.StartEndType.START,
+						event.isAutoActivated, null));
 	}
 
 	public void assistSessionEnded(ContentAssistEvent event) {
@@ -99,8 +100,9 @@ public class CompletionRecorder extends BaseRecorder implements
 				.getCanonicalName().indexOf("QuickAssist") != -1) ? AssistCommand.AssistType.QUICK_ASSIST
 				: AssistCommand.AssistType.CONTENT_ASSIST;
 
-		getRecorder().recordCommand(new AssistCommand(assistType,
-				AssistCommand.StartEndType.END, false, null));
+		getRecorder().recordCommand(
+				new AssistCommand(assistType, AssistCommand.StartEndType.END,
+						false, null));
 	}
 
 	public void selectionChanged(ICompletionProposal proposal,
