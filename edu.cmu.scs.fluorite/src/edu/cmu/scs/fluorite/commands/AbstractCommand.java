@@ -4,10 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.ui.IEditorPart;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
+import edu.cmu.scs.fluorite.plugin.Activator;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.util.Utilities;
 
@@ -41,6 +44,20 @@ public abstract class AbstractCommand implements
 		for (ICommandIndexListener listener : commandIndexListeners) {
 			listener.commandIndexIncreased(currentCommandID);
 		}
+
+		if (Activator.getDefault().getPreferenceStore()
+				.getBoolean(Initializer.Pref_LogTopBottomLines)) {
+			mTopBottomLinesRecorded = true;
+
+			IEditorPart editor = Utilities.getActiveEditor();
+			StyledText styledText = Utilities.getStyledText(editor);
+
+			int clientAreaHeight = styledText.getClientArea().height;
+			mTopLineNumber = styledText.getLineIndex(0) + 1;
+			mBottomLineNumber = styledText.getLineIndex(clientAreaHeight) + 1;
+		} else {
+			mTopBottomLinesRecorded = false;
+		}
 	}
 
 	private long mTimestamp;
@@ -48,6 +65,11 @@ public abstract class AbstractCommand implements
 
 	private int mRepeatCount;
 	private int mCommandIndex;
+
+	// Top Bottom Lines
+	private boolean mTopBottomLinesRecorded;
+	private int mTopLineNumber;
+	private int mBottomLineNumber;
 
 	public String persist() {
 		return Utilities.persistCommand(getCommandType(), getAttributesMap(),
@@ -89,6 +111,18 @@ public abstract class AbstractCommand implements
 
 	public int getCommandIndex() {
 		return mCommandIndex;
+	}
+
+	public boolean areTopBottomLinesRecorded() {
+		return mTopBottomLinesRecorded;
+	}
+
+	public int getTopLineNumber() {
+		return mTopLineNumber;
+	}
+
+	public int getBottomLineNumber() {
+		return mBottomLineNumber;
 	}
 
 	public boolean combineWith(ICommand anotherCommand) {

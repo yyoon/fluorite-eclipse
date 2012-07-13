@@ -14,8 +14,11 @@ import org.eclipse.ui.keys.IBindingService;
 
 import edu.cmu.scs.fluorite.commands.AbstractCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
+import edu.cmu.scs.fluorite.commands.MouseWheelCommand;
 import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
+import edu.cmu.scs.fluorite.plugin.Activator;
+import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.util.Utilities;
 
 public class StyledTextEventRecorder extends BaseRecorder implements Listener {
@@ -47,7 +50,8 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 				styledText.addListener(SWT.KeyUp, styledTextEventRecorder);
 				styledText.addListener(SWT.MouseDown, styledTextEventRecorder);
 				styledText.addListener(SWT.MouseUp, styledTextEventRecorder);
-				styledText.addListener(SWT.MouseWheel, styledTextEventRecorder);
+				styledText.addListener(SWT.MouseVerticalWheel,
+						styledTextEventRecorder);
 			}
 		});
 	}
@@ -62,7 +66,7 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 				styledText.removeListener(SWT.KeyUp, this);
 				styledText.removeListener(SWT.MouseDown, this);
 				styledText.removeListener(SWT.MouseUp, this);
-				styledText.removeListener(SWT.MouseWheel, this);
+				styledText.removeListener(SWT.MouseVerticalWheel, this);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -127,6 +131,15 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 			}
 
 			break;
+		}
+
+		case SWT.MouseVerticalWheel: {
+			if (Activator.getDefault().getPreferenceStore()
+					.getBoolean(Initializer.Pref_LogMouseWheel) == false) {
+				break;
+			}
+
+			getRecorder().recordCommand(new MouseWheelCommand(event.count));
 		}
 		}
 	}

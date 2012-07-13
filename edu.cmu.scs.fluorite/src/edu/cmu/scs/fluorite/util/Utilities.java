@@ -509,6 +509,12 @@ public class Utilities {
 			attrs.put("repeat", Integer.toString(command.getRepeatCount()));
 		}
 
+		if (command.areTopBottomLinesRecorded()) {
+			attrs.put("topLine", Integer.toString(command.getTopLineNumber()));
+			attrs.put("bottomLine",
+					Integer.toString(command.getBottomLineNumber()));
+		}
+
 		// write the attributes to the buffer
 		TreeSet<String> sortedAttrKeys = new TreeSet<String>(attrs.keySet());
 		for (String attrKey : sortedAttrKeys) {
@@ -554,6 +560,7 @@ public class Utilities {
 			commandElement.setAttribute("repeat",
 					Integer.toString(command.getRepeatCount()));
 		}
+
 		if (attrs != null) {
 			for (String attr : attrs.keySet()) {
 				commandElement.setAttribute(attr, attrs.get(attr));

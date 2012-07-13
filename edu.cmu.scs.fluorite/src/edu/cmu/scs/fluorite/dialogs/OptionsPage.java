@@ -30,6 +30,9 @@ public class OptionsPage extends PreferencePage implements
 	private Button mLogInsertedText;
 	private Button mLogDeletedText;
 
+	private Button mLogTopBottomLines;
+	private Button mLogMouseWheel;
+
 	public OptionsPage() {
 		// TODO Auto-generated constructor stub
 	}
@@ -104,6 +107,18 @@ public class OptionsPage extends PreferencePage implements
 				.getPreferenceStore()
 				.getBoolean(Initializer.Pref_LogDeletedText));
 
+		mLogTopBottomLines = new Button(comp, SWT.CHECK);
+		mLogTopBottomLines
+				.setText("Log top / bottom line numbers shown on the screen");
+		mLogTopBottomLines.setSelection(Activator.getDefault()
+				.getPreferenceStore()
+				.getBoolean(Initializer.Pref_LogTopBottomLines));
+
+		mLogMouseWheel = new Button(comp, SWT.CHECK);
+		mLogMouseWheel.setText("Log mouse wheels");
+		mLogMouseWheel.setSelection(Activator.getDefault().getPreferenceStore()
+				.getBoolean(Initializer.Pref_LogMouseWheel));
+
 		return comp;
 	}
 
@@ -151,6 +166,18 @@ public class OptionsPage extends PreferencePage implements
 				.setValue(Initializer.Pref_LogDeletedText,
 						mLogDeletedText.getSelection());
 
+		Activator
+				.getDefault()
+				.getPreferenceStore()
+				.setValue(Initializer.Pref_LogTopBottomLines,
+						mLogTopBottomLines.getSelection());
+
+		Activator
+				.getDefault()
+				.getPreferenceStore()
+				.setValue(Initializer.Pref_LogMouseWheel,
+						mLogMouseWheel.getSelection());
+
 		return super.performOk();
 	}
 
@@ -178,6 +205,12 @@ public class OptionsPage extends PreferencePage implements
 		mLogDeletedText.setSelection(Activator.getDefault()
 				.getPreferenceStore()
 				.getDefaultBoolean(Initializer.Pref_LogDeletedText));
+
+		mLogTopBottomLines.setSelection(Activator.getDefault()
+				.getPreferenceStore()
+				.getDefaultBoolean(Initializer.Pref_LogTopBottomLines));
+		mLogMouseWheel.setSelection(Activator.getDefault().getPreferenceStore()
+				.getDefaultBoolean(Initializer.Pref_LogMouseWheel));
 
 		super.performDefaults();
 	}

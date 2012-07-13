@@ -16,6 +16,9 @@ public class Initializer extends AbstractPreferenceInitializer {
 	public static final String Pref_LogInsertedText = "EventLogger_LogInsertedText";
 	public static final String Pref_LogDeletedText = "EventLogger_LogDeletedText";
 
+	public static final String Pref_LogTopBottomLines = "EventLogger_LogTopBottomLines";
+	public static final String Pref_LogMouseWheel = "EventLogger_LogMouseWheel";
+
 	public static final String Pref_FindForward = "EventLogger_FindForward";
 	public static final String Pref_FindCaseSensitive = "EventLogger_FindCaseSensitive";
 	public static final String Pref_FindWrapSearch = "EventLogger_FindWrapSearch";
@@ -43,6 +46,11 @@ public class Initializer extends AbstractPreferenceInitializer {
 				.setDefault(Pref_LogInsertedText, true);
 		Activator.getDefault().getPreferenceStore()
 				.setDefault(Pref_LogDeletedText, true);
+
+		Activator.getDefault().getPreferenceStore()
+				.setDefault(Pref_LogTopBottomLines, false);
+		Activator.getDefault().getPreferenceStore()
+				.setDefault(Pref_LogMouseWheel, false);
 
 		Activator.getDefault().getPreferenceStore()
 				.setDefault(Pref_FindForward, true);

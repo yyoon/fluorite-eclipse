@@ -14,7 +14,7 @@ public class FluoriteXMLFormatter extends Formatter {
 	}
 
 	private long mStartTimestamp;
-	private static final String LOG_VERSION = "0.2.1";
+	private static final String LOG_VERSION = "0.4.2";
 
 	@Override
 	public String format(LogRecord rec) {

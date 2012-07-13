@@ -93,8 +93,9 @@ public class EventRecorder {
 	private boolean mAssistSession;
 
 	private static EventRecorder instance = null;
-	
-	private final static Logger LOGGER = Logger.getLogger(EventRecorder.class.getName());
+
+	private final static Logger LOGGER = Logger.getLogger(EventRecorder.class
+			.getName());
 
 	public static EventRecorder getInstance() {
 		if (instance == null) {
@@ -283,7 +284,7 @@ public class EventRecorder {
 
 		DebugPlugin.getDefault().addDebugEventListener(
 				DebugEventSetRecorder.getInstance());
-		
+
 		initializeLogger();
 
 		mStarted = true;
@@ -295,7 +296,7 @@ public class EventRecorder {
 		}
 
 		updateIncrementalFindMode();
-		
+
 		// Flush the commands that are not yet logged into the file.
 		for (ICommand command : mCommands) {
 			LOGGER.log(Level.FINE, null, command);
@@ -338,20 +339,20 @@ public class EventRecorder {
 			FileHandler handler = new FileHandler(outputFile.getPath());
 			handler.setEncoding("UTF-8");
 			handler.setFormatter(new FluoriteXMLFormatter(getStartTimestamp()));
-			
+
 			LOGGER.addHandler(handler);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Events getRecordedEventsSoFar() {
 		return getRecordedEvents(mCommands);
 	}
-	
+
 	public Events getRecordedEvents(List<ICommand> commands) {
-		return new Events(commands, "",
-				Long.toString(getStartTimestamp()), "", getStartTimestamp());
+		return new Events(commands, "", Long.toString(getStartTimestamp()), "",
+				getStartTimestamp());
 	}
 
 	private File getLogLocation() throws Exception {
@@ -462,12 +463,13 @@ public class EventRecorder {
 			commands.add(newCommand);
 			mCommands.add(newCommand);
 		}
-		
+
 		// Log to the file.
-		while (commands.size() > 1 && commands.getFirst() == mCommands.getFirst()) {
+		while (commands.size() > 1
+				&& commands.getFirst() == mCommands.getFirst()) {
 			ICommand firstCmd = commands.getFirst();
 			LOGGER.log(Level.FINE, null, firstCmd);
-			
+
 			// Remove the first item from the list
 			commands.removeFirst();
 			mCommands.removeFirst();

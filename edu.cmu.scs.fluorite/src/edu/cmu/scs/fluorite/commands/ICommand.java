@@ -44,6 +44,12 @@ public interface ICommand {
 	public int getRepeatCount();
 
 	public int getCommandIndex();
+	
+	public boolean areTopBottomLinesRecorded();
+	
+	public int getTopLineNumber();
+	
+	public int getBottomLineNumber();
 
 	public boolean combineWith(ICommand anotherCommand);
 
