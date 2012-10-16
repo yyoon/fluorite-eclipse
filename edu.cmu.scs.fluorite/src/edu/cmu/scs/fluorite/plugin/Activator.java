@@ -1,7 +1,11 @@
 package edu.cmu.scs.fluorite.plugin;
 
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
@@ -36,7 +40,21 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		
 		if (getPreferenceStore().getBoolean(Initializer.Pref_EnableEventLogger)) {
-			EventRecorder.getInstance().start();
+			// NOTE: This event recording must start after the workbench is fully loaded.
+			// So, run this in UIJob so it runs after the workbench loads.
+			UIJob uiJob = new UIJob("Fluorite_Timeline") {
+
+				@Override
+				public IStatus runInUIThread(IProgressMonitor arg0) {
+					EventRecorder.getInstance().start();
+					return Status.OK_STATUS;
+				}
+				
+			};
+			
+			uiJob.setSystem(true);
+			uiJob.setUser(false);
+			uiJob.schedule();
 		}
 	}
 
