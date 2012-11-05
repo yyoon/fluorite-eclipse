@@ -18,45 +18,39 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 import edu.cmu.scs.fluorite.plugin.Activator;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 
-
-
-public class EventLoggerConsole extends IOConsole
-{
+public class EventLoggerConsole extends IOConsole {
 	private static EventLoggerConsole mConsole;
-	private static final String ConsoleName="EventLogger.Macro_Console";
-	public static final int Type_Standard=1;
-	public static final int Type_Error=2;
-	public static final int Type_RecordingCommand=3;
-	public static final int Type_PlayingCommand=4;
-	public static final int Type_DebugInfo=5;
-	public static final Color Red=new Color(Display.getDefault(), 255,0,0);
-	public static final Color Green=new Color(Display.getDefault(), 0,128,0);
-	public static final Color Blue=new Color(Display.getDefault(), 0,0,255);
-	public static final Color Purple=new Color(Display.getDefault(), 128,0,128);
-	public EventLoggerConsole()
-	{
+	private static final String ConsoleName = "EventLogger.Macro_Console";
+	public static final int Type_Standard = 1;
+	public static final int Type_Error = 2;
+	public static final int Type_RecordingCommand = 3;
+	public static final int Type_PlayingCommand = 4;
+	public static final int Type_DebugInfo = 5;
+	public static final Color Red = new Color(Display.getDefault(), 255, 0, 0);
+	public static final Color Green = new Color(Display.getDefault(), 0, 128, 0);
+	public static final Color Blue = new Color(Display.getDefault(), 0, 0, 255);
+	public static final Color Purple = new Color(Display.getDefault(), 128, 0,
+			128);
+
+	public EventLoggerConsole() {
 		super("Event Logger", null);
-		mConsole=null;
+		mConsole = null;
 	}
-	
-	public void write(Exception e)
-	{
+
+	public void write(Exception e) {
 		write(e, Type_Error);
 	}
-	
-	public void write(Exception e, int type)
-	{
-		ConsolePlugin.getDefault().getConsoleManager().showConsoleView(mConsole);
-		
-		IOConsoleOutputStream outputStream=mConsole.newOutputStream();
+
+	public void write(Exception e, int type) {
+		ConsolePlugin.getDefault().getConsoleManager()
+				.showConsoleView(mConsole);
+
+		IOConsoleOutputStream outputStream = mConsole.newOutputStream();
 		configureStream(outputStream, type);
-		try
-		{
-			PrintStream ps=new PrintStream(outputStream);
+		try {
+			PrintStream ps = new PrintStream(outputStream);
 			e.printStackTrace(ps);
-		}
-		finally
-		{
+		} finally {
 			try {
 				outputStream.close();
 			} catch (IOException e1) {
@@ -64,67 +58,62 @@ public class EventLoggerConsole extends IOConsole
 			}
 		}
 	}
-	
-	public void writeln(String data)
-	{
+
+	public void writeln(String data) {
 		writeln(data, Type_Standard);
 	}
-	
-	public void writeln(String data, int type)
-	{
-		write(data+"\n", type);
+
+	public void writeln(String data, int type) {
+		write(data + "\n", type);
 	}
-	
-	public void write(String data)
-	{
+
+	public void write(String data) {
 		write(data, Type_Standard);
 	}
 
-	public void write(String data, int type)
-	{
-		if (type!=Type_Error && type!=Type_DebugInfo && !Activator.getDefault().getPreferenceStore().getBoolean(Initializer.Pref_WriteToConsole))
-		{
+	public void write(String data, int type) {
+		if (type != Type_Error
+				&& type != Type_DebugInfo
+				&& !Activator.getDefault().getPreferenceStore()
+						.getBoolean(Initializer.Pref_WriteToConsole)) {
 			return;
 		}
-		
-		if (Activator.getDefault().getPreferenceStore().getBoolean(Initializer.Pref_ShowConsole))
-		{
-			try
-			{
+
+		if (Activator.getDefault().getPreferenceStore()
+				.getBoolean(Initializer.Pref_ShowConsole)) {
+			try {
 				IWorkbench workbench = PlatformUI.getWorkbench();
 				if (workbench != null) {
-					IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+					IWorkbenchWindow window = workbench
+							.getActiveWorkbenchWindow();
 					if (window != null) {
 						IWorkbenchPage page = window.getActivePage();
 						if (page != null) {
-							IViewReference consoleView = page.findViewReference("org.eclipse.ui.console.ConsoleView"); 
-							
-							if (consoleView!=null)
-							{
-								if (!consoleView.isFastView())
-								{
-									ConsolePlugin.getDefault().getConsoleManager().showConsoleView(mConsole);
+							IViewReference consoleView = page
+									.findViewReference("org.eclipse.ui.console.ConsoleView");
+
+							if (consoleView != null) {
+								if (!consoleView.isFastView()) {
+									ConsolePlugin.getDefault()
+											.getConsoleManager()
+											.showConsoleView(mConsole);
 								}
 							}
 						}
 					}
 				}
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
-		IOConsoleOutputStream outputStream=mConsole.newOutputStream();
+
+		IOConsoleOutputStream outputStream = mConsole.newOutputStream();
 		configureStream(outputStream, type);
 		try {
 			outputStream.write(data);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally
-		{
+		} finally {
 			try {
 				outputStream.close();
 			} catch (IOException e) {
@@ -133,10 +122,8 @@ public class EventLoggerConsole extends IOConsole
 		}
 	}
 
-	private void configureStream(IOConsoleOutputStream outputStream, int type)
-	{
-		switch (type)
-		{
+	private void configureStream(IOConsoleOutputStream outputStream, int type) {
+		switch (type) {
 		case Type_Error:
 			outputStream.setColor(Red);
 			break;
@@ -152,25 +139,24 @@ public class EventLoggerConsole extends IOConsole
 		}
 	}
 
-	public static EventLoggerConsole getConsole()
-	{
-		if (mConsole==null)
-		{
-			IConsole[] consoles=ConsolePlugin.getDefault().getConsoleManager().getConsoles();
+	public static EventLoggerConsole getConsole() {
+		if (mConsole == null) {
+			IConsole[] consoles = ConsolePlugin.getDefault()
+					.getConsoleManager().getConsoles();
 			for (IConsole console : consoles) {
-				if (console.getName().equals(ConsoleName) && (console instanceof EventLoggerConsole))
-				{
-					mConsole=(EventLoggerConsole)console;
+				if (console.getName().equals(ConsoleName)
+						&& (console instanceof EventLoggerConsole)) {
+					mConsole = (EventLoggerConsole) console;
 				}
 			}
-			
-			if (mConsole==null)
-			{
-				mConsole=new EventLoggerConsole();
-				ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[]{mConsole});
+
+			if (mConsole == null) {
+				mConsole = new EventLoggerConsole();
+				ConsolePlugin.getDefault().getConsoleManager()
+						.addConsoles(new IConsole[] { mConsole });
 			}
 		}
-		
+
 		mConsole.setWaterMarks(10000, 100000);
 		return mConsole;
 	}

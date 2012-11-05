@@ -4,34 +4,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.IEditorPart;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
-import edu.cmu.scs.fluorite.util.Utilities;
 
 public class AssistCommand extends AbstractCommand {
-	public static final String XML_Assist_Type="AssistCommand";
-	
+
 	public enum AssistType {
-		CONTENT_ASSIST,
-		QUICK_ASSIST,
+		CONTENT_ASSIST, QUICK_ASSIST,
 	}
-	
+
 	public enum StartEndType {
-		START,
-		END,
+		START, END,
 	}
-	
+
 	private AssistType mAssistType;
 	private StartEndType mStartEndType;
 	private boolean mAutoActivated;
 	private String mContext;
-	
-	public AssistCommand(AssistType assistType, StartEndType startEndType, boolean autoActivated, String context) {
+
+	public AssistCommand(AssistType assistType, StartEndType startEndType,
+			boolean autoActivated, String context) {
 		mAssistType = assistType;
 		mStartEndType = startEndType;
-		mAutoActivated = (mStartEndType == StartEndType.END) ? false : autoActivated;
+		mAutoActivated = (mStartEndType == StartEndType.END) ? false
+				: autoActivated;
 		mContext = context;
 	}
 
@@ -45,18 +42,24 @@ public class AssistCommand extends AbstractCommand {
 
 	}
 
-	public void persist(Document doc, Element commandElement) {
+	public Map<String, String> getAttributesMap() {
 		Map<String, String> attrMap = new HashMap<String, String>();
 		attrMap.put("assist_type", mAssistType.toString());
 		attrMap.put("start_end", mStartEndType.toString());
 		attrMap.put("auto_activated", Boolean.toString(mAutoActivated));
-		
+		return attrMap;
+	}
+
+	public Map<String, String> getDataMap() {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		if (mContext != null) {
 			dataMap.put("context", mContext);
 		}
-		
-		Utilities.persistCommand(doc, commandElement, XML_Assist_Type, attrMap, dataMap, this);
+		return dataMap;
+	}
+
+	public String getCommandType() {
+		return "AssistCommand";
 	}
 
 	public ICommand createFrom(Element commandElement) {
@@ -65,7 +68,9 @@ public class AssistCommand extends AbstractCommand {
 	}
 
 	public String getName() {
-		return mAssistType.toString() + " " + mStartEndType.toString() + ", AutoActivated: " + Boolean.toString(mAutoActivated) + ", Context: " + mContext;
+		return mAssistType.toString() + " " + mStartEndType.toString()
+				+ ", AutoActivated: " + Boolean.toString(mAutoActivated)
+				+ ", Context: " + mContext;
 	}
 
 	public String getDescription() {

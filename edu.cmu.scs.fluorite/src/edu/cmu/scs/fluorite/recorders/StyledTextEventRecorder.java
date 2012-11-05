@@ -14,14 +14,17 @@ import org.eclipse.ui.keys.IBindingService;
 
 import edu.cmu.scs.fluorite.commands.AbstractCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
+import edu.cmu.scs.fluorite.commands.MouseWheelCommand;
 import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
+import edu.cmu.scs.fluorite.plugin.Activator;
+import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.util.Utilities;
 
 public class StyledTextEventRecorder extends BaseRecorder implements Listener {
-	
+
 	private static StyledTextEventRecorder instance;
-	
+
 	public static StyledTextEventRecorder getInstance() {
 		if (instance == null) {
 			instance = new StyledTextEventRecorder();
@@ -29,17 +32,17 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 
 		return instance;
 	}
-	
+
 	private StyledTextEventRecorder() {
 		super();
 	}
-	
+
 	@Override
 	public void addListeners(IEditorPart editor) {
 		final StyledText styledText = Utilities.getStyledText(editor);
 		if (styledText == null)
 			return;
-		
+
 		styledText.getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				StyledTextEventRecorder styledTextEventRecorder = getInstance();
@@ -47,11 +50,12 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 				styledText.addListener(SWT.KeyUp, styledTextEventRecorder);
 				styledText.addListener(SWT.MouseDown, styledTextEventRecorder);
 				styledText.addListener(SWT.MouseUp, styledTextEventRecorder);
-				styledText.addListener(SWT.MouseWheel, styledTextEventRecorder);
+				styledText.addListener(SWT.MouseVerticalWheel,
+						styledTextEventRecorder);
 			}
 		});
 	}
-	
+
 	@Override
 	public void removeListeners(IEditorPart editor) {
 		try {
@@ -62,7 +66,7 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 				styledText.removeListener(SWT.KeyUp, this);
 				styledText.removeListener(SWT.MouseDown, this);
 				styledText.removeListener(SWT.MouseUp, this);
-				styledText.removeListener(SWT.MouseWheel, this);
+				styledText.removeListener(SWT.MouseVerticalWheel, this);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,7 +104,7 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 			break;
 		}
 
-			// case SWT.MouseDown:
+		// case SWT.MouseDown:
 		case SWT.MouseUp: {
 			IEditorPart editor = Utilities.getActiveEditor();
 			StyledText styledText = Utilities.getStyledText(editor);
@@ -109,20 +113,33 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 				break;
 
 			if ((styledText.getSelection().x != styledText.getSelection().y)
-					&& (styledText.getSelection().x != getRecorder().getLastSelectionStart() || styledText
-							.getSelection().y != getRecorder().getLastSelectionEnd())) {
+					&& (styledText.getSelection().x != getRecorder()
+							.getLastSelectionStart() || styledText
+							.getSelection().y != getRecorder()
+							.getLastSelectionEnd())) {
 				AbstractCommand command = new SelectTextCommand(
 						styledText.getSelection().x,
 						styledText.getSelection().y,
 						styledText.getCaretOffset());
 				getRecorder().recordCommand(command);
-			} else if (getRecorder().getLastCaretOffset() != styledText.getCaretOffset()) {
+			} else if (getRecorder().getLastCaretOffset() != styledText
+					.getCaretOffset()) {
 				AbstractCommand command = new MoveCaretCommand(
-						styledText.getCaretOffset(), viewer.getSelectedRange().x);
+						styledText.getCaretOffset(),
+						viewer.getSelectedRange().x);
 				getRecorder().recordCommand(command);
 			}
 
 			break;
+		}
+
+		case SWT.MouseVerticalWheel: {
+			if (Activator.getDefault().getPreferenceStore()
+					.getBoolean(Initializer.Pref_LogMouseWheel) == false) {
+				break;
+			}
+
+			getRecorder().recordCommand(new MouseWheelCommand(event.count));
 		}
 		}
 	}

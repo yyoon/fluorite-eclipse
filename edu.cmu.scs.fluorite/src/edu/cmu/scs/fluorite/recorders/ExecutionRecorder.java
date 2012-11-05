@@ -26,7 +26,8 @@ import edu.cmu.scs.fluorite.commands.UndoCommand;
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
 import edu.cmu.scs.fluorite.util.Utilities;
 
-public class ExecutionRecorder extends BaseRecorder implements IExecutionListener {
+public class ExecutionRecorder extends BaseRecorder implements
+		IExecutionListener {
 
 	private static ExecutionRecorder instance = null;
 
@@ -37,10 +38,10 @@ public class ExecutionRecorder extends BaseRecorder implements IExecutionListene
 
 		return instance;
 	}
-	
+
 	private ExecutionRecorder() {
 		super();
-		
+
 		// TODO: get from extension point?
 		mNonRecordableCommandIds = new HashSet<String>();
 		mNonRecordableCommandIds
@@ -58,7 +59,7 @@ public class ExecutionRecorder extends BaseRecorder implements IExecutionListene
 			cs.addExecutionListener(this);
 		}
 	}
-	
+
 	@Override
 	public void removeListeners(IEditorPart editor) {
 		try {
@@ -128,9 +129,10 @@ public class ExecutionRecorder extends BaseRecorder implements IExecutionListene
 
 		getRecorder().updateIncrementalFindMode();
 		if (!getRecorder().isIncrementalFindMode()) {
-//			System.out.println("Command executed: " + commandId);
-			
-			getRecorder().recordCommand(createCommandByEclipseCommandId(commandId));
+			// System.out.println("Command executed: " + commandId);
+
+			getRecorder().recordCommand(
+					createCommandByEclipseCommandId(commandId));
 		}
 	}
 
@@ -146,9 +148,9 @@ public class ExecutionRecorder extends BaseRecorder implements IExecutionListene
 				mPreexecuteListeners = widget.getListeners(SWT.MouseUp);
 			}
 		}
-//		System.out.println("preexecute: " + commandId);
+		// System.out.println("preexecute: " + commandId);
 	}
-	
+
 	private ICommand createCommandByEclipseCommandId(String commandId) {
 		if (commandId.equals("org.eclipse.ui.edit.undo")) {
 			return new UndoCommand();

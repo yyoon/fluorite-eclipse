@@ -12,56 +12,54 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
-import edu.cmu.scs.fluorite.util.Utilities;
 
+public class EclipseCommand extends AbstractCommand {
 
+	public static final String XML_ID_ATTR = "commandID";
 
-// This class is no longer an immutable class
-public class EclipseCommand extends AbstractCommand
-{
-	public static final String XML_ID_ATTR="commandID";
-	public static final String XML_EclipseCommandType="EclipseCommand";
-	
-	private String mCommandId;
-	private int mRepeatCount;
-	
 	public EclipseCommand(String commandId, int repeatCount) {
 		mCommandId = commandId;
 		mRepeatCount = repeatCount;
 	}
-	
-	public EclipseCommand(String commandId)
-	{
+
+	private String mCommandId;
+	private int mRepeatCount;
+
+	public EclipseCommand(String commandId) {
 		this(commandId, 1);
 	}
-	
-	public EclipseCommand()
-	{
-		//nothing to do here
+
+	public EclipseCommand() {
+		// nothing to do here
 	}
-	
+
 	@SuppressWarnings("deprecation")
-	public boolean execute(IEditorPart target)
-	{
-		ICommandService cs = (ICommandService) PlatformUI.getWorkbench().getAdapter(ICommandService.class);
-		Command command=cs.getCommand(mCommandId);
-		if (command!=null)
-		{
+	public boolean execute(IEditorPart target) {
+		ICommandService cs = (ICommandService) PlatformUI.getWorkbench()
+				.getAdapter(ICommandService.class);
+		Command command = cs.getCommand(mCommandId);
+		if (command != null) {
 			try {
-				IHandlerService hs = (IHandlerService) PlatformUI.getWorkbench().getAdapter(IHandlerService.class);
-				ExecutionEvent exEvent=hs.createExecutionEvent(command, null);
-				
-				//This check is necessary because certain commands (like copy) may be disabled until there
-				//is a selection.  However, the keystrokes that set the selection kick off an event
-				//that is not guaranteed to be received in time to run the copy command.  The 'new'
-				//way is to implement IHandler2, which explicitly runs the code to check the enablement,
-				//so for commands that don't implement that, I've gone back to the deprecated "execute"
-				//method that doesn't set (or check) the possibly out-of-date enable flag at all.
-				
+				IHandlerService hs = (IHandlerService) PlatformUI
+						.getWorkbench().getAdapter(IHandlerService.class);
+				ExecutionEvent exEvent = hs.createExecutionEvent(command, null);
+
+				// This check is necessary because certain commands (like copy)
+				// may be disabled until there
+				// is a selection. However, the keystrokes that set the
+				// selection kick off an event
+				// that is not guaranteed to be received in time to run the copy
+				// command. The 'new'
+				// way is to implement IHandler2, which explicitly runs the code
+				// to check the enablement,
+				// so for commands that don't implement that, I've gone back to
+				// the deprecated "execute"
+				// method that doesn't set (or check) the possibly out-of-date
+				// enable flag at all.
+
 				for (int i = 0; i < mRepeatCount; ++i) {
 					if (command.getHandler() instanceof IHandler2)
 						command.executeWithChecks(exEvent);
@@ -71,7 +69,8 @@ public class EclipseCommand extends AbstractCommand
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				EventLoggerConsole.getConsole().write(e, EventLoggerConsole.Type_Error);
+				EventLoggerConsole.getConsole().write(e,
+						EventLoggerConsole.Type_Error);
 			}
 		}
 
@@ -79,100 +78,104 @@ public class EclipseCommand extends AbstractCommand
 	}
 
 	public void dump() {
-		System.out.println("Eclipse Command: " + mCommandId + ", repeat: " + Integer.toString(mRepeatCount));
+		System.out.println("Eclipse Command: " + mCommandId + ", repeat: "
+				+ Integer.toString(mRepeatCount));
 	}
 
-	public void persist(Document doc, Element commandElement)
-	{
-		Map<String, String> attrMap=new HashMap<String, String>();
+	public Map<String, String> getAttributesMap() {
+		Map<String, String> attrMap = new HashMap<String, String>();
 		attrMap.put(XML_ID_ATTR, mCommandId);
-		Utilities.persistCommand(doc, commandElement, XML_EclipseCommandType, attrMap, null, this);
-//		
-//		commandElement.setAttribute(XML_ID_ATTR, mCommandId);
-//		commandElement.setAttribute(MacroManager.XML_CommandType_ATTR, XML_EclipseCommandType);
+		return attrMap;
 	}
 
-	public AbstractCommand createFrom(Element commandElement)
-	{
-		String commandID=commandElement.getAttribute(XML_ID_ATTR);
-		EclipseCommand newCommand=new EclipseCommand(commandID);
+	public Map<String, String> getDataMap() {
+		return null;
+	}
+
+	public String getCommandType() {
+		return "EclipseCommand";
+	}
+
+	public AbstractCommand createFrom(Element commandElement) {
+		String commandID = commandElement.getAttribute(XML_ID_ATTR);
+		EclipseCommand newCommand = new EclipseCommand(commandID);
 		return newCommand;
 	}
 
-	public String getDescription()
-	{
-		ICommandService cs = (ICommandService) PlatformUI.getWorkbench().getAdapter(ICommandService.class);
-		Command command=cs.getCommand(mCommandId);
+	public String getDescription() {
+		ICommandService cs = (ICommandService) PlatformUI.getWorkbench()
+				.getAdapter(ICommandService.class);
+		Command command = cs.getCommand(mCommandId);
 		try {
 			return command.getDescription();
 		} catch (NotDefinedException e) {
 			e.printStackTrace();
 		}
-		
+
 		return "";
 	}
 
-	public String getName()
-	{
-		ICommandService cs = (ICommandService) PlatformUI.getWorkbench().getAdapter(ICommandService.class);
-		Command command=cs.getCommand(mCommandId);
+	public String getName() {
+		ICommandService cs = (ICommandService) PlatformUI.getWorkbench()
+				.getAdapter(ICommandService.class);
+		Command command = cs.getCommand(mCommandId);
 		try {
 			return command.getName();
-		} catch (NotDefinedException e)
-		{
-			//e.printStackTrace();
+		} catch (NotDefinedException e) {
+			// e.printStackTrace();
 		}
-		
+
 		return mCommandId;
 	}
-	
-	public String getCategory()
-	{
-		ICommandService cs = (ICommandService) PlatformUI.getWorkbench().getAdapter(ICommandService.class);
-		Command command=cs.getCommand(mCommandId);
+
+	public String getCategory() {
+		ICommandService cs = (ICommandService) PlatformUI.getWorkbench()
+				.getAdapter(ICommandService.class);
+		Command command = cs.getCommand(mCommandId);
 		try {
-			Category cat=command.getCategory();
-			if (cat!=null)
+			Category cat = command.getCategory();
+			if (cat != null)
 				return cat.getName();
 		} catch (NotDefinedException e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 		}
-		
+
 		return "";
 	}
 
-	public String getCategoryID()
-	{
-		ICommandService cs = (ICommandService) PlatformUI.getWorkbench().getAdapter(ICommandService.class);
-		if (cs == null) { return ""; }
-		
-		Command command=cs.getCommand(mCommandId);
+	public String getCategoryID() {
+		ICommandService cs = (ICommandService) PlatformUI.getWorkbench()
+				.getAdapter(ICommandService.class);
+		if (cs == null) {
+			return "";
+		}
+
+		Command command = cs.getCommand(mCommandId);
 		try {
-			Category cat=command.getCategory();
-			if (cat!=null)
+			Category cat = command.getCategory();
+			if (cat != null)
 				return cat.getId();
 		} catch (NotDefinedException e) {
-//			e.printStackTrace();
+			// e.printStackTrace();
 		}
-		
+
 		return "";
 	}
 
-	public String getCommandID()
-	{
+	public String getCommandID() {
 		return mCommandId;
 	}
-	
+
 	public boolean combine(ICommand anotherCommand) {
 		if (!(anotherCommand instanceof EclipseCommand)) {
 			return false;
 		}
-		
-		EclipseCommand nextCommand = (EclipseCommand)anotherCommand;
+
+		EclipseCommand nextCommand = (EclipseCommand) anotherCommand;
 		if (nextCommand.getCommandID().equals(getCommandID())) {
 			return true;
 		}
-		
+
 		return false;
 	}
 }

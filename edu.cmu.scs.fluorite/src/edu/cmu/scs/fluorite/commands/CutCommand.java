@@ -1,14 +1,13 @@
 package edu.cmu.scs.fluorite.commands;
 
+import java.util.Map;
+
 import org.eclipse.ui.IEditorPart;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
-import edu.cmu.scs.fluorite.util.Utilities;
 
 public class CutCommand extends AbstractCommand {
-	private static final String XML_CUT_TYPE="CutCommand";
 
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
@@ -20,8 +19,16 @@ public class CutCommand extends AbstractCommand {
 
 	}
 
-	public void persist(Document doc, Element commandElement) {
-		Utilities.persistCommand(doc, commandElement, XML_CUT_TYPE, null, null, this);
+	public Map<String, String> getAttributesMap() {
+		return null;
+	}
+
+	public Map<String, String> getDataMap() {
+		return null;
+	}
+
+	public String getCommandType() {
+		return "CutCommand";
 	}
 
 	public ICommand createFrom(Element commandElement) {

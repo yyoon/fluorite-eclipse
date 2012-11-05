@@ -1,15 +1,15 @@
 package edu.cmu.scs.fluorite.model;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -76,9 +76,9 @@ public class EventRecorder {
 	public static final String PREF_USER_MACRO_DEFINITIONS = "Preference_UserMacroDefinitions";
 
 	private IEditorPart mEditor;
-	private List<ICommand> mCommands;
-	private List<ICommand> mNormalCommands;
-	private List<ICommand> mDocumentChangeCommands;
+	private LinkedList<ICommand> mCommands;
+	private LinkedList<ICommand> mNormalCommands;
+	private LinkedList<ICommand> mDocumentChangeCommands;
 	private boolean mCurrentlyExecutingCommand;
 	private boolean mRecordCommands;
 	private IAction mSavedFindAction;
@@ -88,12 +88,14 @@ public class EventRecorder {
 	private int mLastSelectionEnd;
 
 	private long mStartTimestamp;
-	private int mRecordCount;
 
 	private boolean mStarted;
 	private boolean mAssistSession;
 
 	private static EventRecorder instance = null;
+
+	private final static Logger LOGGER = Logger.getLogger(EventRecorder.class
+			.getName());
 
 	public static EventRecorder getInstance() {
 		if (instance == null) {
@@ -260,13 +262,12 @@ public class EventRecorder {
 	public void start() {
 		EventLoggerConsole.getConsole().writeln("***Started macro recording",
 				EventLoggerConsole.Type_RecordingCommand);
-		mCommands = new ArrayList<ICommand>();
-		mNormalCommands = new ArrayList<ICommand>();
-		mDocumentChangeCommands = new ArrayList<ICommand>();
+		mCommands = new LinkedList<ICommand>();
+		mNormalCommands = new LinkedList<ICommand>();
+		mDocumentChangeCommands = new LinkedList<ICommand>();
 		mCurrentlyExecutingCommand = false;
 		mRecordCommands = true;
 		mStartTimestamp = Calendar.getInstance().getTime().getTime();
-		mRecordCount = 0;
 
 		for (IWorkbenchWindow window : PlatformUI.getWorkbench()
 				.getWorkbenchWindows()) {
@@ -284,6 +285,8 @@ public class EventRecorder {
 		DebugPlugin.getDefault().addDebugEventListener(
 				DebugEventSetRecorder.getInstance());
 
+		initializeLogger();
+
 		mStarted = true;
 	}
 
@@ -294,24 +297,9 @@ public class EventRecorder {
 
 		updateIncrementalFindMode();
 
-		List<ICommand> commands = getMacroCommands();
-		if (commands.size() > 0) {
-			saveAsFile(commands, false);
-
-			File logLocation = null;
-			try {
-				logLocation = getLogLocation();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			File autosaveFile = new File(logLocation,
-					EventRecorder.getUniqueMacroNameByTimestamp(
-							getStartTimestamp(), true));
-			if (autosaveFile.exists()) {
-				autosaveFile.delete();
-			}
+		// Flush the commands that are not yet logged into the file.
+		for (ICommand command : mCommands) {
+			LOGGER.log(Level.FINE, null, command);
 		}
 
 		try {
@@ -338,44 +326,33 @@ public class EventRecorder {
 		}
 	}
 
-	public Events getRecordedEventsSoFar() {
-		return new Events(getMacroCommands(), "",
-				Long.toString(getStartTimestamp()), "", getStartTimestamp());
-	}
+	private void initializeLogger() {
+		LOGGER.setLevel(Level.FINE);
 
-	private void saveAsFile(List<ICommand> commands, boolean autosave) {
-		Writer writer = null;
-
+		File outputFile = null;
 		try {
 			File logLocation = getLogLocation();
-
-			File outputFile = new File(logLocation,
+			outputFile = new File(logLocation,
 					EventRecorder.getUniqueMacroNameByTimestamp(
-							getStartTimestamp(), autosave));
-			
-			String xmlContent = persistMacro(getRecordedEventsSoFar());
+							getStartTimestamp(), false));
 
-			// If the file already exists, append the elements to the end.
-			if (outputFile.exists()) {
-				writer = new OutputStreamWriter(new FileOutputStream(outputFile, true), "UTF-8");
-			}
-			// Else, create a new one with the top element declaration.
-			else {
-				writer = new OutputStreamWriter(new FileOutputStream(outputFile, false), "UTF-8");
-			}
+			FileHandler handler = new FileHandler(outputFile.getPath());
+			handler.setEncoding("UTF-8");
+			handler.setFormatter(new FluoriteXMLFormatter(getStartTimestamp()));
 
-			writer.write(xmlContent);
+			LOGGER.addHandler(handler);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
+	}
+
+	public Events getRecordedEventsSoFar() {
+		return getRecordedEvents(mCommands);
+	}
+
+	public Events getRecordedEvents(List<ICommand> commands) {
+		return new Events(commands, "", Long.toString(getStartTimestamp()), "",
+				getStartTimestamp());
 	}
 
 	private File getLogLocation() throws Exception {
@@ -392,10 +369,6 @@ public class EventRecorder {
 	private boolean mIncrementalFindMode = false;
 	private boolean mIncrementalFindForward = true;
 	private Listener mIncrementalListener = null;
-
-	public List<ICommand> getMacroCommands() {
-		return mCommands;
-	}
 
 	public IEditorPart getEditor() {
 		return mEditor;
@@ -470,7 +443,7 @@ public class EventRecorder {
 		newCommand.setTimestamp(timestamp);
 		newCommand.setTimestamp2(timestamp);
 
-		List<ICommand> commands = mNormalCommands;
+		LinkedList<ICommand> commands = mNormalCommands;
 		if (newCommand instanceof BaseDocumentChangeEvent) {
 			commands = mDocumentChangeCommands;
 		}
@@ -491,10 +464,15 @@ public class EventRecorder {
 			mCommands.add(newCommand);
 		}
 
-		// Autosave the log for every 100 commands just in case Eclipse crashes
-		++mRecordCount;
-		if (mRecordCount % 100 == 0) {
-			saveAsFile(mCommands, true);
+		// Log to the file.
+		while (commands.size() > 1
+				&& commands.getFirst() == mCommands.getFirst()) {
+			ICommand firstCmd = commands.getFirst();
+			LOGGER.log(Level.FINE, null, firstCmd);
+
+			// Remove the first item from the list
+			commands.removeFirst();
+			mCommands.removeFirst();
 		}
 
 		StyledText styledText = Utilities.getStyledText(Utilities

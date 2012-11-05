@@ -15,18 +15,6 @@
             label="Fluorite.PlayActionSet"
             visible="true">
          <action
-               class="edu.cmu.scs.fluorite.actions.ViewLastLogAction"
-               definitionId="edu.cmu.scs.fluorite.actions.viewLastLog"
-               icon="icons/viewlog.gif"
-               id="edu.cmu.scs.fluorite.actions.viewLastLogAction"
-               label="&amp;View Last Log"
-               retarget="false"
-               state="false"
-               style="push"
-               toolbarPath="Normal/additions"
-               tooltip="View Last Log">
-         </action>
-         <action
                class="edu.cmu.scs.fluorite.actions.AnnotateAction"
                definitionId="edu.cmu.scs.fluorite.actions.annotate"
                icon="icons/annotation.png"
