@@ -114,6 +114,18 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	public String getCategoryID() {
 		return EventRecorder.MacroCommandCategoryID;
 	}
+	
+	public String getSnapshot() {
+		return mSnapshot;
+	}
+	
+	public String getFilePath() {
+		return mFilePath;
+	}
+	
+	public String getProjectName() {
+		return mProjectName;
+	}
 
 	public boolean combine(ICommand anotherCommand) {
 		return false;
