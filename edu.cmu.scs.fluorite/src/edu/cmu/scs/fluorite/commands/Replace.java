@@ -171,4 +171,8 @@ public class Replace extends BaseDocumentChangeEvent {
 		return false;
 	}
 
+	public int getInsertionLength() {
+		return mInsertionLength;
+	}
+
 }
