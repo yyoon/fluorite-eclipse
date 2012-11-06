@@ -3,6 +3,7 @@ package edu.cmu.scs.fluorite.model;
 import java.io.File;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,11 +25,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartService;
@@ -42,10 +48,12 @@ import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.actions.FindAction;
 import edu.cmu.scs.fluorite.commands.BaseDocumentChangeEvent;
+import edu.cmu.scs.fluorite.commands.FileOpenCommand;
 import edu.cmu.scs.fluorite.commands.FindCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
+import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.recorders.CompletionRecorder;
 import edu.cmu.scs.fluorite.recorders.DebugEventSetRecorder;
 import edu.cmu.scs.fluorite.recorders.DocumentRecorder;
@@ -92,6 +100,21 @@ public class EventRecorder {
 	private boolean mStarted;
 	private boolean mAssistSession;
 
+	private boolean mCombineCommands;
+	private boolean mNormalCommandCombinable;
+	private boolean mDocChangeCombinable;
+	private int mCombineTimeThreshold;
+	
+	private BaseDocumentChangeEvent mLastFiredDocumentChange;
+	
+	private Timer mTimer;
+	private TimerTask mNormalTimerTask;
+	private TimerTask mDocChangeTimerTask;
+	
+	private ListenerList mDocumentChangeListeners;
+
+	private List<Runnable> mScheduledTasks;
+
 	private static EventRecorder instance = null;
 
 	private final static Logger LOGGER = Logger.getLogger(EventRecorder.class
@@ -110,6 +133,12 @@ public class EventRecorder {
 
 		mStarted = false;
 		mAssistSession = false;
+		
+		mDocumentChangeListeners = new ListenerList();
+		
+		mTimer = new Timer();
+		
+		mScheduledTasks = new ArrayList<Runnable>();
 	}
 
 	public void setCurrentlyExecutingCommand(boolean executingCommand) {
@@ -158,6 +187,56 @@ public class EventRecorder {
 
 	public boolean isAssistSession() {
 		return mAssistSession;
+	}
+
+	public void addDocumentChangeListener(DocumentChangeListener docChangeListener) {
+		mDocumentChangeListeners.add(docChangeListener);
+	}
+	
+	public void removeDocumentChangeListener(DocumentChangeListener docChangeListener) {
+		mDocumentChangeListeners.remove(docChangeListener);
+	}
+	
+	public void setCombineCommands(boolean enabled) {
+		mCombineCommands = enabled;
+	}
+	
+	public boolean getCombineCommands() {
+		return mCombineCommands;
+	}
+	
+	public void setCombineTimeThreshold(int newThreshold) {
+		mCombineTimeThreshold = newThreshold;
+	}
+	
+	public int getCombineTimeThreshold() {
+		return mCombineTimeThreshold;
+	}
+	
+	private Timer getTimer() {
+		return mTimer;
+	}
+	
+	public void fireActiveFileChangedEvent(FileOpenCommand foc) {
+		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
+			((DocumentChangeListener)listenerObj).activeFileChanged(foc);
+		}
+	}
+	
+	public void fireDocumentChangedEvent(BaseDocumentChangeEvent docChange) {
+		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
+			((DocumentChangeListener)listenerObj).documentChanged(docChange);
+		}
+	}
+	
+	public void fireDocumentChangeFinalizedEvent(BaseDocumentChangeEvent docChange) {
+		if (docChange instanceof FileOpenCommand) { return; }
+		
+		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
+			((DocumentChangeListener)listenerObj).documentChangeFinalized(docChange);
+		}
+		
+		mLastFiredDocumentChange = docChange;
 	}
 
 	public void addListeners() {
@@ -259,6 +338,15 @@ public class EventRecorder {
 		return null;
 	}
 
+	public void scheduleTask(Runnable runnable) {
+		if (mStarted) {
+			runnable.run();
+		}
+		else {
+			mScheduledTasks.add(runnable);
+		}
+	}
+
 	public void start() {
 		EventLoggerConsole.getConsole().writeln("***Started macro recording",
 				EventLoggerConsole.Type_RecordingCommand);
@@ -287,7 +375,19 @@ public class EventRecorder {
 
 		initializeLogger();
 
+		// Set the combine time threshold.
+		IPreferenceStore prefStore = edu.cmu.scs.fluorite.plugin.Activator
+				.getDefault().getPreferenceStore();
+		
+		setCombineCommands(prefStore.getBoolean(Initializer.Pref_CombineCommands));
+		setCombineTimeThreshold(prefStore.getInt(Initializer.Pref_CombineTimeThreshold));
+
 		mStarted = true;
+		
+		// Execute all the scheduled tasks.
+		for (Runnable runnable : mScheduledTasks) {
+			runnable.run();
+		}
 	}
 
 	public void stop() {
@@ -324,6 +424,10 @@ public class EventRecorder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		// purge timer events.
+		getTimer().cancel();
+		getTimer().purge();
 	}
 
 	private void initializeLogger() {
@@ -443,25 +547,29 @@ public class EventRecorder {
 		newCommand.setTimestamp(timestamp);
 		newCommand.setTimestamp2(timestamp);
 
-		LinkedList<ICommand> commands = mNormalCommands;
-		if (newCommand instanceof BaseDocumentChangeEvent) {
-			commands = mDocumentChangeCommands;
-		}
+		final boolean isDocChange = (newCommand instanceof BaseDocumentChangeEvent);
+		final LinkedList<ICommand> commands = isDocChange ? mDocumentChangeCommands : mNormalCommands;
 
 		boolean combined = false;
-		if (commands.size() > 0) {
-			ICommand lastCommand = commands.get(commands.size() - 1);
+		final ICommand lastCommand = commands.size() > 0 ? commands.get(commands.size() - 1) : null;
 
-			// See if combining with previous command is possible .
-			if (lastCommand != null) {
-				combined = lastCommand.combineWith(newCommand);
-			}
+		// See if combining with previous command is possible .
+		if (lastCommand != null && isCombineEnabled(newCommand, lastCommand, isDocChange)) {
+			combined = lastCommand.combineWith(newCommand);
 		}
 
 		// If combining is failed, just add it.
 		if (!combined) {
 			commands.add(newCommand);
 			mCommands.add(newCommand);
+			
+			if (newCommand instanceof BaseDocumentChangeEvent && !(newCommand instanceof FileOpenCommand)) {
+				fireDocumentChangedEvent((BaseDocumentChangeEvent)newCommand);
+				
+				if (lastCommand instanceof BaseDocumentChangeEvent && lastCommand != mLastFiredDocumentChange) {
+					fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent)lastCommand);
+				}
+			}
 		}
 
 		// Log to the file.
@@ -482,6 +590,51 @@ public class EventRecorder {
 			this.mLastSelectionStart = styledText.getSelection().x;
 			this.mLastSelectionEnd = styledText.getSelection().y;
 		}
+		
+		// Deal with timer.
+		// TODO Refactor!! maybe use State pattern or something, using inner classes.
+		if (isDocChange) {
+			if (mDocChangeTimerTask != null) { mDocChangeTimerTask.cancel(); }
+			
+			mDocChangeTimerTask = new TimerTask() {
+				public void run() {
+					mDocChangeCombinable = false;
+					
+					try {
+					
+						final ICommand lastCommand = (mDocumentChangeCommands.size() > 0) ? mDocumentChangeCommands.get(mDocumentChangeCommands.size() - 1) : null;
+						if (lastCommand != null && lastCommand != mLastFiredDocumentChange) {
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent)lastCommand);
+								}
+							});
+						}
+					
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			getTimer().schedule(mDocChangeTimerTask, (long)getCombineTimeThreshold());
+			mDocChangeCombinable = true;
+		}
+		else {
+			if (mNormalTimerTask != null) { mNormalTimerTask.cancel(); }
+			
+			mNormalTimerTask = new TimerTask() {
+				public void run() {
+					mNormalCommandCombinable = false;
+				}
+			};
+			getTimer().schedule(mNormalTimerTask, (long)getCombineTimeThreshold());
+			mNormalCommandCombinable = true;
+		}
+	}
+
+	private boolean isCombineEnabled(ICommand newCommand, ICommand lastCommand, boolean isDocChange) {
+		return getCombineCommands() && (isDocChange ? mDocChangeCombinable : mNormalCommandCombinable);
 	}
 
 	public long getStartTimestamp() {

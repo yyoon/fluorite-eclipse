@@ -14,6 +14,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
+import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.plugin.Activator;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 
@@ -154,6 +155,10 @@ public class OptionsPage extends PreferencePage implements
 				.getPreferenceStore()
 				.setValue(Initializer.Pref_CombineTimeThreshold,
 						Integer.parseInt(mCombineThreshold.getText()));
+		EventRecorder.getInstance().setCombineCommands(
+				mCombineCommands.getSelection());
+		EventRecorder.getInstance().setCombineTimeThreshold(
+				Integer.parseInt(mCombineThreshold.getText()));
 
 		Activator
 				.getDefault()

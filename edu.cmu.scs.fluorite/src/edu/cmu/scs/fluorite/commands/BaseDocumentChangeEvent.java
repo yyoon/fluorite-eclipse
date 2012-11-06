@@ -31,6 +31,7 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 		mNumericalValues.put("docLength", documentContent.length());
 
 		// Parse AST here.
+		@SuppressWarnings("deprecation")
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 

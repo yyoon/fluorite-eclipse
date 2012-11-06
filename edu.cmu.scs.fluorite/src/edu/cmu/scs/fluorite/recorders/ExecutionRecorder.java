@@ -65,7 +65,9 @@ public class ExecutionRecorder extends BaseRecorder implements
 		try {
 			ICommandService cs = (ICommandService) PlatformUI.getWorkbench()
 					.getAdapter(ICommandService.class);
-			cs.removeExecutionListener(this);
+			if (cs != null) {
+				cs.removeExecutionListener(this);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
