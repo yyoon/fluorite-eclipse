@@ -45,18 +45,24 @@ public abstract class AbstractCommand implements
 			listener.commandIndexIncreased(currentCommandID);
 		}
 
-		if (Activator.getDefault().getPreferenceStore()
-				.getBoolean(Initializer.Pref_LogTopBottomLines)) {
-			mTopBottomLinesRecorded = true;
-
-			IEditorPart editor = Utilities.getActiveEditor();
-			StyledText styledText = Utilities.getStyledText(editor);
-
-			int clientAreaHeight = styledText.getClientArea().height;
-			mTopLineNumber = styledText.getLineIndex(0) + 1;
-			mBottomLineNumber = styledText.getLineIndex(clientAreaHeight) + 1;
-		} else {
-			mTopBottomLinesRecorded = false;
+		try {
+			if (Activator.getDefault().getPreferenceStore()
+					.getBoolean(Initializer.Pref_LogTopBottomLines)) {
+				mTopBottomLinesRecorded = true;
+	
+				IEditorPart editor = Utilities.getActiveEditor();
+				StyledText styledText = Utilities.getStyledText(editor);
+	
+				int clientAreaHeight = styledText.getClientArea().height;
+				mTopLineNumber = styledText.getLineIndex(0) + 1;
+				mBottomLineNumber = styledText.getLineIndex(clientAreaHeight) + 1;
+			} else {
+				mTopBottomLinesRecorded = false;
+			}
+		}
+		catch (NullPointerException e) {
+			// Maybe this is created in a JUnit test.
+			// Don't bother to add these things.
 		}
 	}
 

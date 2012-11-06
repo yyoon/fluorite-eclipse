@@ -17,7 +17,9 @@ public class Insert extends BaseDocumentChangeEvent {
 
 		mText = text;
 
-		calcNumericalValues(doc.get());
+		if (doc != null) {
+			calcNumericalValues(doc.get());
+		}
 	}
 
 	private int mOffset;

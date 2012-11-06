@@ -23,16 +23,20 @@ public class Replace extends BaseDocumentChangeEvent {
 
 		mDeletedText = deletedText;
 		mInsertedText = insertedText;
+		
+		if (document != null) {
 
-		StringBuffer documentContent = new StringBuffer(document.get());
-		documentContent.replace(offset, offset + length, "");
-		calcNumericalValues(documentContent.toString());
+			StringBuffer documentContent = new StringBuffer(document.get());
+			documentContent.replace(offset, offset + length, "");
+			calcNumericalValues(documentContent.toString());
 
-		mIntermediateNumericalValues = (Map<String, Integer>) ((HashMap<String, Integer>) getNumericalValues())
-				.clone();
+			mIntermediateNumericalValues = (Map<String, Integer>) ((HashMap<String, Integer>) getNumericalValues())
+					.clone();
 
-		documentContent.replace(offset, offset, insertedText);
-		calcNumericalValues(documentContent.toString());
+			documentContent.replace(offset, offset, insertedText);
+			calcNumericalValues(documentContent.toString());
+
+		}
 	}
 
 	private int mOffset;

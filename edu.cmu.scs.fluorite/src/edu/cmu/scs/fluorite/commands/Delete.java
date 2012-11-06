@@ -20,11 +20,14 @@ public class Delete extends BaseDocumentChangeEvent {
 
 		mText = text;
 
-		// We want the AST for the source code AFTER the deletion is completed.
-		String documentContent = document.get();
-		documentContent = documentContent.substring(0, mOffset)
-				+ documentContent.substring(mOffset + mLength);
-		calcNumericalValues(documentContent);
+		if (document != null) {
+			// We want the AST for the source code AFTER the deletion is
+			// completed.
+			String documentContent = document.get();
+			documentContent = documentContent.substring(0, mOffset)
+					+ documentContent.substring(mOffset + mLength);
+			calcNumericalValues(documentContent);
+		}
 	}
 
 	private int mOffset;
