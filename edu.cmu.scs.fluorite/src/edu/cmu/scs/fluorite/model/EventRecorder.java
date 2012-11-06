@@ -229,9 +229,11 @@ public class EventRecorder {
 		}
 	}
 	
-	public void fireDocumentChangeFinalizedEvent(BaseDocumentChangeEvent docChange) {
+	public synchronized void fireDocumentChangeFinalizedEvent(BaseDocumentChangeEvent docChange) {
 		if (docChange instanceof FileOpenCommand) { return; }
 		
+		if (docChange == mLastFiredDocumentChange) { return; }
+
 		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
 			((DocumentChangeListener)listenerObj).documentChangeFinalized(docChange);
 		}
