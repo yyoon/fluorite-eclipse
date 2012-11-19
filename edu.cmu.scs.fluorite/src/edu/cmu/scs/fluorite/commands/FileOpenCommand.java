@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -129,5 +130,12 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 
 	public boolean combine(ICommand anotherCommand) {
 		return false;
+	}
+
+	@Override
+	public void applyToDocument(IDocument doc) {
+		if (getSnapshot() != null) {
+			doc.set(getSnapshot());
+		}
 	}
 }

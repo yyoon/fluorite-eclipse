@@ -3,6 +3,7 @@ package edu.cmu.scs.fluorite.commands;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
 import org.w3c.dom.Element;
@@ -135,5 +136,14 @@ public class Insert extends BaseDocumentChangeEvent {
 		replaceNumericalValues(nextCommand);
 
 		return true;
+	}
+
+	@Override
+	public void applyToDocument(IDocument doc) {
+		try {
+			doc.replace(getOffset(), 0, getText());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -41,9 +41,7 @@ public abstract class AbstractCommand implements
 		mRepeatCount = 1;
 		mCommandIndex = ++currentCommandID;
 
-		for (ICommandIndexListener listener : commandIndexListeners) {
-			listener.commandIndexIncreased(currentCommandID);
-		}
+		fireCommandIndexChanged();
 
 		try {
 			if (Activator.getDefault().getPreferenceStore()
@@ -63,6 +61,12 @@ public abstract class AbstractCommand implements
 		catch (NullPointerException e) {
 			// Maybe this is created in a JUnit test.
 			// Don't bother to add these things.
+		}
+	}
+
+	private static void fireCommandIndexChanged() {
+		for (ICommandIndexListener listener : commandIndexListeners) {
+			listener.commandIndexIncreased(currentCommandID);
 		}
 	}
 
@@ -169,5 +173,10 @@ public abstract class AbstractCommand implements
 		}
 
 		return commandTag;
+	}
+	
+	public static void resetCommandID() {
+		currentCommandID = -1;
+		fireCommandIndexChanged();
 	}
 }

@@ -8,6 +8,7 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jface.text.IDocument;
 
 import edu.cmu.scs.fluorite.visitors.ExpressionCountVisitor;
 import edu.cmu.scs.fluorite.visitors.NodeCountVisitor;
@@ -62,5 +63,7 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 		compilationUnit.accept(ecVisitor);
 		mNumericalValues.put("docExpressionCount", ecVisitor.getCount());
 	}
+	
+	public abstract void applyToDocument(IDocument doc);
 
 }
