@@ -12,8 +12,9 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
+            defaultHandler="edu.cmu.scs.fluorite.ui.handlers.AnnotateCommandHandler"
             description="Annotate current intention"
-            id="edu.cmu.scs.fluorite.actions.annotate"
+            id="edu.cmu.scs.fluorite.annotateCommand"
             name="Annotate">
       </command>
       <command
@@ -59,6 +60,34 @@
             id="edu.cmu.scs.fluorite.category"
             name="Fluorite">
       </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="edu.cmu.scs.fluorite.toolbar1"
+               label="Fluorite Toolbar">
+            <command
+                  commandId="edu.cmu.scs.fluorite.annotateCommand"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="edu.cmu.scs.fluorite.annotateCommand"
+            icon="icons/annotation.png">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="edu.cmu.scs.fluorite.annotateCommand">
+      </handler>
    </extension>
 
 
