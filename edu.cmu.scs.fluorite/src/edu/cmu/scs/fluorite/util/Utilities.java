@@ -23,6 +23,7 @@ import org.eclipse.jface.text.source.ISourceViewerExtension4;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -93,6 +94,20 @@ public class Utilities {
 				.getAdapter(ITextOperationTarget.class);
 
 		return viewer;
+	}
+	
+	public static Font getFont() {
+		IEditorPart editor = EventRecorder.getInstance().getEditor();
+		if (editor == null) {
+			return null;
+		}
+		
+		StyledText styledText = getStyledText(editor);
+		if (styledText == null) {
+			return null;
+		}
+		
+		return styledText.getFont();
 	}
 
 	public static StyledText getStyledText(IEditorPart editor) {
