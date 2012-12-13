@@ -12,6 +12,9 @@ import edu.cmu.scs.fluorite.util.Utilities;
 
 public class SelectTextCommand extends AbstractCommand {
 
+	public SelectTextCommand() {
+	}
+	
 	public SelectTextCommand(int start, int end, int caretOffset) {
 		mStart = start;
 		mEnd = end;
@@ -54,13 +57,13 @@ public class SelectTextCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "SelectTextCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public AbstractCommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "SelectTextCommand";
 	}
 
 	public String getName() {

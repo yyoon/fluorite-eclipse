@@ -9,6 +9,9 @@ import org.w3c.dom.Element;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class MouseWheelCommand extends AbstractCommand {
+	
+	public MouseWheelCommand() {
+	}
 
 	public MouseWheelCommand(int wheelValue) {
 		mWheelValue = wheelValue;
@@ -40,14 +43,13 @@ public class MouseWheelCommand extends AbstractCommand {
 	}
 
 	@Override
-	public String getCommandType() {
-		return "MouseWheelCommand";
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
 	@Override
-	public ICommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "MouseWheelCommand";
 	}
 
 	@Override

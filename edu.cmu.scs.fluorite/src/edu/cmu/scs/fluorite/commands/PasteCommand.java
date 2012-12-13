@@ -8,6 +8,9 @@ import org.w3c.dom.Element;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class PasteCommand extends AbstractCommand {
+	
+	public PasteCommand() {
+	}
 
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
@@ -27,13 +30,13 @@ public class PasteCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "PasteCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public ICommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "PasteCommand";
 	}
 
 	public String getName() {

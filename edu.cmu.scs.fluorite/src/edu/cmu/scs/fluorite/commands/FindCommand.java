@@ -1,9 +1,7 @@
 package edu.cmu.scs.fluorite.commands;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.jface.text.IFindReplaceTargetExtension;
@@ -281,6 +279,11 @@ public class FindCommand extends AbstractCommand {
 		return attrMap;
 	}
 
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
+	}
+
 	public Map<String, String> getDataMap() {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		if (mSearchString != null)
@@ -293,66 +296,6 @@ public class FindCommand extends AbstractCommand {
 
 	public String getCommandType() {
 		return "FindCommand";
-	}
-
-	public AbstractCommand createFrom(Element commandElement) {
-		Map<String, String> attrMap = new HashMap<String, String>();
-		Set<String> attrKeys = new HashSet<String>();
-		attrKeys.add(XML_Forward_Attr);
-		attrKeys.add(XML_CaseSensitive_Attr);
-		attrKeys.add(XML_RegExp_Attr);
-		attrKeys.add(XML_MatchWord_Attr);
-		attrKeys.add(XML_ReplaceAll_Attr);
-		attrKeys.add(XML_WrapSearch_Attr);
-		attrKeys.add(XML_SelectionScope_Attr);
-		// attrKeys.add(XML_FindAfterReplace_Attr);
-
-		Map<String, String> dataMap = new HashMap<String, String>();
-		Set<String> dataKeys = new HashSet<String>();
-		dataKeys.add(XML_SearchString_Tag);
-		dataKeys.add(XML_ReplaceString_Tag);
-
-		Utilities.getCommandData(commandElement, attrKeys, dataKeys, attrMap,
-				dataMap);
-
-		FindCommand newCommand = new FindCommand(
-				dataMap.get(XML_SearchString_Tag));
-		String value = attrMap.get(XML_Forward_Attr);
-		if (value != null) {
-			newCommand.mSearchForward = Boolean.parseBoolean(value);
-		}
-		value = attrMap.get(XML_CaseSensitive_Attr);
-		if (value != null) {
-			newCommand.mCaseSensitive = Boolean.parseBoolean(value);
-		}
-		value = attrMap.get(XML_MatchWord_Attr);
-		if (value != null) {
-			newCommand.mMatchWholeWord = Boolean.parseBoolean(value);
-		}
-		value = attrMap.get(XML_RegExp_Attr);
-		if (value != null) {
-			newCommand.mRegExpMode = Boolean.parseBoolean(value);
-		}
-		value = attrMap.get(XML_ReplaceAll_Attr);
-		if (value != null) {
-			newCommand.mReplaceAll = Boolean.parseBoolean(value);
-		}
-		newCommand.mReplaceString = dataMap.get(XML_ReplaceString_Tag);
-		// value=attrMap.get(XML_FindAfterReplace_Attr);
-		// if (value!=null)
-		// {
-		// newCommand.mFindAfterReplace=Boolean.parseBoolean(value);
-		// }
-		value = attrMap.get(XML_SelectionScope_Attr);
-		if (value != null) {
-			newCommand.mScopeIsSelection = Boolean.parseBoolean(value);
-		}
-		value = attrMap.get(XML_WrapSearch_Attr);
-		if (value != null) {
-			newCommand.mWrapSearch = Boolean.parseBoolean(value);
-		}
-
-		return newCommand;
 	}
 
 	public void setSearchForward(boolean forward) {

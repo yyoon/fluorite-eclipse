@@ -9,6 +9,9 @@ import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class CutCommand extends AbstractCommand {
 
+	public CutCommand() {
+	}
+	
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
 		return false;
@@ -27,13 +30,13 @@ public class CutCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "CutCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public ICommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "CutCommand";
 	}
 
 	public String getName() {

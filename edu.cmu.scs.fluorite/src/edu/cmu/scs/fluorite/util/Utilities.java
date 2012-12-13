@@ -504,7 +504,7 @@ public class Utilities {
 		return target;
 	}
 
-	public static String persistCommand(String type, Map<String, String> attrs,
+	public static String persistCommand(Map<String, String> attrs,
 			Map<String, String> data, ICommand command) {
 		StringBuffer buf = new StringBuffer();
 

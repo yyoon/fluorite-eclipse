@@ -11,6 +11,9 @@ import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.util.Utilities;
 
 public class MoveCaretCommand extends AbstractCommand {
+	
+	public MoveCaretCommand() {
+	}
 
 	public MoveCaretCommand(int caretOffset, int docOffset) {
 		mCaretOffset = caretOffset;
@@ -46,13 +49,13 @@ public class MoveCaretCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "MoveCaretCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public AbstractCommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "MoveCaretCommand";
 	}
 
 	public String getName() {

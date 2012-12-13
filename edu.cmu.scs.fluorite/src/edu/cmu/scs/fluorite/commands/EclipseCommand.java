@@ -19,7 +19,7 @@ import edu.cmu.scs.fluorite.util.EventLoggerConsole;
 public class EclipseCommand extends AbstractCommand {
 
 	public static final String XML_ID_ATTR = "commandID";
-
+	
 	public EclipseCommand(String commandId, int repeatCount) {
 		mCommandId = commandId;
 		mRepeatCount = repeatCount;
@@ -92,14 +92,13 @@ public class EclipseCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "EclipseCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public AbstractCommand createFrom(Element commandElement) {
-		String commandID = commandElement.getAttribute(XML_ID_ATTR);
-		EclipseCommand newCommand = new EclipseCommand(commandID);
-		return newCommand;
+	public String getCommandType() {
+		return "EclipseCommand";
 	}
 
 	public String getDescription() {

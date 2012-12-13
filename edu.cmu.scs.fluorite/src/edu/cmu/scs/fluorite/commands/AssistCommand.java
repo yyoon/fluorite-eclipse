@@ -22,6 +22,14 @@ public class AssistCommand extends AbstractCommand {
 	private StartEndType mStartEndType;
 	private boolean mAutoActivated;
 	private String mContext;
+	
+	public AssistCommand() {
+	}
+
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
+	}
 
 	public AssistCommand(AssistType assistType, StartEndType startEndType,
 			boolean autoActivated, String context) {
@@ -60,11 +68,6 @@ public class AssistCommand extends AbstractCommand {
 
 	public String getCommandType() {
 		return "AssistCommand";
-	}
-
-	public ICommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public String getName() {

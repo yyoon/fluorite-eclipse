@@ -8,6 +8,9 @@ import org.w3c.dom.Element;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class RedoCommand extends AbstractCommand {
+	
+	public RedoCommand() {
+	}
 
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
@@ -27,13 +30,13 @@ public class RedoCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "RedoCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public ICommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "RedoCommand";
 	}
 
 	public String getName() {

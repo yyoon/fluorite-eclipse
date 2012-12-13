@@ -9,6 +9,9 @@ import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class UndoCommand extends AbstractCommand {
 
+	public UndoCommand() {
+	}
+	
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
 		return false;
@@ -27,13 +30,13 @@ public class UndoCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "UndoCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public ICommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "UndoCommand";
 	}
 
 	public String getName() {

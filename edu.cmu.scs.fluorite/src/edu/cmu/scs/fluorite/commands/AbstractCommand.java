@@ -6,6 +6,7 @@ import java.util.Set;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -17,6 +18,7 @@ import edu.cmu.scs.fluorite.util.Utilities;
 public abstract class AbstractCommand implements
 		edu.cmu.scs.fluorite.commands.ICommand {
 
+	private static boolean incrementCommandID = true;
 	private static int currentCommandID = -1;
 
 	private static Set<ICommandIndexListener> commandIndexListeners = new HashSet<ICommandIndexListener>();
@@ -36,12 +38,22 @@ public abstract class AbstractCommand implements
 	public static int getCurrentCommandID() {
 		return currentCommandID;
 	}
+	
+	public static void setIncrementCommandID(boolean state) {
+		incrementCommandID = state;
+	}
+	
+	public static boolean getIncrementCommandID() {
+		return incrementCommandID;
+	}
 
 	public AbstractCommand() {
-		mRepeatCount = 1;
-		mCommandIndex = ++currentCommandID;
-
-		fireCommandIndexChanged();
+		if (getIncrementCommandID()) {
+			mRepeatCount = 1;
+			mCommandIndex = ++currentCommandID;
+	
+			fireCommandIndexChanged();
+		}
 
 		try {
 			if (Activator.getDefault().getPreferenceStore()
@@ -82,13 +94,51 @@ public abstract class AbstractCommand implements
 	private int mBottomLineNumber;
 
 	public String persist() {
-		return Utilities.persistCommand(getCommandType(), getAttributesMap(),
-				getDataMap(), this);
+		return Utilities.persistCommand(getAttributesMap(), getDataMap(), this);
 	}
 
 	public void persist(Document doc, Element commandElement) {
 		Utilities.persistCommand(doc, commandElement, getCommandType(),
 				getAttributesMap(), getDataMap(), this);
+	}
+
+	@Override
+	public void createFrom(Element commandElement) {
+		if (commandElement == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		Attr attr = null;
+		
+		if ((attr = commandElement.getAttributeNode("__id")) != null) {
+			mCommandIndex = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("timestamp")) != null) {
+			mTimestamp = Long.parseLong(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("repeat")) != null) {
+			mRepeatCount = Integer.parseInt(attr.getValue());
+		}
+		else {
+			mRepeatCount = 1;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("timestamp2")) != null) {
+			mTimestamp2 = Long.parseLong(attr.getValue());
+		}
+		
+		mTopBottomLinesRecorded = false;
+		if ((attr = commandElement.getAttributeNode("topLine")) != null) {
+			mTopLineNumber = Integer.parseInt(attr.getValue());
+			mTopBottomLinesRecorded = true;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("bottomLine")) != null) {
+			mBottomLineNumber = Integer.parseInt(attr.getValue());
+			mTopBottomLinesRecorded = true;
+		}
 	}
 
 	public void setTimestamp(long timestamp) {

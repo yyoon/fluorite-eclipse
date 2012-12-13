@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Fluorite Event Logger for Eclipse
 Bundle-SymbolicName: edu.cmu.scs.fluorite;singleton:=true
-Bundle-Version: 0.5.2.qualifier
+Bundle-Version: 0.5.3.qualifier
 Bundle-Activator: edu.cmu.scs.fluorite.plugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.debug.core,
  org.eclipse.jdt.core,
- org.eclipse.swt
+ org.eclipse.swt,
+ org.junit
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: edu.cmu.scs.fluorite.jar

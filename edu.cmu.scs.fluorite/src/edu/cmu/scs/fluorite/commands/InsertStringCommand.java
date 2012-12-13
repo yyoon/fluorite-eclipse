@@ -9,7 +9,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.ui.IEditorPart;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.util.Utilities;
@@ -137,21 +136,13 @@ public class InsertStringCommand extends AbstractCommand {
 		return dataMap;
 	}
 
-	public String getCommandType() {
-		return "InsertStringCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public AbstractCommand createFrom(Element commandElement) {
-		NodeList children = commandElement.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			if (children.item(i).getNodeName().equals(XML_Data_Tag)) {
-				String data = children.item(i).getTextContent();
-				InsertStringCommand newCommand = new InsertStringCommand(data);
-				return newCommand;
-			}
-		}
-
-		return new InsertStringCommand();
+	public String getCommandType() {
+		return "InsertStringCommand";
 	}
 
 	public String getDescription() {

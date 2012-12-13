@@ -8,6 +8,9 @@ import org.w3c.dom.Element;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class CopyCommand extends AbstractCommand {
+	
+	public CopyCommand() {
+	}
 
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
@@ -27,13 +30,13 @@ public class CopyCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "CopyCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public ICommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "CopyCommand";
 	}
 
 	public String getName() {

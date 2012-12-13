@@ -10,6 +10,9 @@ import edu.cmu.scs.fluorite.dialogs.AddAnnotationDialog;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class AnnotateCommand extends AbstractCommand {
+	
+	public AnnotateCommand() {
+	}
 
 	public AnnotateCommand(int id, String comment) {
 		mId = id;
@@ -18,6 +21,22 @@ public class AnnotateCommand extends AbstractCommand {
 
 	private int mId;
 	private String mComment;
+
+	public int getId() {
+		return mId;
+	}
+
+	public void setId(int id) {
+		this.mId = id;
+	}
+
+	public String getmComment() {
+		return mComment;
+	}
+
+	public void setmComment(String mComment) {
+		this.mComment = mComment;
+	}
 
 	public boolean execute(IEditorPart target) {
 		// TODO Auto-generated method stub
@@ -42,6 +61,11 @@ public class AnnotateCommand extends AbstractCommand {
 		return dataMap;
 	}
 
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
+	}
+
 	public String getCommandType() {
 		return "Annotation";
 	}
@@ -61,11 +85,6 @@ public class AnnotateCommand extends AbstractCommand {
 			selectionString = "Cancel";
 		}
 		return selectionString;
-	}
-
-	public AbstractCommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public String getName() {

@@ -1,0 +1,80 @@
+<Events startTimestamp="1354611081084" logVersion="0.5.2.qualifier" xml:space="preserve">
+  <Command __id="0" _type="FileOpenCommand" docASTNodeCount="36" docActiveCodeLength="226" docExpressionCount="18" docLength="278" projectName="HelloWorld" timestamp="31">
+    <snapshot><![CDATA[package helloworld;
+
+public class HelloWorld {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System.out.println("Hello, world!");
+		System.out.println("Hello, Charlie!");
+	}
+	
+	public void foo() {
+		// Just a test method..
+		// 
+	}
+
+}
+]]></snapshot>
+    <filePath><![CDATA[D:\Programming\RuntimeWorkspaces\runtime-Azurite\HelloWorld\src\helloworld\HelloWorld.java]]></filePath>
+  </Command>
+  <Command __id="1" _type="MoveCaretCommand" caretOffset="260" docOffset="260" timestamp="160" />
+  <Command __id="2" _type="MoveCaretCommand" caretOffset="267" docOffset="267" timestamp="776" />
+  <DocumentChange __id="3" _type="Insert" docASTNodeCount="36" docActiveCodeLength="226" docExpressionCount="18" docLength="371" length="93" offset="267" repeat="93" timestamp="1604" timestamp2="4116">
+    <text><![CDATA[askldjf;alksjd;flkjas;ldkfj;laskdjf;alksjd;lfkjasdlkfjal;skdf;lakjsd;flkasjdflkja;sldjflaksjf]]></text>
+  </DocumentChange>
+  <Command __id="4" _type="InsertStringCommand" repeat="93" timestamp="1612" timestamp2="4127">
+    <data><![CDATA[askldjf;alksjd;flkjas;ldkfj;laskdjf;alksjd;lfkjasdlkfjal;skdf;lakjsd;flkasjdflkja;sldjflaksjf]]></data>
+  </Command>
+  <Command __id="189" _type="SelectTextCommand" caretOffset="310" end="310" start="296" timestamp="6818" />
+  <DocumentChange __id="190" _type="Delete" docASTNodeCount="36" docActiveCodeLength="226" docExpressionCount="18" docLength="357" endLine="14" length="14" offset="296" startLine="14" timestamp="7524">
+    <text><![CDATA[askdjf;alksjd;]]></text>
+  </DocumentChange>
+  <Command __id="191" _type="EclipseCommand" commandID="org.eclipse.ui.edit.delete" timestamp="7552" />
+  <Command __id="192" _type="MoveCaretCommand" caretOffset="346" docOffset="346" timestamp="31077" />
+  <DocumentChange __id="193" _type="Insert" docASTNodeCount="36" docActiveCodeLength="230" docExpressionCount="18" docLength="364" length="7" offset="346" repeat="4" timestamp="32087" timestamp2="32684">
+    <text><![CDATA[
+		// ]]></text>
+  </DocumentChange>
+  <Command __id="194" _type="InsertStringCommand" timestamp="32104" timestamp2="32104">
+    <data><![CDATA[]]></data>
+  </Command>
+  <Command __id="196" _type="InsertStringCommand" repeat="3" timestamp="32195" timestamp2="32690">
+    <data><![CDATA[// ]]></data>
+  </Command>
+  <DocumentChange __id="201" _type="Insert" docASTNodeCount="36" docActiveCodeLength="230" docExpressionCount="18" docLength="380" length="16" offset="353" timestamp="38985">
+    <text><![CDATA[myFontSize = 12;]]></text>
+  </DocumentChange>
+  <Command __id="202" _type="PasteCommand" timestamp="39005" />
+  <Command __id="203" _type="EclipseCommand" commandID="eventLogger.styledTextCommand.COLUMN_PREVIOUS" repeat="14" timestamp="43043" timestamp2="43898" />
+  <Command __id="217" _type="EclipseCommand" commandID="org.eclipse.ui.edit.text.select.wordNext" timestamp="44346" />
+  <DocumentChange __id="218" _type="Replace" docASTNodeCount="36" docActiveCodeLength="230" docExpressionCount="18" docLength="385" endLine="15" insertionLength="9" int_docASTNodeCount="36" int_docActiveCodeLength="230" int_docExpressionCount="18" int_docLength="376" length="4" offset="355" startLine="15" timestamp="44850">
+    <insertedText><![CDATA[Rectangle]]></insertedText>
+    <deletedText><![CDATA[Font]]></deletedText>
+  </DocumentChange>
+  <Command __id="219" _type="PasteCommand" timestamp="44859" />
+  <Command __id="220" _type="EclipseCommand" commandID="org.eclipse.ui.edit.text.goto.lineStart" timestamp="48960" />
+  <Command __id="221" _type="EclipseCommand" commandID="org.eclipse.ui.edit.text.goto.wordNext" timestamp="49297" />
+  <Command __id="222" _type="EclipseCommand" commandID="eventLogger.styledTextCommand.COLUMN_NEXT" repeat="2" timestamp="50354" timestamp2="50458" />
+  <Command __id="224" _type="EclipseCommand" commandID="org.eclipse.ui.edit.text.select.wordNext" repeat="2" timestamp="50807" timestamp2="51007" />
+  <Command __id="226" _type="EclipseCommand" commandID="eventLogger.styledTextCommand.SELECT_COLUMN_PREVIOUS" timestamp="51410" />
+  <DocumentChange __id="227" _type="Replace" docASTNodeCount="36" docActiveCodeLength="230" docExpressionCount="18" docLength="382" endLine="15" insertionLength="8" int_docASTNodeCount="36" int_docActiveCodeLength="230" int_docExpressionCount="18" int_docLength="374" length="11" offset="357" startLine="15" timestamp="51787">
+    <insertedText><![CDATA[gionArea]]></insertedText>
+    <deletedText><![CDATA[ctangleSize]]></deletedText>
+  </DocumentChange>
+  <Command __id="228" _type="PasteCommand" timestamp="51800" />
+  <Command __id="229" _type="EclipseCommand" commandID="org.eclipse.ui.edit.text.select.wordPrevious" timestamp="53873" />
+  <DocumentChange __id="230" _type="Replace" docASTNodeCount="36" docActiveCodeLength="230" docExpressionCount="18" docLength="383" endLine="15" insertionLength="5" int_docASTNodeCount="36" int_docActiveCodeLength="230" int_docExpressionCount="18" int_docLength="378" length="4" offset="361" startLine="15" timestamp="55063">
+    <insertedText><![CDATA[Space]]></insertedText>
+    <deletedText><![CDATA[Area]]></deletedText>
+  </DocumentChange>
+  <Command __id="231" _type="PasteCommand" timestamp="55081" />
+  <DocumentChange __id="232" _type="Replace" docASTNodeCount="36" docActiveCodeLength="230" docExpressionCount="18" docLength="380" endLine="15" insertionLength="8" int_docASTNodeCount="36" int_docActiveCodeLength="230" int_docExpressionCount="18" int_docLength="372" length="11" offset="355" startLine="15" timestamp="83970">
+    <insertedText><![CDATA[FontSize]]></insertedText>
+    <deletedText><![CDATA[RegionSpace]]></deletedText>
+  </DocumentChange>
+  <Command __id="233" _type="MoveCaretCommand" caretOffset="380" docOffset="380" timestamp="91769" />
+</Events>

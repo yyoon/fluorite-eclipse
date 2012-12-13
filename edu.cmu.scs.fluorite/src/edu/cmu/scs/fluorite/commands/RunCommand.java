@@ -10,6 +10,9 @@ import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class RunCommand extends AbstractCommand {
 
+	public RunCommand() {
+	}
+	
 	public RunCommand(boolean debug, boolean terminate, String projectName) {
 		mDebug = debug;
 		mTerminate = terminate;
@@ -43,13 +46,13 @@ public class RunCommand extends AbstractCommand {
 		return null;
 	}
 
-	public String getCommandType() {
-		return "RunCommand";
+	@Override
+	public void createFrom(Element commandElement) {
+		throw new RuntimeException("not implemented");
 	}
 
-	public AbstractCommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "RunCommand";
 	}
 
 	public String getName() {

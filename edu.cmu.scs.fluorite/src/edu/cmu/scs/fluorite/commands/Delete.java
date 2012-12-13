@@ -6,11 +6,17 @@ import java.util.Map;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class Delete extends BaseDocumentChangeEvent {
+	
+	public Delete() {
+	}
 
 	public Delete(int offset, int length, int startLine, int endLine,
 			String text, IDocument document) {
@@ -71,13 +77,41 @@ public class Delete extends BaseDocumentChangeEvent {
 		return dataMap;
 	}
 
-	public String getCommandType() {
-		return "Delete";
+	@Override
+	public void createFrom(Element commandElement) {
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		NodeList nodeList = null;
+		
+		if ((attr = commandElement.getAttributeNode("offset")) != null) {
+			mOffset = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("length")) != null) {
+			mLength = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("startLine")) != null) {
+			mStartLine = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("endLine")) != null) {
+			mEndLine = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("endLine")) != null) {
+			mEndLine = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((nodeList = commandElement.getElementsByTagName("text")).getLength() > 0) {
+			Node textNode = nodeList.item(0);
+			mText = normalizeText(textNode.getTextContent(), mLength);
+		}
 	}
 
-	public AbstractCommand createFrom(Element commandElement) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getCommandType() {
+		return "Delete";
 	}
 
 	public String getName() {

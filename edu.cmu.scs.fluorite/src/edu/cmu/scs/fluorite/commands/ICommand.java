@@ -15,13 +15,13 @@ public interface ICommand {
 
 	public void persist(Document doc, Element commandElement);
 
+	public void createFrom(Element commandElement);
+
 	public Map<String, String> getAttributesMap();
 
 	public Map<String, String> getDataMap();
 
 	public String getCommandType();
-
-	public ICommand createFrom(Element commandElement);
 
 	public String getName();
 

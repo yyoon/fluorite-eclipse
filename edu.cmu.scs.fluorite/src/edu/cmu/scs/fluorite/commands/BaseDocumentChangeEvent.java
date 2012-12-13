@@ -9,6 +9,8 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.IDocument;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.visitors.ExpressionCountVisitor;
 import edu.cmu.scs.fluorite.visitors.NodeCountVisitor;
@@ -64,6 +66,46 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 		mNumericalValues.put("docExpressionCount", ecVisitor.getCount());
 	}
 	
+	@Override
+	public void createFrom(Element commandElement) {
+		super.createFrom(commandElement);
+		
+		mNumericalValues = new HashMap<String, Integer>();
+		
+		Attr attr = null;
+		
+		if ((attr = commandElement.getAttributeNode("docLength")) != null) {
+			mNumericalValues.put("docLength", Integer.parseInt(attr.getValue()));
+		}
+		
+		if ((attr = commandElement.getAttributeNode("docActiveCodeLength")) != null) {
+			mNumericalValues.put("docActiveCodeLength", Integer.parseInt(attr.getValue()));
+		}
+		
+		if ((attr = commandElement.getAttributeNode("docASTNodeCount")) != null) {
+			mNumericalValues.put("docASTNodeCount", Integer.parseInt(attr.getValue()));
+		}
+		
+		if ((attr = commandElement.getAttributeNode("docExpressionCount")) != null) {
+			mNumericalValues.put("docExpressionCount", Integer.parseInt(attr.getValue()));
+		}
+		
+		if (mNumericalValues.isEmpty()) {
+			mNumericalValues = null;
+		}
+	}
+	
+	protected String normalizeText(String text, int desiredLength) {
+		if (text.length() != desiredLength) {
+			String temp = text.replace("\n", "\r\n");
+			if (temp.length() == desiredLength) {
+				text = temp;
+			}
+		}
+		
+		return text;
+	}
+
 	public abstract void applyToDocument(IDocument doc);
 
 }
