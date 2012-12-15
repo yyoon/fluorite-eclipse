@@ -103,6 +103,13 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 			}
 		}
 		
+		if (text.length() > desiredLength) {
+			text = text.substring(0, desiredLength);
+		}
+		while (text.length() < desiredLength) {
+			text = text + "-";
+		}
+		
 		return text;
 	}
 
