@@ -71,6 +71,7 @@
                label="Fluorite Toolbar">
             <command
                   commandId="edu.cmu.scs.fluorite.annotateCommand"
+                  icon="icons/annotation.png"
                   style="push">
             </command>
          </toolbar>
