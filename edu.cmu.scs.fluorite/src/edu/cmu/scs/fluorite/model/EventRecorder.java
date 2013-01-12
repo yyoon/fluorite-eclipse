@@ -240,6 +240,12 @@ public class EventRecorder {
 		
 		mLastFiredDocumentChange = docChange;
 	}
+	
+	public void fireDocumentChangeUpdatedEvent(BaseDocumentChangeEvent docChange) {
+		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
+			((DocumentChangeListener)listenerObj).documentChangeUpdated(docChange);
+		}
+	}
 
 	public void addListeners() {
 		addListeners(Utilities.getActiveEditor());
@@ -549,15 +555,21 @@ public class EventRecorder {
 		newCommand.setTimestamp(timestamp);
 		newCommand.setTimestamp2(timestamp);
 
-		final boolean isDocChange = (newCommand instanceof BaseDocumentChangeEvent);
-		final LinkedList<ICommand> commands = isDocChange ? mDocumentChangeCommands : mNormalCommands;
+		final boolean isNewCmdDocChange = (newCommand instanceof BaseDocumentChangeEvent);
+		final LinkedList<ICommand> commands = isNewCmdDocChange ? mDocumentChangeCommands : mNormalCommands;
 
 		boolean combined = false;
 		final ICommand lastCommand = commands.size() > 0 ? commands.get(commands.size() - 1) : null;
+		final boolean isLastCmdDocChange = (lastCommand instanceof BaseDocumentChangeEvent);
 
 		// See if combining with previous command is possible .
-		if (lastCommand != null && isCombineEnabled(newCommand, lastCommand, isDocChange)) {
+		if (lastCommand != null && isCombineEnabled(newCommand, lastCommand, isNewCmdDocChange)) {
 			combined = lastCommand.combineWith(newCommand);
+		}
+		
+		// If combined, fire the updated event.
+		if (combined && isLastCmdDocChange) {
+			fireDocumentChangeUpdatedEvent((BaseDocumentChangeEvent)lastCommand);
 		}
 
 		// If combining is failed, just add it.
@@ -568,7 +580,7 @@ public class EventRecorder {
 			if (newCommand instanceof BaseDocumentChangeEvent && !(newCommand instanceof FileOpenCommand)) {
 				fireDocumentChangedEvent((BaseDocumentChangeEvent)newCommand);
 				
-				if (lastCommand instanceof BaseDocumentChangeEvent && lastCommand != mLastFiredDocumentChange) {
+				if (isLastCmdDocChange && lastCommand != mLastFiredDocumentChange) {
 					fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent)lastCommand);
 				}
 			}
@@ -595,7 +607,7 @@ public class EventRecorder {
 		
 		// Deal with timer.
 		// TODO Refactor!! maybe use State pattern or something, using inner classes.
-		if (isDocChange) {
+		if (isNewCmdDocChange) {
 			if (mDocChangeTimerTask != null) { mDocChangeTimerTask.cancel(); }
 			
 			mDocChangeTimerTask = new TimerTask() {

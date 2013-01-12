@@ -19,5 +19,10 @@ public interface DocumentChangeListener {
 	 * Fired when a new documentChange event was recorded and its values are fixed.
 	 */
 	public void documentChangeFinalized(BaseDocumentChangeEvent docChange);
+	
+	/**
+	 * Fired when a documentChange event was updated (due to combining).
+	 */
+	public void documentChangeUpdated(BaseDocumentChangeEvent docChange);
 
 }
