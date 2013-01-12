@@ -234,7 +234,35 @@ public class Replace extends BaseDocumentChangeEvent {
 
 	@Override
 	public boolean combine(ICommand anotherCommand) {
-		return false;
+		if (!(anotherCommand instanceof Insert)) {
+			return false;
+		}
+
+		Insert nextCommand = (Insert) anotherCommand;
+
+		if (nextCommand.getOffset() < getOffset()
+				|| nextCommand.getOffset() > getOffset() + getInsertionLength()) {
+			return false;
+		}
+
+		if (nextCommand.getText() == null && getInsertedText() != null
+				|| nextCommand.getText() != null && getInsertedText() == null) {
+			return false;
+		}
+
+		if (getInsertedText() != null) {
+			mInsertedText = getInsertedText().substring(0,
+					nextCommand.getOffset() - getOffset())
+					+ nextCommand.getText()
+					+ getInsertedText()
+							.substring(nextCommand.getOffset() - getOffset());
+		}
+
+		mInsertionLength += nextCommand.getLength();
+
+		replaceNumericalValues(nextCommand);
+
+		return true;
 	}
 
 	public int getInsertionLength() {
