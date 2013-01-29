@@ -47,18 +47,26 @@ public class AddAnnotationDialog extends Dialog {
 		createButton(parent, DEBUGGING, "Debugging", false);
 		createButton(parent, OTHER, "Other", true);
 		createButton(parent, CANCEL, "Cancel", false);
+		
+		// Modify the parent's layout
+		GridLayout gridLayout = new GridLayout(3, true);
+		parent.setLayout(gridLayout);
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText("Add annotation");
+		getShell().setText("Add Annotation to the Log File");
 
 		Composite comp = new Composite(parent, SWT.NONE);
 		comp.setLayout(new GridLayout());
 		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 		Label label = new Label(comp, SWT.NONE);
-		label.setText("Please describe the intention of your recent backtracking:");
+		StringBuffer msg = new StringBuffer();
+		msg.append("Please describe the intention of your recent backtracking.");
+		msg.append("\n\nIf one of the buttons below describes your situation, you can simply click the button.");
+		msg.append("\nOtherwise, please write a brief description in the textbox and click \"Other\".");
+		label.setText(msg.toString());
 
 		this.textComment = new Text(comp, SWT.BORDER);
 		this.textComment.setSize(200, -1);

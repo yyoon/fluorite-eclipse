@@ -15,7 +15,7 @@
             defaultHandler="edu.cmu.scs.fluorite.ui.handlers.AnnotateCommandHandler"
             description="Annotate current intention"
             id="edu.cmu.scs.fluorite.annotateCommand"
-            name="Annotate">
+            name="Annotate Log">
       </command>
       <command
             description="View the last recorded log file in xml format"
@@ -72,9 +72,25 @@
             <command
                   commandId="edu.cmu.scs.fluorite.annotateCommand"
                   icon="icons/annotation.png"
-                  style="push">
+                  style="push"
+                  tooltip="Add an annotation to describe the current backtracking intention">
             </command>
          </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="Fluorite Menu"
+               label="Fluorite"
+               mnemonic="l">
+            <command
+                  commandId="edu.cmu.scs.fluorite.annotateCommand"
+                  icon="icons/annotation.png"
+                  style="push"
+                  tooltip="Add an annotation to describe the current backtracking intention">
+            </command>
+         </menu>
       </menuContribution>
    </extension>
    <extension
