@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="EventLogger Plugin Update Site" url="http://fluorite-eclipse.googlecode.com/hg/edu.cmu.scs.fluorite.update/">
-      Fluorite Event Logger plug-in for Eclipse logs the user(developer)&apos;s
-behavior while they are editing code. The log file is automatically
-written when the Eclipse is shut down. The logged files can be
-found at &quot;.metadata/.plugins/edu.cmu.scs.fluorite/Logs&quot; under
-the current Eclipse Workspace.
-This plugin is developed based on the &quot;Practically Macro&quot; plugin
-for Eclipse, which is a macro recording plugin for Eclipse text
-editor (http://practicalmacro.sourceforge.net/).
+   <description name="Natural Programming Project" url="http://fluorite-eclipse.googlecode.com/hg/edu.cmu.scs.fluorite.update/">
+      Update site for Fluorite and Azurite plug-ins, developed at Carnegie Mellon University.
    </description>
-   <feature url="features/edu.cmu.scs.azurite_0.1.3.201301290000.jar" id="edu.cmu.scs.azurite" version="0.1.3.201301290000">
+   <feature url="features/edu.cmu.scs.azurite_0.1.4.201301291044.jar" id="edu.cmu.scs.azurite" version="0.1.4.201301291044">
       <category name="Natural Programming Project"/>
    </feature>
-   <feature url="features/edu.cmu.scs.fluorite_0.6.0.201301290000.jar" id="edu.cmu.scs.fluorite" version="0.6.0.201301290000">
+   <feature url="features/edu.cmu.scs.fluorite_0.6.1.201301291044.jar" id="edu.cmu.scs.fluorite" version="0.6.1.201301291044">
       <category name="Natural Programming Project"/>
    </feature>
    <category-def name="Natural Programming Project" label="Natural Programming Project"/>
