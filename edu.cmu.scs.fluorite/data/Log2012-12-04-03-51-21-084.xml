@@ -1,5 +1,5 @@
 <Events startTimestamp="1354611081084" logVersion="0.5.2.qualifier" xml:space="preserve">
-  <Command __id="0" _type="FileOpenCommand" docASTNodeCount="36" docActiveCodeLength="226" docExpressionCount="18" docLength="278" projectName="HelloWorld" timestamp="31">
+  <Command __id="0" _type="FileOpenCommand" docASTNodeCount="36" docActiveCodeLength="226" docExpressionCount="18" docLength="277" projectName="HelloWorld" timestamp="31">
     <snapshot><![CDATA[package helloworld;
 
 public class HelloWorld {
@@ -11,8 +11,7 @@ public class HelloWorld {
 		System.out.println("Hello, world!");
 		System.out.println("Hello, Charlie!");
 	}
-	
-	public void foo() {
+		public void foo() {
 		// Just a test method..
 		// 
 	}

@@ -106,7 +106,7 @@ public class Delete extends BaseDocumentChangeEvent {
 		
 		if ((nodeList = commandElement.getElementsByTagName("text")).getLength() > 0) {
 			Node textNode = nodeList.item(0);
-			mText = normalizeText(textNode.getTextContent(), mLength);
+			mText = checkTextValidity(textNode.getTextContent(), mLength);
 		}
 	}
 

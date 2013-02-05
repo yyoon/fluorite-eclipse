@@ -129,12 +129,12 @@ public class Replace extends BaseDocumentChangeEvent {
 		
 		if ((nodeList = commandElement.getElementsByTagName("deletedText")).getLength() > 0) {
 			Node textNode = nodeList.item(0);
-			mDeletedText = normalizeText(textNode.getTextContent(), mLength);
+			mDeletedText = checkTextValidity(textNode.getTextContent(), mLength);
 		}
 		
 		if ((nodeList = commandElement.getElementsByTagName("insertedText")).getLength() > 0) {
 			Node textNode = nodeList.item(0);
-			mInsertedText = normalizeText(textNode.getTextContent(), mInsertionLength);
+			mInsertedText = checkTextValidity(textNode.getTextContent(), mInsertionLength);
 		}
 		
 		mIntermediateNumericalValues = new HashMap<String, Integer>();

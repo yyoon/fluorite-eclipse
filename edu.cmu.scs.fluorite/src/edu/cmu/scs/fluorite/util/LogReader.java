@@ -1,6 +1,8 @@
 package edu.cmu.scs.fluorite.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class LogReader {
+	
+	public static final String CHARSET = "UTF-8";
 
 	/**
 	 * Initializes a new LogReader instance.
@@ -75,7 +79,12 @@ public class LogReader {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(logPath);
+
+			String normalizedContent = LogNormalizer
+					.getNormalizedContentFromLog(logPath);
+			InputStream is = new ByteArrayInputStream(
+					normalizedContent.getBytes(CHARSET));
+			doc = dBuilder.parse(is);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {

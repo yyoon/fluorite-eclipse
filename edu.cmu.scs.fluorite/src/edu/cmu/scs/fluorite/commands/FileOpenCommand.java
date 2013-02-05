@@ -128,7 +128,7 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 		if ((nodeList = commandElement.getElementsByTagName("snapshot")).getLength() > 0) {
 			Node textNode = nodeList.item(0);
 			value = textNode.getTextContent();
-			mSnapshot = normalizeText(value, getNumericalValues().get("docLength"));
+			mSnapshot = checkTextValidity(value, getNumericalValues().get("docLength"));
 		}
 		else {
 			mSnapshot = null;

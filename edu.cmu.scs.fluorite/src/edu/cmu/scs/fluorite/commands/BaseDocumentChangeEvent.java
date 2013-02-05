@@ -95,8 +95,8 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 		}
 	}
 	
-	protected String normalizeText(String text, int desiredLength) {
-		if (text.length() != desiredLength) {
+	protected String checkTextValidity(String text, int desiredLength) {
+/*		if (text.length() != desiredLength) {
 			String temp = text.replace("\n", "\r\n");
 			if (temp.length() == desiredLength) {
 				text = temp;
@@ -108,6 +108,10 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 		}
 		while (text.length() < desiredLength) {
 			text = text + "-";
+		}
+*/		
+		if (text.length() != desiredLength) {
+			throw new IllegalArgumentException("Text does not match the desired length!");
 		}
 		
 		return text;

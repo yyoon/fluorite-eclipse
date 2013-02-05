@@ -44,7 +44,7 @@ public class LogReaderTest {
 				+ "\t\tSystem.out.println(\"Hello, world!\");\r\n"
 				+ "\t\tSystem.out.println(\"Hello, Charlie!\");\r\n"
 				+ "\t}\r\n"
-				+ "\t\r\n"
+				+ "\t\r"
 				+ "\tpublic void foo() {\r\n"
 				+ "\t\t// Just a test method..\r\n"
 				+ "\t\t// \r\n"
