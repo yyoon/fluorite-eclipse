@@ -23,6 +23,19 @@ public class AddAnnotationDialog extends Dialog {
 	public static final int CORRECTING_LOGIC = 7;
 	public static final int TRYING_OUT_DIFFERENT_ALGORITHMS = 8;
 	public static final int DEBUGGING = 9;
+	
+	public static final String[] BUTTON_NAMES = {
+		"Cancel",
+		"Other",
+		"Backtracking",
+		"Writing new code",
+		"Tuning parameters",
+		"Learning API",
+		"Trying out UI design",
+		"Correcting Logic",
+		"Trying out different algorithms",
+		"Debugging",
+	};
 
 	private Text textComment;
 	private String comment;

@@ -72,18 +72,11 @@ public class AnnotateCommand extends AbstractCommand {
 
 	private String getSelectionString() {
 		String selectionString = "Other";
-		switch (mId) {
-		case AddAnnotationDialog.BACKTRACKING:
-			selectionString = "Backtracking";
-			break;
-
-		case AddAnnotationDialog.WRITING_NEW_CODE:
-			selectionString = "WritingNewCode";
-			break;
-
-		case AddAnnotationDialog.CANCEL:
-			selectionString = "Cancel";
+		
+		if (0 <= mId && mId <= AddAnnotationDialog.BUTTON_NAMES.length) {
+			selectionString = AddAnnotationDialog.BUTTON_NAMES[mId];
 		}
+		
 		return selectionString;
 	}
 
