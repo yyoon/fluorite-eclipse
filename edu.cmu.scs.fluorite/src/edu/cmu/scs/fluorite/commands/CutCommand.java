@@ -32,7 +32,7 @@ public class CutCommand extends AbstractCommand {
 
 	@Override
 	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
+		super.createFrom(commandElement);
 	}
 
 	public String getCommandType() {

@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
@@ -24,11 +27,6 @@ public class AssistCommand extends AbstractCommand {
 	private String mContext;
 	
 	public AssistCommand() {
-	}
-
-	@Override
-	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
 	}
 
 	public AssistCommand(AssistType assistType, StartEndType startEndType,
@@ -64,6 +62,53 @@ public class AssistCommand extends AbstractCommand {
 			dataMap.put("context", mContext);
 		}
 		return dataMap;
+	}
+
+	@Override
+	public void createFrom(Element commandElement) {
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		String value = null;
+		NodeList nodeList = null;
+		
+		if ((attr = commandElement.getAttributeNode("assist_type")) != null) {
+			try {
+				mAssistType = AssistType.valueOf(attr.getValue());
+			} catch (Exception e) {
+				mAssistType = AssistType.CONTENT_ASSIST;
+			}
+		}
+		else {
+			mAssistType = AssistType.CONTENT_ASSIST;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("start_end")) != null) {
+			try {
+				mStartEndType = StartEndType.valueOf(attr.getValue());
+			} catch (Exception e) {
+				mStartEndType = StartEndType.START;
+			}
+		}
+		else {
+			mStartEndType = StartEndType.START;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("auto_activated")) != null) {
+			mAutoActivated = Boolean.parseBoolean(attr.getValue());
+		}
+		else {
+			mAutoActivated = false;
+		}
+		
+		if ((nodeList = commandElement.getElementsByTagName("context")).getLength() > 0) {
+			Node textNode = nodeList.item(0);
+			value = textNode.getTextContent();
+			mContext = value.equals("null") ? null : value;
+		}
+		else {
+			mContext = null;
+		}
 	}
 
 	public String getCommandType() {

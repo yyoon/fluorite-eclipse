@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
@@ -48,7 +49,32 @@ public class RunCommand extends AbstractCommand {
 
 	@Override
 	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		String value = null;
+		
+		if ((attr = commandElement.getAttributeNode("type")) != null) {
+			mDebug = attr.getValue().equals("Debug");
+		}
+		else {
+			mDebug = false;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("kind")) != null) {
+			mTerminate = attr.getValue().equals("Terminate");
+		}
+		else {
+			mTerminate = false;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("projectName")) != null) {
+			value = attr.getValue();
+			mProjectName = value.equals("(Unknown)") ? null : value;
+		}
+		else {
+			mProjectName = null;
+		}
 	}
 
 	public String getCommandType() {

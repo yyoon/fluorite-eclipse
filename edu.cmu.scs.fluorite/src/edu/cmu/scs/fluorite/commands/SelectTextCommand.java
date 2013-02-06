@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
@@ -59,7 +60,21 @@ public class SelectTextCommand extends AbstractCommand {
 
 	@Override
 	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		
+		if ((attr = commandElement.getAttributeNode("start")) != null) {
+			mStart = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("end")) != null) {
+			mEnd = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode("caretOffset")) != null) {
+			mCaretOffset = Integer.parseInt(attr.getValue());
+		}
 	}
 
 	public String getCommandType() {

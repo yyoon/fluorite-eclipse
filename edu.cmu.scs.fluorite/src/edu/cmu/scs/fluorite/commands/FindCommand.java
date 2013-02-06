@@ -13,7 +13,10 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.dialogs.FindConfigureDialog;
 import edu.cmu.scs.fluorite.model.EventRecorder;
@@ -279,11 +282,6 @@ public class FindCommand extends AbstractCommand {
 		return attrMap;
 	}
 
-	@Override
-	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
-	}
-
 	public Map<String, String> getDataMap() {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		if (mSearchString != null)
@@ -292,6 +290,73 @@ public class FindCommand extends AbstractCommand {
 			dataMap.put(XML_ReplaceString_Tag, mReplaceString);
 
 		return dataMap;
+	}
+
+	@Override
+	public void createFrom(Element commandElement) {
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		String value = null;
+		NodeList nodeList = null;
+		
+		if ((attr = commandElement.getAttributeNode(XML_Selection_Attr)) != null) {
+			value = attr.getValue();
+			mSelection = value.equals("null") ? null : value;
+		}
+		else {
+			mSelection = null;
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_Offset_Attr)) != null) {
+			mOffset = Integer.parseInt(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_Forward_Attr)) != null) {
+			mSearchForward = Boolean.parseBoolean(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_CaseSensitive_Attr)) != null) {
+			mCaseSensitive = Boolean.parseBoolean(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_RegExp_Attr)) != null) {
+			mRegExpMode = Boolean.parseBoolean(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_MatchWord_Attr)) != null) {
+			mMatchWholeWord = Boolean.parseBoolean(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_ReplaceAll_Attr)) != null) {
+			mReplaceAll = Boolean.parseBoolean(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_SelectionScope_Attr)) != null) {
+			mScopeIsSelection = Boolean.parseBoolean(attr.getValue());
+		}
+		
+		if ((attr = commandElement.getAttributeNode(XML_WrapSearch_Attr)) != null) {
+			mWrapSearch = Boolean.parseBoolean(attr.getValue());
+		}
+		
+		if ((nodeList = commandElement.getElementsByTagName(XML_SearchString_Tag)).getLength() > 0) {
+			Node textNode = nodeList.item(0);
+			value = textNode.getTextContent();
+			mSearchString = value.equals("null") ? null : value;
+		}
+		else {
+			mSearchString = null;
+		}
+		
+		if ((nodeList = commandElement.getElementsByTagName(XML_ReplaceString_Tag)).getLength() > 0) {
+			Node textNode = nodeList.item(0);
+			value = textNode.getTextContent();
+			mReplaceString = value.equals("null") ? null : value;
+		}
+		else {
+			mReplaceString = null;
+		}
 	}
 
 	public String getCommandType() {

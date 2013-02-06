@@ -9,6 +9,8 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.ui.IEditorPart;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.util.Utilities;
@@ -123,9 +125,7 @@ public class InsertStringCommand extends AbstractCommand {
 	}
 
 	public Map<String, String> getAttributesMap() {
-		Map<String, String> attrMap = new HashMap<String, String>();
-		attrMap.put("timestamp2", Long.toString(getTimestamp2()));
-		return attrMap;
+		return null;
 	}
 
 	public Map<String, String> getDataMap() {
@@ -138,7 +138,19 @@ public class InsertStringCommand extends AbstractCommand {
 
 	@Override
 	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
+		super.createFrom(commandElement);
+		
+		String value = null;
+		NodeList nodeList = null;
+		
+		if ((nodeList = commandElement.getElementsByTagName(XML_Data_Tag)).getLength() > 0) {
+			Node textNode = nodeList.item(0);
+			value = textNode.getTextContent();
+			mData = value.equals("null") ? null : value;
+		}
+		else {
+			mData = null;
+		}
 	}
 
 	public String getCommandType() {

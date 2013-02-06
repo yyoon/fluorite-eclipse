@@ -1,10 +1,14 @@
 package edu.cmu.scs.fluorite.commands;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.dialogs.AddAnnotationDialog;
 import edu.cmu.scs.fluorite.model.EventRecorder;
@@ -63,7 +67,28 @@ public class AnnotateCommand extends AbstractCommand {
 
 	@Override
 	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		String value = null;
+		NodeList nodeList = null;
+		
+		if ((attr = commandElement.getAttributeNode("selection")) != null) {
+			mId = Arrays.asList(AddAnnotationDialog.BUTTON_NAMES)
+					.indexOf(attr.getValue());
+		}
+		else {
+			mId = -1;
+		}
+		
+		if ((nodeList = commandElement.getElementsByTagName("comment")).getLength() > 0) {
+			Node textNode = nodeList.item(0);
+			value = textNode.getTextContent();
+			mComment = value.equals("null") ? null : value;
+		}
+		else {
+			mComment = null;
+		}
 	}
 
 	public String getCommandType() {

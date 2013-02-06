@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ui.IEditorPart;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
@@ -44,7 +45,13 @@ public class MouseWheelCommand extends AbstractCommand {
 
 	@Override
 	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		
+		if ((attr = commandElement.getAttributeNode("wheelValue")) != null) {
+			mWheelValue = Integer.parseInt(attr.getValue());
+		}
 	}
 
 	@Override

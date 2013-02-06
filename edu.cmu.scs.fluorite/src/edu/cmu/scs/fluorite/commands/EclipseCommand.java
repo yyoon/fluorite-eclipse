@@ -12,6 +12,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
@@ -94,7 +95,15 @@ public class EclipseCommand extends AbstractCommand {
 
 	@Override
 	public void createFrom(Element commandElement) {
-		throw new RuntimeException("not implemented");
+		super.createFrom(commandElement);
+		
+		Attr attr = null;
+		String value = null;
+		
+		if ((attr = commandElement.getAttributeNode(XML_ID_ATTR)) != null) {
+			value = attr.getValue();
+			mCommandId = attr.getValue().equals("null") ? null : value;
+		}
 	}
 
 	public String getCommandType() {
