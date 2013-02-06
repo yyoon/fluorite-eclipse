@@ -9,7 +9,7 @@ public class LogNormalizerTest {
 	private static final String FILE_PATH = "data/NormalizeTest.txt";
 
 	@Test
-	public void test() {
+	public void testNormalizeCarraigeReturn() {
 		String content = LogNormalizer.readFile(FILE_PATH);
 		
 		assertEquals("Hello world!!\r\n" +
@@ -30,6 +30,18 @@ public class LogNormalizerTest {
 				"]]>&#13;<![CDATA[" +
 				"]]>\r" +
 				"lkjsldkfj\r\n",
+				normalized);
+	}
+	
+	@Test
+	public void testClosingTag() {
+		String content = "<Events something=\"something\">\r\n" +
+				"something something";
+		
+		String normalized = LogNormalizer.normalizeContent(content);
+		String lineSeparator = System.getProperty("line.separator");
+		
+		assertEquals(content + lineSeparator + "</Events>" + lineSeparator,
 				normalized);
 	}
 
