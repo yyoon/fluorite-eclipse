@@ -443,7 +443,7 @@ public class EventRecorder {
 
 		File outputFile = null;
 		try {
-			File logLocation = getLogLocation();
+			File logLocation = Utilities.getLogLocation();
 			outputFile = new File(logLocation,
 					EventRecorder.getUniqueMacroNameByTimestamp(
 							getStartTimestamp(), false));
@@ -465,17 +465,6 @@ public class EventRecorder {
 	public Events getRecordedEvents(List<ICommand> commands) {
 		return new Events(commands, "", Long.toString(getStartTimestamp()), "",
 				getStartTimestamp());
-	}
-
-	private File getLogLocation() throws Exception {
-		File logLocation = edu.cmu.scs.fluorite.plugin.Activator.getDefault()
-				.getStateLocation().append("Logs").toFile();
-		if (!logLocation.exists()) {
-			if (!logLocation.mkdirs()) {
-				throw new Exception("Could not make log directory!");
-			}
-		}
-		return logLocation;
 	}
 
 	private boolean mIncrementalFindMode = false;

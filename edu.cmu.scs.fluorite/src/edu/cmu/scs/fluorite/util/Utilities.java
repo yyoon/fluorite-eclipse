@@ -1,5 +1,6 @@
 package edu.cmu.scs.fluorite.util;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -653,4 +654,16 @@ public class Utilities {
 
 		return null;
 	}
+
+	public static File getLogLocation() throws Exception {
+		File logLocation = edu.cmu.scs.fluorite.plugin.Activator.getDefault()
+				.getStateLocation().append("Logs").toFile();
+		if (!logLocation.exists()) {
+			if (!logLocation.mkdirs()) {
+				throw new Exception("Could not make log directory!");
+			}
+		}
+		return logLocation;
+	}
+	
 }
