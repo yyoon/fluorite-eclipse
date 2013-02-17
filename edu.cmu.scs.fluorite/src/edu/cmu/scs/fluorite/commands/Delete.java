@@ -215,4 +215,23 @@ public class Delete extends BaseDocumentChangeEvent {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public double getY1() {
+		if (getNumericalValues() == null || getNumericalValues().containsKey("docLength")) {
+			return 100.0 * getOffset() / (getNumericalValues().get("docLength") + getLength()); 
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public double getY2() {
+		if (getNumericalValues() == null || getNumericalValues().containsKey("docLength")) {
+			return 100.0 * (getOffset() + getLength()) / (getNumericalValues().get("docLength") + getLength()); 
+		}
+		
+		return 100;
+	}
+	
 }

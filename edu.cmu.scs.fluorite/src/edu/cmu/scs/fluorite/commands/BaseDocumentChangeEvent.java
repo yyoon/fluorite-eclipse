@@ -118,5 +118,9 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 	}
 
 	public abstract void applyToDocument(IDocument doc);
+	
+	public abstract double getY1();
+	
+	public abstract double getY2();
 
 }

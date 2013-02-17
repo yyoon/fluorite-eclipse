@@ -178,4 +178,14 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 			doc.set(getSnapshot());
 		}
 	}
+
+	@Override
+	public double getY1() {
+		return 0;
+	}
+
+	@Override
+	public double getY2() {
+		return 100;
+	}
 }
