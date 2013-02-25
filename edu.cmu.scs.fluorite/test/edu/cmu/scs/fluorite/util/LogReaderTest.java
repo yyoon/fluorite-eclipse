@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import edu.cmu.scs.fluorite.commands.FileOpenCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
+import edu.cmu.scs.fluorite.model.Events;
 
 public class LogReaderTest {
 	
@@ -18,11 +19,19 @@ public class LogReaderTest {
 	public void setUp() {
 		reader = new LogReader();
 	}
+	
+	@Test
+	public void testTimestamp() {
+		Events events = reader.readAll("data/Log2012-12-04-03-51-21-084.xml");
+		
+		assertEquals(1354611081084L, events.getStartTimestamp());
+	}
 
 	@Test
 	public void testReadDocumentChanges() {
-		List<ICommand> documentChanges =
-				reader.readDocumentChanges("data/Log2012-12-04-03-51-21-084.xml");
+		Events events = reader.readDocumentChanges("data/Log2012-12-04-03-51-21-084.xml");
+		
+		List<ICommand> documentChanges = events.getCommands();
 		
 		assertEquals(9, documentChanges.size());
 
