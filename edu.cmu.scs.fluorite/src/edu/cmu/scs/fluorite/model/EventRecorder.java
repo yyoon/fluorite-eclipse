@@ -112,6 +112,8 @@ public class EventRecorder {
 	private ListenerList mDocumentChangeListeners;
 
 	private List<Runnable> mScheduledTasks;
+	
+	private FileSnapshotManager mFileSnapshotManager;
 
 	private static EventRecorder instance = null;
 
@@ -137,6 +139,8 @@ public class EventRecorder {
 		mTimer = new Timer();
 		
 		mScheduledTasks = new ArrayList<Runnable>();
+		
+		mFileSnapshotManager = new FileSnapshotManager();
 	}
 
 	public void setCurrentlyExecutingCommand(boolean executingCommand) {
@@ -213,6 +217,10 @@ public class EventRecorder {
 	
 	private Timer getTimer() {
 		return mTimer;
+	}
+	
+	public FileSnapshotManager getFileSnapshotManager() {
+		return mFileSnapshotManager;
 	}
 	
 	public void fireActiveFileChangedEvent(FileOpenCommand foc) {

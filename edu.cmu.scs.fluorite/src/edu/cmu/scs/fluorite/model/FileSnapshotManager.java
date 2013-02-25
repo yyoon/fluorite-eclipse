@@ -5,19 +5,9 @@ import java.util.Map;
 
 public class FileSnapshotManager {
 
-	private static FileSnapshotManager instance = null;
-
-	public static FileSnapshotManager getInstance() {
-		if (instance == null) {
-			instance = new FileSnapshotManager();
-		}
-
-		return instance;
-	}
-
 	private Map<String, String> mSnapshotMap;
 
-	private FileSnapshotManager() {
+	public FileSnapshotManager() {
 		mSnapshotMap = new HashMap<String, String>();
 	}
 

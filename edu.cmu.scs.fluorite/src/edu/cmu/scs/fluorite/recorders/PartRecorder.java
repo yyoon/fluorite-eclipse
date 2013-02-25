@@ -6,7 +6,7 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 
 import edu.cmu.scs.fluorite.commands.FileOpenCommand;
-import edu.cmu.scs.fluorite.model.FileSnapshotManager;
+import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.util.Utilities;
 
 public class PartRecorder extends BaseRecorder implements IPartListener {
@@ -48,8 +48,8 @@ public class PartRecorder extends BaseRecorder implements IPartListener {
 						.getEditor());
 
 				if (filePath != null && currentDoc != null) {
-					FileSnapshotManager.getInstance().updateSnapshot(filePath,
-							currentDoc.get());
+					EventRecorder.getInstance().getFileSnapshotManager()
+							.updateSnapshot(filePath, currentDoc.get());
 				}
 
 				getRecorder().removeListeners();
