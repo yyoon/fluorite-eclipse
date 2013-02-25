@@ -1,6 +1,8 @@
 package edu.cmu.scs.fluorite.util;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -664,6 +666,14 @@ public class Utilities {
 			}
 		}
 		return logLocation;
+	}
+
+	public static String getUniqueLogNameByTimestamp(long timestamp,
+			boolean autosave) {
+		SimpleDateFormat format = new SimpleDateFormat(
+				"yyyy-MM-dd-HH-mm-ss-SSS");
+		return "Log" + format.format(new Date(timestamp))
+				+ (autosave ? "-Autosave" : "") + ".xml";
 	}
 	
 }

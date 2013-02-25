@@ -2,10 +2,8 @@ package edu.cmu.scs.fluorite.model;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -445,7 +443,7 @@ public class EventRecorder {
 		try {
 			File logLocation = Utilities.getLogLocation();
 			outputFile = new File(logLocation,
-					EventRecorder.getUniqueMacroNameByTimestamp(
+					Utilities.getUniqueLogNameByTimestamp(
 							getStartTimestamp(), false));
 
 			FileHandler handler = new FileHandler(outputFile.getPath());
@@ -642,14 +640,6 @@ public class EventRecorder {
 
 	public long getStartTimestamp() {
 		return mStartTimestamp;
-	}
-
-	public static String getUniqueMacroNameByTimestamp(long timestamp,
-			boolean autosave) {
-		SimpleDateFormat format = new SimpleDateFormat(
-				"yyyy-MM-dd-HH-mm-ss-SSS");
-		return "Log" + format.format(new Date(timestamp))
-				+ (autosave ? "-Autosave" : "") + ".xml";
 	}
 
 	public static Document createDocument(Events events) {
