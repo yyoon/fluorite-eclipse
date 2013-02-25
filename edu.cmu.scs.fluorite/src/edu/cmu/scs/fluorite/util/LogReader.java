@@ -20,6 +20,7 @@ import edu.cmu.scs.fluorite.commands.AbstractCommand;
 import edu.cmu.scs.fluorite.commands.AnnotateCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
+import edu.cmu.scs.fluorite.model.Events;
 
 public class LogReader {
 	
@@ -38,7 +39,7 @@ public class LogReader {
 	 * @param logPath the file path to the log file.
 	 * @return deserialized list of commands
 	 */
-	public List<ICommand> readAll(String logPath) {
+	public Events readAll(String logPath) {
 		return readFilter(logPath, null);
 	}
 	
@@ -48,7 +49,7 @@ public class LogReader {
 	 * @param logPath the file path to the log file.
 	 * @return deserialized list of commands
 	 */
-	public List<ICommand> readDocumentChanges(String logPath) {
+	public Events readDocumentChanges(String logPath) {
 		return readFilter(logPath, new IFilter() {
 			@Override
 			public boolean filter(Element element) {
@@ -68,7 +69,7 @@ public class LogReader {
 	 * @return deserialized list of commands
 	 * @throws DocumentException
 	 */
-	public List<ICommand> readFilter(String logPath, IFilter filter) {
+	public Events readFilter(String logPath, IFilter filter) {
 		if (logPath == null) {
 			throw new IllegalArgumentException();
 		}
@@ -82,6 +83,10 @@ public class LogReader {
 
 			String normalizedContent = LogNormalizer
 					.getNormalizedContentFromLog(logPath);
+			if (normalizedContent == null) {
+				return null;
+			}
+			
 			InputStream is = new ByteArrayInputStream(
 					normalizedContent.getBytes(CHARSET));
 			doc = dBuilder.parse(is);
@@ -94,23 +99,38 @@ public class LogReader {
 		}
 		
         Element root = doc.getDocumentElement();
-
-        boolean prevState = AbstractCommand.getIncrementCommandID();
-        AbstractCommand.setIncrementCommandID(false);
+        long startTimestamp = -1;
         
-        for ( Node node = root.getFirstChild(); node != null; node = node.getNextSibling() ) {
-        	if (!(node instanceof Element)) { continue; }
-        
-        	Element child = (Element) node;
-        	
-        	if (filter == null || filter.filter(child)) {
-        		result.add(parse(child));
+        Attr attr = root.getAttributeNode("startTimestamp");
+        if (attr != null) {
+        	try {
+        		startTimestamp = Long.parseLong(attr.getValue());
+        	} catch (NumberFormatException e) {
+        		// Do nothing.
         	}
         }
+
+        boolean prevState = AbstractCommand.getIncrementCommandID();
+        try {
+	        AbstractCommand.setIncrementCommandID(false);
+	        
+	        for ( Node node = root.getFirstChild(); node != null; node = node.getNextSibling() ) {
+	        	if (!(node instanceof Element)) { continue; }
+	        
+	        	Element child = (Element) node;
+	        	
+	        	if (filter == null || filter.filter(child)) {
+	        		ICommand command = parse(child);
+	        		command.setSessionId(startTimestamp);
+	        		result.add(command);
+	        	}
+	        }
+        } finally {
+        	AbstractCommand.setIncrementCommandID(prevState);
+        }
         
-        AbstractCommand.setIncrementCommandID(prevState);
-        
-        return result;
+		return new Events(result, "", Long.toString(startTimestamp), "",
+				startTimestamp);
 	}
 	
 	private static boolean isCommandTyped(Element element, String typeName) {

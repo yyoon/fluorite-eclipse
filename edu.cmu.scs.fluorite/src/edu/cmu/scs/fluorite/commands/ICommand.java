@@ -42,6 +42,10 @@ public interface ICommand {
 	public void increaseRepeatCount();
 
 	public int getRepeatCount();
+	
+	public long getSessionId();
+	
+	public void setSessionId(long sessionId);
 
 	public int getCommandIndex();
 	

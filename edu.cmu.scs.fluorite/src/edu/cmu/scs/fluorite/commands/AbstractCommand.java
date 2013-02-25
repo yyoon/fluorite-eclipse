@@ -74,6 +74,8 @@ public abstract class AbstractCommand implements
 			// Maybe this is created in a JUnit test.
 			// Don't bother to add these things.
 		}
+		
+		mSessionId = EventRecorder.getInstance().getStartTimestamp();
 	}
 
 	private static void fireCommandIndexChanged() {
@@ -87,6 +89,7 @@ public abstract class AbstractCommand implements
 
 	private int mRepeatCount;
 	private int mCommandIndex;
+	private long mSessionId;
 
 	// Top Bottom Lines
 	private boolean mTopBottomLinesRecorded;
@@ -171,6 +174,14 @@ public abstract class AbstractCommand implements
 
 	public int getCommandIndex() {
 		return mCommandIndex;
+	}
+	
+	public long getSessionId() {
+		return mSessionId;
+	}
+	
+	public void setSessionId(long sessionId) {
+		mSessionId = sessionId;
 	}
 
 	public boolean areTopBottomLinesRecorded() {
