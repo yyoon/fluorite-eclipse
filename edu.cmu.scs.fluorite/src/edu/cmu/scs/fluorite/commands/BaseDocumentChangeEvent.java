@@ -22,6 +22,10 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 	protected Map<String, Integer> getNumericalValues() {
 		return mNumericalValues;
 	}
+	
+	protected void setNumericalValues(Map<String, Integer> numericalValues) {
+		mNumericalValues = numericalValues;
+	}
 
 	protected void replaceNumericalValues(BaseDocumentChangeEvent other) {
 		mNumericalValues = other.getNumericalValues();
@@ -118,6 +122,8 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 	}
 
 	public abstract void applyToDocument(IDocument doc);
+	
+	public abstract String applyToString(String original);
 	
 	public abstract double getY1();
 	

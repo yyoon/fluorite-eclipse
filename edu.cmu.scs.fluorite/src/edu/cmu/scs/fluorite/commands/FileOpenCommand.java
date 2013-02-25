@@ -179,6 +179,15 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	}
 
 	@Override
+	public String applyToString(String original) {
+		if (getSnapshot() != null) {
+			return getSnapshot();
+		} else {
+			return original;
+		}
+	}
+
+	@Override
 	public double getY1() {
 		return 0;
 	}

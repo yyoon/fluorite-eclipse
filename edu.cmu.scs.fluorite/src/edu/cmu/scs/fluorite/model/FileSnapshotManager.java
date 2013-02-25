@@ -10,6 +10,18 @@ public class FileSnapshotManager {
 	public FileSnapshotManager() {
 		mSnapshotMap = new HashMap<String, String>();
 	}
+	
+	public boolean hasFile(String fullPath) {
+		return mSnapshotMap.containsKey(fullPath);
+	}
+	
+	public String getContent(String fullPath) {
+		if (!hasFile(fullPath)) {
+			return null;
+		}
+		
+		return (String) mSnapshotMap.get(fullPath);
+	}
 
 	public boolean isSame(String fullPath, String currentContent) {
 		if (fullPath == null) {

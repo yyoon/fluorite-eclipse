@@ -279,8 +279,20 @@ public class Replace extends BaseDocumentChangeEvent {
 	}
 
 	@Override
+	public String applyToString(String original) {
+		try {
+			return original.substring(0, getOffset()) + getInsertedText()
+					+ original.substring(getOffset() + getLength());
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+		
+		return original;
+	}
+
+	@Override
 	public double getY1() {
-		if (getNumericalValues() == null || getNumericalValues().containsKey("docLength")) {
+		if (getNumericalValues() != null && getNumericalValues().containsKey("docLength")) {
 			return 100.0 * getOffset() / getNumericalValues().get("docLength"); 
 		}
 		
@@ -289,7 +301,7 @@ public class Replace extends BaseDocumentChangeEvent {
 
 	@Override
 	public double getY2() {
-		if (getNumericalValues() == null || getNumericalValues().containsKey("docLength")) {
+		if (getNumericalValues() != null && getNumericalValues().containsKey("docLength")) {
 			return 100.0 * (getOffset() + getLength()) / getNumericalValues().get("docLength"); 
 		}
 		
