@@ -46,6 +46,10 @@ public class LogNormalizer {
 	}
 
 	public static String normalizeContent(String content) {
+		if (content.trim().length() == 0) {
+			return null;
+		}
+		
 		String result = normalizeCarriageReturns(content);
 		result = fixClosingTag(result);
 		return result;
