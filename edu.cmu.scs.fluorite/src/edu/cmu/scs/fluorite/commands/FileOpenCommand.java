@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
+import edu.cmu.scs.fluorite.model.FileSnapshotManager;
 import edu.cmu.scs.fluorite.util.Utilities;
 
 public class FileOpenCommand extends BaseDocumentChangeEvent {
@@ -40,11 +41,11 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 				calcNumericalValues(content);
 
 				// Snapshot
-				if (!EventRecorder.getInstance().getFileSnapshotManager()
-						.isSame(mFilePath, content)) {
+				FileSnapshotManager snapshotManager = EventRecorder.getInstance().getFileSnapshotManager();
+				if (!snapshotManager.isSame(mFilePath, content)) {
+					mPrevSnapshot = snapshotManager.getContent(mFilePath);
 					mSnapshot = content;
-					EventRecorder.getInstance().getFileSnapshotManager()
-							.updateSnapshot(mFilePath, content);
+					snapshotManager.updateSnapshot(mFilePath, content);
 				} else {
 					mSnapshot = null;
 				}
@@ -57,6 +58,7 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	private String mFilePath;
 	private String mProjectName;
 	private String mSnapshot;
+	private String mPrevSnapshot;
 
 	public boolean execute(IEditorPart target) {
 		// Not supported yet
@@ -157,6 +159,10 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	
 	public String getSnapshot() {
 		return mSnapshot;
+	}
+	
+	public String getPrevSnapshot() {
+		return mPrevSnapshot;
 	}
 	
 	public String getFilePath() {
