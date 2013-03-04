@@ -1,6 +1,11 @@
 package edu.cmu.scs.fluorite.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -674,6 +679,34 @@ public class Utilities {
 				"yyyy-MM-dd-HH-mm-ss-SSS");
 		return "Log" + format.format(new Date(timestamp))
 				+ (autosave ? "-Autosave" : "") + ".xml";
+	}
+
+	public static String readFile(String filePath) {
+		try {
+			InputStreamReader reader = new InputStreamReader(
+					new FileInputStream(filePath), LogReader.CHARSET);
+	
+			StringBuffer buf = new StringBuffer();
+	
+			while (reader.ready()) {
+				char[] charBuf = new char[1024];
+				int count = reader.read(charBuf, 0, charBuf.length);
+	
+				buf.append(new String(charBuf, 0, count));
+			}
+	
+			reader.close();
+			
+			return buf.toString();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 }

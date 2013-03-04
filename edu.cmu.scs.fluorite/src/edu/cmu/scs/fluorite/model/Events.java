@@ -10,7 +10,6 @@ import edu.cmu.scs.fluorite.commands.ICommand;
 
 public class Events {
 	private List<ICommand> mCommands;
-	private int mSessionID = 0;
 	private long mStartTimestamp;
 
 	public Events(List<ICommand> commands, String id, String name, String desc) {
@@ -75,19 +74,6 @@ public class Events {
 	@Override
 	public int hashCode() {
 		return (int) getStartTimestamp();
-	}
-
-	public int getSessionID() {
-		return mSessionID;
-	}
-
-	public void setSessionID(int sessionID) {
-		if (mSessionID == 0)
-			mSessionID = sessionID;
-		else {
-			throw new RuntimeException("Session ID set twice. Macro: "
-					+ toString());
-		}
 	}
 
 	@Override

@@ -49,6 +49,8 @@ public interface ICommand {
 
 	public int getCommandIndex();
 	
+	public void setCommandIndex(int id);
+	
 	public boolean areTopBottomLinesRecorded();
 	
 	public int getTopLineNumber();

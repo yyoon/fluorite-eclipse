@@ -10,7 +10,7 @@ public class LogNormalizerTest {
 
 	@Test
 	public void testNormalizeCarraigeReturn() {
-		String content = LogNormalizer.readFile(FILE_PATH);
+		String content = Utilities.readFile(FILE_PATH);
 		
 		assertEquals("Hello world!!\r\n" +
 				"\r\n" +

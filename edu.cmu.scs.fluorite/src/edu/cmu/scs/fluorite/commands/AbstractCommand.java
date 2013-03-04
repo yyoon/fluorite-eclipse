@@ -176,6 +176,10 @@ public abstract class AbstractCommand implements
 		return mCommandIndex;
 	}
 	
+	public void setCommandIndex(int id) {
+		mCommandIndex = id;
+	}
+	
 	public long getSessionId() {
 		return mSessionId;
 	}

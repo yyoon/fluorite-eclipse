@@ -1,12 +1,8 @@
 package edu.cmu.scs.fluorite.util;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 
 /**
  * @author YoungSeok Yoon
@@ -32,7 +28,7 @@ public class LogNormalizer {
 	private static final String LINE_SEPERATOR = System.getProperty("line.separator");
 	
 	public static boolean normalizeLog(String logPath) {
-		String content = readFile(logPath);
+		String content = Utilities.readFile(logPath);
 		if (content == null)
 			return false;
 		
@@ -42,7 +38,7 @@ public class LogNormalizer {
 	}
 	
 	public static String getNormalizedContentFromLog(String logPath) {
-		return normalizeContent(readFile(logPath));
+		return normalizeContent(Utilities.readFile(logPath));
 	}
 
 	public static String normalizeContent(String content) {
@@ -86,34 +82,6 @@ public class LogNormalizer {
 			// Do nothing.
 			return content;
 		}
-	}
-	
-	static String readFile(String filePath) {
-		try {
-			InputStreamReader reader = new InputStreamReader(
-					new FileInputStream(filePath), LogReader.CHARSET);
-
-			StringBuffer buf = new StringBuffer();
-
-			while (reader.ready()) {
-				char[] charBuf = new char[1024];
-				int count = reader.read(charBuf, 0, charBuf.length);
-
-				buf.append(new String(charBuf, 0, count));
-			}
-
-			reader.close();
-			
-			return buf.toString();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 	
 	static boolean writeFile(String filePath, String content) {
