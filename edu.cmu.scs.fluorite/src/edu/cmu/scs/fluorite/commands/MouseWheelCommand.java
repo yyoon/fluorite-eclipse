@@ -27,8 +27,6 @@ public class MouseWheelCommand extends AbstractCommand {
 
 	@Override
 	public void dump() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -66,7 +64,6 @@ public class MouseWheelCommand extends AbstractCommand {
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

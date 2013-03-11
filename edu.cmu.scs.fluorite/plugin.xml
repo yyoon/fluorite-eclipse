@@ -100,12 +100,6 @@
             icon="icons/annotation.png">
       </image>
    </extension>
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            commandId="edu.cmu.scs.fluorite.annotateCommand">
-      </handler>
-   </extension>
 
 
 </plugin>

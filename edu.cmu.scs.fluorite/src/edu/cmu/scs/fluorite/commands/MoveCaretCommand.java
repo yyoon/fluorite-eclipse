@@ -35,8 +35,6 @@ public class MoveCaretCommand extends AbstractCommand {
 	}
 
 	public void dump() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Map<String, String> getAttributesMap() {
@@ -75,7 +73,6 @@ public class MoveCaretCommand extends AbstractCommand {
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

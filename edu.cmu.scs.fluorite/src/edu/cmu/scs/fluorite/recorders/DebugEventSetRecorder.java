@@ -60,7 +60,6 @@ public class DebugEventSetRecorder extends BaseRecorder implements
 					try {
 						attributes = config.getAttributes();
 					} catch (CoreException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 

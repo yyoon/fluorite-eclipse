@@ -58,13 +58,10 @@ public class Replace extends BaseDocumentChangeEvent {
 	private Map<String, Integer> mIntermediateNumericalValues;
 
 	public boolean execute(IEditorPart target) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public void dump() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Map<String, String> getAttributesMap() {
@@ -172,7 +169,6 @@ public class Replace extends BaseDocumentChangeEvent {
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

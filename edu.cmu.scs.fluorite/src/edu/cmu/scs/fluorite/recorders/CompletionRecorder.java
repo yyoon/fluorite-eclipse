@@ -107,7 +107,6 @@ public class CompletionRecorder extends BaseRecorder implements
 
 	public void selectionChanged(ICompletionProposal proposal,
 			boolean smartToggle) {
-		// TODO Auto-generated method stub
 
 	}
 

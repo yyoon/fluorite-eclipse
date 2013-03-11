@@ -25,13 +25,10 @@ public class RunCommand extends AbstractCommand {
 	private String mProjectName;
 
 	public boolean execute(IEditorPart target) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public void dump() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Map<String, String> getAttributesMap() {
@@ -87,7 +84,6 @@ public class RunCommand extends AbstractCommand {
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -100,7 +96,6 @@ public class RunCommand extends AbstractCommand {
 	}
 
 	public boolean combine(ICommand anotherCommand) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

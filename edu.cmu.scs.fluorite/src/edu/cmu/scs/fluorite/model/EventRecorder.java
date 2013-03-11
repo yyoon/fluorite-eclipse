@@ -664,7 +664,6 @@ public class EventRecorder {
 			return doc;
 
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		}
@@ -687,10 +686,8 @@ public class EventRecorder {
 			String xmlString = sw.toString();
 			return xmlString;
 		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		}

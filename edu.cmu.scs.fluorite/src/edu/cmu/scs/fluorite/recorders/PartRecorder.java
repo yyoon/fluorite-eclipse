@@ -65,8 +65,6 @@ public class PartRecorder extends BaseRecorder implements IPartListener {
 	}
 
 	public void partBroughtToTop(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void partClosed(IWorkbenchPart part) {
@@ -82,8 +80,6 @@ public class PartRecorder extends BaseRecorder implements IPartListener {
 	}
 
 	public void partOpened(IWorkbenchPart part) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

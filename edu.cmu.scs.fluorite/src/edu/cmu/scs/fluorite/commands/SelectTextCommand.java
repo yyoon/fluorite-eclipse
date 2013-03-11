@@ -42,8 +42,6 @@ public class SelectTextCommand extends AbstractCommand {
 	}
 
 	public void dump() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Map<String, String> getAttributesMap() {
@@ -87,7 +85,6 @@ public class SelectTextCommand extends AbstractCommand {
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

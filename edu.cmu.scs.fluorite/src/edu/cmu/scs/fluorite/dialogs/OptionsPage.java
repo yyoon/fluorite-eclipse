@@ -35,17 +35,14 @@ public class OptionsPage extends PreferencePage implements
 	private Button mLogMouseWheel;
 
 	public OptionsPage() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public OptionsPage(String title) {
 		super(title);
-		// TODO Auto-generated constructor stub
 	}
 
 	public OptionsPage(String title, ImageDescriptor image) {
 		super(title, image);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

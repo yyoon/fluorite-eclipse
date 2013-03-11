@@ -31,8 +31,6 @@ public class IDViewPart extends ViewPart implements ICommandIndexListener {
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setID(int id) {

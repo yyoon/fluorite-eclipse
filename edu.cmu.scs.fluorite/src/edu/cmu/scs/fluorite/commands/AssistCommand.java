@@ -39,12 +39,10 @@ public class AssistCommand extends AbstractCommand {
 	}
 
 	public boolean execute(IEditorPart target) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	public void dump() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -122,7 +120,6 @@ public class AssistCommand extends AbstractCommand {
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -136,7 +133,6 @@ public class AssistCommand extends AbstractCommand {
 
 	@Override
 	public boolean combine(ICommand anotherCommand) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

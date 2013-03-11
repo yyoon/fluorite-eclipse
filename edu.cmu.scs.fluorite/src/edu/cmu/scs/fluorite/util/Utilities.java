@@ -25,6 +25,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension3;
 import org.eclipse.jface.text.source.ISourceViewerExtension4;
@@ -181,6 +183,21 @@ public class Utilities {
 		return null;
 	}
 
+	public static ITextViewerExtension5 getTextViewerExtension5(
+			IEditorPart editor) {
+		if (editor == null) {
+			return null;
+		}
+
+		ITextViewer viewer = (ITextViewer) editor
+				.getAdapter(ITextOperationTarget.class);
+		if (viewer instanceof ITextViewerExtension5) {
+			return (ITextViewerExtension5) viewer;
+		}
+
+		return null;
+	}
+
 	// public static List<Command> getFillInCommands()
 	// {
 	// if (mFillInCommands.size()>0)
@@ -223,16 +240,12 @@ public class Utilities {
 						.getInt(null);
 				success = true;
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchFieldException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

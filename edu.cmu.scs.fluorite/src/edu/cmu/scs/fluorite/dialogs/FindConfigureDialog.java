@@ -249,7 +249,6 @@ public class FindConfigureDialog extends Dialog {
 				mAll.setSelection(true);
 			}
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

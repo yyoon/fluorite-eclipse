@@ -73,8 +73,6 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	}
 
 	public void dump() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Map<String, String> getAttributesMap() {
@@ -145,7 +143,6 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
