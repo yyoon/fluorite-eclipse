@@ -131,6 +131,9 @@ public abstract class AbstractCommand implements
 		if ((attr = commandElement.getAttributeNode("timestamp2")) != null) {
 			mTimestamp2 = Long.parseLong(attr.getValue());
 		}
+		else {
+			mTimestamp2 = mTimestamp;
+		}
 		
 		mTopBottomLinesRecorded = false;
 		if ((attr = commandElement.getAttributeNode("topLine")) != null) {
