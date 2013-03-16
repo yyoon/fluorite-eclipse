@@ -13,9 +13,12 @@ public class FluoriteXMLFormatter extends Formatter {
 
 	public FluoriteXMLFormatter(long startTimestamp) {
 		mStartTimestamp = startTimestamp;
+		mLogVersion = getLogVersion();
 	}
 
 	private long mStartTimestamp;
+	private String mLogVersion;
+	
 	// If this value is returned, there's something wrong with the version recognizing logic. 
 	private static final String LOG_VERSION = "0.5.0.unknown";
 	
@@ -51,7 +54,7 @@ public class FluoriteXMLFormatter extends Formatter {
 	@Override
 	public String getHead(Handler h) {
 		return "<Events startTimestamp=\"" + Long.toString(mStartTimestamp)
-				+ "\" logVersion=\"" + getLogVersion() + "\">" + Utilities.NewLine;
+				+ "\" logVersion=\"" + mLogVersion + "\">" + Utilities.NewLine;
 	}
 
 	@Override
