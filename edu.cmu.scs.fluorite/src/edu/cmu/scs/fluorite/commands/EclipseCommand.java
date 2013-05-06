@@ -21,20 +21,28 @@ public class EclipseCommand extends AbstractCommand {
 
 	public static final String XML_ID_ATTR = "commandID";
 	
-	public EclipseCommand(String commandId, int repeatCount) {
+	public EclipseCommand(String commandId, Map<String, String> parameters, int repeatCount) {
 		mCommandId = commandId;
 		mRepeatCount = repeatCount;
+		
+		mParameters = parameters != null ? new HashMap<String, String>(parameters)
+				: new HashMap<String, String>();
 	}
 
 	private String mCommandId;
 	private int mRepeatCount;
+	private Map<String, String> mParameters;
 
+	public EclipseCommand(String commandId, Map<String, String> parameters) {
+		this(commandId, parameters, 1);
+	}
+	
 	public EclipseCommand(String commandId) {
-		this(commandId, 1);
+		this(commandId, null, 1);
 	}
 
 	public EclipseCommand() {
-		// nothing to do here
+		
 	}
 
 	@SuppressWarnings("deprecation")
@@ -90,7 +98,7 @@ public class EclipseCommand extends AbstractCommand {
 	}
 
 	public Map<String, String> getDataMap() {
-		return null;
+		return mParameters;
 	}
 
 	@Override

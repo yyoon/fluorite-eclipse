@@ -1,6 +1,8 @@
 package edu.cmu.scs.fluorite.recorders;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionEvent;
@@ -49,6 +51,8 @@ public class ExecutionRecorder extends BaseRecorder implements
 		mNonRecordableCommandIds.add("eventlogger.actions.viewLastLog");
 		mNonRecordableCommandIds.add("eventlogger.actions.annotateBackward");
 		mNonRecordableCommandIds.add("eventlogger.actions.annotateForward");
+		
+		mParameters = new HashMap<String, String>();
 	}
 
 	@Override
@@ -75,11 +79,14 @@ public class ExecutionRecorder extends BaseRecorder implements
 
 	private Listener[] mPreexecuteListeners = null;
 	private Set<String> mNonRecordableCommandIds;
+	private Map<String, String> mParameters;
 
 	public void notHandled(String commandId, NotHandledException exception) {
 		getRecorder().setCurrentlyExecutingCommand(false);
 		getRecorder().endIncrementalFindMode();
 		System.out.println("not handled: " + commandId);
+		
+		mParameters.clear();
 	}
 
 	public void postExecuteFailure(String commandId,
@@ -87,7 +94,8 @@ public class ExecutionRecorder extends BaseRecorder implements
 		getRecorder().setCurrentlyExecutingCommand(false);
 		getRecorder().endIncrementalFindMode();
 		System.out.println("command failed: " + commandId);
-
+		
+		mParameters.clear();
 	}
 
 	public void postExecuteSuccess(String commandId, Object returnValue) {
@@ -151,6 +159,12 @@ public class ExecutionRecorder extends BaseRecorder implements
 			}
 		}
 		// System.out.println("preexecute: " + commandId);
+		
+		@SuppressWarnings("rawtypes")
+		Map parameterMap = event.getParameters();
+		for (Object key : parameterMap.keySet()) {
+			mParameters.put(key.toString(), parameterMap.get(key).toString());
+		}
 	}
 
 	private ICommand createCommandByEclipseCommandId(String commandId) {
@@ -165,7 +179,7 @@ public class ExecutionRecorder extends BaseRecorder implements
 		} else if (commandId.equals("org.eclipse.ui.edit.paste")) {
 			return new PasteCommand();
 		} else {
-			return new EclipseCommand(commandId);
+			return new EclipseCommand(commandId, mParameters);
 		}
 	}
 }
