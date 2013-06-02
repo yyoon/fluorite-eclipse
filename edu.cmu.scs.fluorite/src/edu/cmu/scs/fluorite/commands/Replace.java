@@ -123,6 +123,9 @@ public class Replace extends BaseDocumentChangeEvent {
 		if ((attr = commandElement.getAttributeNode("insertionLength")) != null) {
 			mInsertionLength = Integer.parseInt(attr.getValue());
 		}
+		else {
+			mInsertionLength = -1;
+		}
 		
 		if ((nodeList = commandElement.getElementsByTagName("deletedText")).getLength() > 0) {
 			Node textNode = nodeList.item(0);
@@ -131,7 +134,12 @@ public class Replace extends BaseDocumentChangeEvent {
 		
 		if ((nodeList = commandElement.getElementsByTagName("insertedText")).getLength() > 0) {
 			Node textNode = nodeList.item(0);
-			mInsertedText = checkTextValidity(textNode.getTextContent(), mInsertionLength);
+			if (mInsertionLength != -1) {
+				mInsertedText = checkTextValidity(textNode.getTextContent(), mInsertionLength);
+			}
+			else {
+				mInsertedText = textNode.getTextContent();
+			}
 		}
 		
 		mIntermediateNumericalValues = new HashMap<String, Integer>();
