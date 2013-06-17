@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -572,8 +572,10 @@ public class EventRecorder {
 			commands.add(newCommand);
 			mCommands.add(newCommand);
 			
-			if (newCommand instanceof BaseDocumentChangeEvent && !(newCommand instanceof FileOpenCommand)) {
-				fireDocumentChangedEvent((BaseDocumentChangeEvent)newCommand);
+			if (newCommand instanceof BaseDocumentChangeEvent) {
+				if (!(newCommand instanceof FileOpenCommand)) {
+					fireDocumentChangedEvent((BaseDocumentChangeEvent)newCommand);
+				}
 				
 				if (isLastCmdDocChange && lastCommand != mLastFiredDocumentChange) {
 					fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent)lastCommand);
