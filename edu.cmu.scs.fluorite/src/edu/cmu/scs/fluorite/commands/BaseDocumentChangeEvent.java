@@ -115,7 +115,15 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 		}
 */		
 		if (text.length() != desiredLength) {
-			throw new IllegalArgumentException("Text does not match the desired length!");
+			if (text.replace("\r\n", "\n").length() == desiredLength) {
+				text = text.replace("\r\n", "\n");
+			}
+			else if (text.replace("\n", "\r\n").length() == desiredLength) {
+				text = text.replace("\n", "\r\n");
+			}
+			else {
+				throw new IllegalArgumentException("Text does not match the desired length!");
+			}
 		}
 		
 		return text;

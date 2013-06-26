@@ -61,6 +61,8 @@ public class PartRecorder extends BaseRecorder implements IPartListener {
 			FileOpenCommand newFoc = new FileOpenCommand(editor);
 			getRecorder().recordCommand(newFoc);
 			getRecorder().fireActiveFileChangedEvent(newFoc);
+			
+			
 		}
 	}
 
