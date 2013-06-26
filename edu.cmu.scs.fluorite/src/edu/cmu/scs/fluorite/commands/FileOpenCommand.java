@@ -37,17 +37,20 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 				mProjectName = project.getName();
 				mFilePath = fileInput.getFile().getLocation().toOSString();
 
-				String content = Utilities.getDocument(editor).get();
-				calcNumericalValues(content);
-
-				// Snapshot
-				FileSnapshotManager snapshotManager = EventRecorder.getInstance().getFileSnapshotManager();
-				if (!snapshotManager.isSame(mFilePath, content)) {
-					mPrevSnapshot = snapshotManager.getContent(mFilePath);
-					mSnapshot = content;
-					snapshotManager.updateSnapshot(mFilePath, content);
-				} else {
-					mSnapshot = null;
+				IDocument doc = Utilities.getDocument(editor);
+				if (doc != null) {
+					String content = doc.get();
+					calcNumericalValues(content);
+	
+					// Snapshot
+					FileSnapshotManager snapshotManager = EventRecorder.getInstance().getFileSnapshotManager();
+					if (!snapshotManager.isSame(mFilePath, content)) {
+						mPrevSnapshot = snapshotManager.getContent(mFilePath);
+						mSnapshot = content;
+						snapshotManager.updateSnapshot(mFilePath, content);
+					} else {
+						mSnapshot = null;
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
