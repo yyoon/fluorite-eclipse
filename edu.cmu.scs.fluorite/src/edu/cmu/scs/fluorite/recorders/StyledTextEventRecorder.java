@@ -3,6 +3,7 @@ package edu.cmu.scs.fluorite.recorders;
 import org.eclipse.jface.bindings.Binding;
 import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -117,10 +118,19 @@ public class StyledTextEventRecorder extends BaseRecorder implements Listener {
 							.getLastSelectionStart() || styledText
 							.getSelection().y != getRecorder()
 							.getLastSelectionEnd())) {
+				
+				int start = styledText.getSelection().x;
+				int end = styledText.getSelection().y;
+				int caretOffset = styledText.getCaretOffset();
+				
+				ITextViewerExtension5 ext5 = Utilities.getTextViewerExtension5(editor);
+				int docStart = ext5.widgetOffset2ModelOffset(start);
+				int docEnd = ext5.widgetOffset2ModelOffset(end);
+				int docOffset = ext5.widgetOffset2ModelOffset(caretOffset);
+				
 				AbstractCommand command = new SelectTextCommand(
-						styledText.getSelection().x,
-						styledText.getSelection().y,
-						styledText.getCaretOffset());
+						start, end, caretOffset,
+						docStart, docEnd, docOffset);
 				getRecorder().recordCommand(command);
 			} else if (getRecorder().getLastCaretOffset() != styledText
 					.getCaretOffset()) {

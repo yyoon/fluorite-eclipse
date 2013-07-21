@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -274,6 +275,8 @@ public class EventRecorder {
 		CompletionRecorder.getInstance().addListeners(editor);
 
 		registerFindAction();
+		
+		final ITextViewerExtension5 ext5 = Utilities.getTextViewerExtension5(editor);
 
 		styledText.getDisplay().asyncExec(new Runnable() {
 			public void run() {
@@ -282,8 +285,12 @@ public class EventRecorder {
 				mLastSelectionStart = styledText.getSelection().x;
 				mLastSelectionEnd = styledText.getSelection().y;
 				if (mLastSelectionStart != mLastSelectionEnd) {
-					recordCommand(new SelectTextCommand(mLastSelectionStart,
-							mLastSelectionEnd, mLastCaretOffset));
+					int docStart = ext5.widgetOffset2ModelOffset(mLastSelectionStart);
+					int docEnd = ext5.widgetOffset2ModelOffset(mLastSelectionEnd);
+					int docOffset = ext5.widgetOffset2ModelOffset(mLastCaretOffset);
+					recordCommand(new SelectTextCommand(
+							mLastSelectionStart, mLastSelectionEnd, mLastCaretOffset,
+							docStart, docEnd, docOffset));
 				} else {
 					recordCommand(new MoveCaretCommand(mLastCaretOffset, viewer
 							.getSelectedRange().x));
