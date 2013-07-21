@@ -16,15 +16,24 @@ public class SelectTextCommand extends AbstractCommand {
 	public SelectTextCommand() {
 	}
 	
-	public SelectTextCommand(int start, int end, int caretOffset) {
+	public SelectTextCommand(int start, int end, int caretOffset,
+			int docStart, int docEnd, int docOffset) {
 		mStart = start;
 		mEnd = end;
 		mCaretOffset = caretOffset;
+		
+		mDocStart = docStart;
+		mDocEnd = docEnd;
+		mDocOffset = docOffset;
 	}
 
 	private int mStart;
 	private int mEnd;
 	private int mCaretOffset;
+	
+	private int mDocStart;
+	private int mDocEnd;
+	private int mDocOffset;
 
 	public boolean execute(IEditorPart target) {
 		StyledText styledText = Utilities.getStyledText(target);
@@ -49,6 +58,9 @@ public class SelectTextCommand extends AbstractCommand {
 		attrMap.put("start", Integer.toString(mStart));
 		attrMap.put("end", Integer.toString(mEnd));
 		attrMap.put("caretOffset", Integer.toString(mCaretOffset));
+		attrMap.put("docStart", Integer.toString(mDocStart));
+		attrMap.put("docEnd", Integer.toString(mDocEnd));
+		attrMap.put("docOffset", Integer.toString(mDocOffset));
 		return attrMap;
 	}
 
@@ -73,6 +85,27 @@ public class SelectTextCommand extends AbstractCommand {
 		if ((attr = commandElement.getAttributeNode("caretOffset")) != null) {
 			mCaretOffset = Integer.parseInt(attr.getValue());
 		}
+		
+		if ((attr = commandElement.getAttributeNode("docStart")) != null) {
+			mDocStart = Integer.parseInt(attr.getValue());
+		}
+		else {
+			mDocStart = -1;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("docEnd")) != null) {
+			mDocEnd = Integer.parseInt(attr.getValue());
+		}
+		else {
+			mDocEnd = -1;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("docOffset")) != null) {
+			mDocOffset = Integer.parseInt(attr.getValue());
+		}
+		else {
+			mDocOffset = -1;
+		}
 	}
 
 	public String getCommandType() {
@@ -81,7 +114,7 @@ public class SelectTextCommand extends AbstractCommand {
 
 	public String getName() {
 		return "Select Text (" + mStart + ", " + mEnd + ", " + mCaretOffset
-				+ ")";
+				+ ", " + mDocStart + ", " + mDocEnd + ", " + mDocOffset + ")";
 	}
 
 	public String getDescription() {
