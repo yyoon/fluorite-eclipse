@@ -3,10 +3,10 @@
    <description name="Natural Programming Project" url="http://fluorite-eclipse.googlecode.com/hg/edu.cmu.scs.fluorite.update/">
       Update site for Fluorite and Azurite plug-ins, developed at Carnegie Mellon University.
    </description>
-   <feature url="features/edu.cmu.scs.azurite_0.3.5.201307042207.jar" id="edu.cmu.scs.azurite" version="0.3.5.201307042207">
+   <feature url="features/edu.cmu.scs.fluorite_0.8.2.201307211703.jar" id="edu.cmu.scs.fluorite" version="0.8.2.201307211703">
       <category name="Natural Programming Project"/>
    </feature>
-   <feature url="features/edu.cmu.scs.fluorite_0.8.2.201307211703.jar" id="edu.cmu.scs.fluorite" version="0.8.2.201307211703">
+   <feature url="features/edu.cmu.scs.azurite_0.4.0.201309031217.jar" id="edu.cmu.scs.azurite" version="0.4.0.201309031217">
       <category name="Natural Programming Project"/>
    </feature>
    <category-def name="Natural Programming Project" label="Natural Programming Project"/>
