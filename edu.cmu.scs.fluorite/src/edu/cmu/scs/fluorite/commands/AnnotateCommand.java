@@ -15,6 +15,8 @@ import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class AnnotateCommand extends AbstractCommand {
 	
+	public static final int CANCEL = AddAnnotationDialog.CANCEL;
+	
 	public AnnotateCommand() {
 	}
 
