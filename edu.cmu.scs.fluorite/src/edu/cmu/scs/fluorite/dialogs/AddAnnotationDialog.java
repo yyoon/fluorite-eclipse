@@ -1,6 +1,7 @@
 package edu.cmu.scs.fluorite.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -13,8 +14,8 @@ import org.eclipse.swt.widgets.Text;
 public class AddAnnotationDialog extends Dialog {
 
 	// log version > 0.2.0
-	public static final int CANCEL = 0;
-	public static final int OTHER = 1;
+	public static final int CANCEL = Window.CANCEL;
+	public static final int OTHER = Window.OK;
 	public static final int BACKTRACKING = 2;
 	public static final int WRITING_NEW_CODE = 3;
 	public static final int TUNING_PARAMETERS = 4;
@@ -25,8 +26,8 @@ public class AddAnnotationDialog extends Dialog {
 	public static final int DEBUGGING = 9;
 	
 	public static final String[] BUTTON_NAMES = {
-		"Cancel",
 		"Other",
+		"Cancel",
 		"Backtracking",
 		"Writing new code",
 		"Tuning parameters",
@@ -93,6 +94,12 @@ public class AddAnnotationDialog extends Dialog {
 	protected void buttonPressed(int buttonId) {
 		setReturnCode(buttonId);
 		this.comment = this.textComment.getText();
+		close();
+	}
+
+	@Override
+	protected void cancelPressed() {
+		setReturnCode(CANCEL);
 		close();
 	}
 
