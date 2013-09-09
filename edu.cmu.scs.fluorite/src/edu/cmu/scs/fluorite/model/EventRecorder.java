@@ -111,6 +111,7 @@ public class EventRecorder {
 	private TimerTask mDocChangeTimerTask;
 	
 	private ListenerList mDocumentChangeListeners;
+	private ListenerList mCommandExecutionListeners;
 
 	private List<Runnable> mScheduledTasks;
 	
@@ -136,6 +137,7 @@ public class EventRecorder {
 		mAssistSession = false;
 		
 		mDocumentChangeListeners = new ListenerList();
+		mCommandExecutionListeners = new ListenerList();
 		
 		mTimer = new Timer();
 		
@@ -200,6 +202,14 @@ public class EventRecorder {
 		mDocumentChangeListeners.remove(docChangeListener);
 	}
 	
+	public void addCommandExecutionListener(CommandExecutionListener cmdExecListener) {
+		mCommandExecutionListeners.add(cmdExecListener);
+	}
+	
+	public void removeCommandExecutionListener(CommandExecutionListener cmdExecListener) {
+		mCommandExecutionListeners.remove(cmdExecListener);
+	}
+	
 	public void setCombineCommands(boolean enabled) {
 		mCombineCommands = enabled;
 	}
@@ -233,6 +243,12 @@ public class EventRecorder {
 	public void fireDocumentChangedEvent(BaseDocumentChangeEvent docChange) {
 		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
 			((DocumentChangeListener)listenerObj).documentChanged(docChange);
+		}
+	}
+	
+	public void fireCommandExecutedEvent(ICommand command) {
+		for (Object listenerObj : mCommandExecutionListeners.getListeners()) {
+			((CommandExecutionListener)listenerObj).commandExecuted(command);
 		}
 	}
 	
@@ -587,6 +603,9 @@ public class EventRecorder {
 				if (isLastCmdDocChange && lastCommand != mLastFiredDocumentChange) {
 					fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent)lastCommand);
 				}
+			}
+			else {
+				fireCommandExecutedEvent(newCommand);
 			}
 		}
 
