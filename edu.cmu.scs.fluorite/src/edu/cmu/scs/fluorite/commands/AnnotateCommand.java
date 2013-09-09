@@ -34,7 +34,7 @@ public class AnnotateCommand extends AbstractCommand {
 		this.mId = id;
 	}
 
-	public String getmComment() {
+	public String getComment() {
 		return mComment;
 	}
 
