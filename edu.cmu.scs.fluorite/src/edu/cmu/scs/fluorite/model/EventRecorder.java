@@ -26,9 +26,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.jdt.junit.JUnitCore;
-import org.eclipse.jdt.junit.TestRunListener;
-import org.eclipse.jdt.junit.model.ITestElement;
-import org.eclipse.jdt.junit.model.ITestRunSession;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextViewerExtension5;
@@ -50,19 +47,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.actions.FindAction;
-import edu.cmu.scs.fluorite.commands.AnnotateCommand;
 import edu.cmu.scs.fluorite.commands.BaseDocumentChangeEvent;
 import edu.cmu.scs.fluorite.commands.FileOpenCommand;
 import edu.cmu.scs.fluorite.commands.FindCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
-import edu.cmu.scs.fluorite.dialogs.AddAnnotationDialog;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.recorders.CompletionRecorder;
 import edu.cmu.scs.fluorite.recorders.DebugEventSetRecorder;
 import edu.cmu.scs.fluorite.recorders.DocumentRecorder;
 import edu.cmu.scs.fluorite.recorders.ExecutionRecorder;
+import edu.cmu.scs.fluorite.recorders.JUnitRecorder;
 import edu.cmu.scs.fluorite.recorders.PartRecorder;
 import edu.cmu.scs.fluorite.recorders.StyledTextEventRecorder;
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
@@ -416,21 +412,7 @@ public class EventRecorder {
 		DebugPlugin.getDefault().addDebugEventListener(
 				DebugEventSetRecorder.getInstance());
 		
-		JUnitCore.addTestRunListener(new TestRunListener() {
-
-			@Override
-			public void sessionStarted(ITestRunSession session) {
-				recordCommand(new AnnotateCommand(AddAnnotationDialog.OTHER, "sessionStarted"));
-				super.sessionStarted(session);
-			}
-
-			@Override
-			public void sessionFinished(ITestRunSession session) {
-				recordCommand(new AnnotateCommand(AddAnnotationDialog.OTHER, "sessionFinished: " + (session.getTestResult(true) == ITestElement.Result.OK ? "Succeeded" : "Failed")));
-				super.sessionFinished(session);
-			}
-			
-		});
+		JUnitCore.addTestRunListener(JUnitRecorder.getInstance());
 
 		initializeLogger();
 
