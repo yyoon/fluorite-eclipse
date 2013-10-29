@@ -1,1 +1,4 @@
-bin
+bin/
+target/
+.settings/
+*/*.jar
