@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Fluorite Tests
+Bundle-SymbolicName: edu.cmu.scs.fluorite.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: School of Computer Science, Carnegie Mellon University
+Fragment-Host: edu.cmu.scs.fluorite
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
