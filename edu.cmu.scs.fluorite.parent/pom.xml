@@ -96,5 +96,7 @@
 
 	<modules>
 		<module>../edu.cmu.scs.fluorite</module>
+		
+		<module>../edu.cmu.scs.fluorite.tests</module>
 	</modules>
 </project>
