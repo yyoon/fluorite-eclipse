@@ -6,3 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: School of Computer Science, Carnegie Mellon University
 Fragment-Host: edu.cmu.scs.fluorite
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.0.0"
