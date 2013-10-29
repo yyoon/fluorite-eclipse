@@ -80,6 +80,9 @@
 											<goal>
 												validate-version
 											</goal>
+											<goal>
+												build-qualifier-aggregator
+											</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -98,5 +101,6 @@
 		<module>../edu.cmu.scs.fluorite</module>
 		
 		<module>../edu.cmu.scs.fluorite.tests</module>
+		<module>../edu.cmu.scs.fluorite.feature</module>
 	</modules>
 </project>
