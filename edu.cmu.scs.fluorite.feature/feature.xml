@@ -216,7 +216,7 @@ litigation.
    </license>
 
    <url>
-      <update label="Natural Programming Project" url="http://fluorite-eclipse.googlecode.com/hg/edu.cmu.scs.fluorite.update/"/>
+      <update label="Natural Programming Project" url="http://www.cs.cmu.edu/~NatProg/eclipse/updates/releases"/>
    </url>
 
    <requires>
