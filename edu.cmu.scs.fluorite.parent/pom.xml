@@ -5,7 +5,7 @@
 
 	<groupId>edu.cmu.scs.fluorite</groupId>
 	<artifactId>edu.cmu.scs.fluorite.parent</artifactId>
-	<version>0.8.4-SNAPSHOT</version>
+	<version>0.8.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- the modules that shall be built together in one reactor -->
