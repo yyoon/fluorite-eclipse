@@ -42,8 +42,8 @@ public class FluoriteXMLFormatterTest {
 	}
 	
 	@Test
-	public void logHeadMustContainLineEndingChar() {
-		assertThat(mHead, containsString("lineEnding="));
+	public void logHeadMustContainLineSeparator() {
+		assertThat(mHead, containsString("lineSeparator="));
 	}
 
 }
