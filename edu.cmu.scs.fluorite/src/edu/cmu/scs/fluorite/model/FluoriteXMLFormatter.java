@@ -59,11 +59,11 @@ public class FluoriteXMLFormatter extends Formatter {
 		
 		return String.format(
 				"<Events"
-				+ " startTimestamp=\"%1s\""
-				+ " logVersion=\"%2s\""
-				+ " osName=\"%3s\""
-				+ " osVersion=\"%4s\""
-				+ " lineSeparator=\"%5s\""
+				+ " startTimestamp=\"%1$s\""
+				+ " logVersion=\"%2$s\""
+				+ " osName=\"%3$s\""
+				+ " osVersion=\"%4$s\""
+				+ " lineSeparator=\"%5$s\""
 				+ ">%n",
 				mStartTimestamp,
 				mLogVersion,
