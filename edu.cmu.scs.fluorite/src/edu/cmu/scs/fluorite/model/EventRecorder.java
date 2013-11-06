@@ -25,6 +25,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.jdt.junit.JUnitCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextViewerExtension5;
@@ -57,6 +58,7 @@ import edu.cmu.scs.fluorite.recorders.CompletionRecorder;
 import edu.cmu.scs.fluorite.recorders.DebugEventSetRecorder;
 import edu.cmu.scs.fluorite.recorders.DocumentRecorder;
 import edu.cmu.scs.fluorite.recorders.ExecutionRecorder;
+import edu.cmu.scs.fluorite.recorders.JUnitRecorder;
 import edu.cmu.scs.fluorite.recorders.PartRecorder;
 import edu.cmu.scs.fluorite.recorders.StyledTextEventRecorder;
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
@@ -409,6 +411,8 @@ public class EventRecorder {
 
 		DebugPlugin.getDefault().addDebugEventListener(
 				DebugEventSetRecorder.getInstance());
+		
+		JUnitCore.addTestRunListener(JUnitRecorder.getInstance());
 
 		initializeLogger();
 
