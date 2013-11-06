@@ -1,11 +1,9 @@
 package edu.cmu.scs.fluorite.recorders;
 
 import org.eclipse.jdt.junit.TestRunListener;
-import org.eclipse.jdt.junit.model.ITestElement;
 import org.eclipse.jdt.junit.model.ITestRunSession;
 
-import edu.cmu.scs.fluorite.commands.AnnotateCommand;
-import edu.cmu.scs.fluorite.dialogs.AddAnnotationDialog;
+import edu.cmu.scs.fluorite.commands.JUnitCommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class JUnitRecorder extends TestRunListener {
@@ -32,20 +30,22 @@ public class JUnitRecorder extends TestRunListener {
 
 	@Override
 	public void sessionStarted(ITestRunSession session) {
-		getRecorder().recordCommand(
-				new AnnotateCommand(AddAnnotationDialog.OTHER,
-						"sessionStarted"));
+		// Don't do anything here.
 	}
 
 	@Override
 	public void sessionFinished(ITestRunSession session) {
-		getRecorder().recordCommand(
-				new AnnotateCommand(
-						AddAnnotationDialog.OTHER,
-						"sessionFinished: " + 
-						(session.getTestResult(true) == ITestElement.Result.OK
-						? "Succeeded"
-						: "Failed")));
+		if (session == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		// Create a JUnitCommand instance.
+		JUnitCommand junitCommand = new JUnitCommand(
+				session.getLaunchedProject().getProject().getName(),	// The name of the Launched project
+				session.getElapsedTimeInSeconds(),
+				session);												// The session itself as the root test element.
+		
+		getRecorder().recordCommand(junitCommand);
 	}
 
 }
