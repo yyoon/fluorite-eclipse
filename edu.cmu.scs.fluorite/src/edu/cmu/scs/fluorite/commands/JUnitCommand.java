@@ -149,7 +149,7 @@ public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 			} else if (testElement instanceof ITestCaseElement) {
 				ITestCaseElement testCaseElement = (ITestCaseElement) testElement;
 				mType = ElementType.TestCase;
-				mName = testCaseElement.getTestMethodName();
+				mName = testCaseElement.getTestClassName() + "." + testCaseElement.getTestMethodName();
 			}
 			
 			mSucceeded = testElement.getTestResult(true) == ITestElement.Result.OK;
