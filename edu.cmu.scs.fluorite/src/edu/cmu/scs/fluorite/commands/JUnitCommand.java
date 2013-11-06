@@ -12,7 +12,7 @@ import org.eclipse.jdt.junit.model.ITestRunSession;
 import org.eclipse.jdt.junit.model.ITestSuiteElement;
 import org.eclipse.ui.IEditorPart;
 
-public class JUnitCommand extends AbstractCommand {
+public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 	
 	public JUnitCommand(String projectName, double elapsedTimeInSeconds, ITestElement rootElement) {
 		mProjectName = projectName;
@@ -152,6 +152,30 @@ public class JUnitCommand extends AbstractCommand {
 		public List<TestData> getChildren() {
 			return Collections.unmodifiableList(mChildren);
 		}
+	}
+
+	@Override
+	public Object getRootElement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object[] getChildren(Object parentElement) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getTagName(Object element) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, String> getAttrMap(Object element) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
