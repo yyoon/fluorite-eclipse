@@ -133,7 +133,7 @@ public class LogReader {
 				startTimestamp);
 	}
 	
-	private static boolean isCommandTyped(Element element, String typeName) {
+	public static boolean isCommandTyped(Element element, String typeName) {
 		return isCommand(element) && isType(element, typeName);
 	}
 	

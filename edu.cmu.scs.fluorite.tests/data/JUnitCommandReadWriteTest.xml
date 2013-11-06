@@ -1,0 +1,69 @@
+<Events startTimestamp="1383723728567" logVersion="0.8.6.qualifier" osName="Windows 8" osVersion="6.2" lineSeparator="\r\n">
+  <Command __id="0" _type="RunCommand" kind="Create" projectName="JUnitTestProject" timestamp="52199" type="Run" />
+  <Command __id="1" _type="JUnitCommand" elapsedTimeInSeconds="0.003000020980834961" projectName="JUnitTestProject" timestamp="52392">
+    <TestSession succeeded="false" name="JUnitTestProject">
+      <TestSuite succeeded="true" name="junit.test.packagename.one.TestClassOne">
+        <TestCase succeeded="true" name="testMethodOne" />
+        <TestCase succeeded="true" name="testMethodTwo" />
+      </TestSuite>
+      <TestSuite succeeded="false" name="junit.test.packagename.two.TestClassTwo">
+        <TestCase succeeded="true" name="testMethodThree" />
+        <TestCase succeeded="false" name="testMethodFour" />
+      </TestSuite>
+      <TestSuite succeeded="true" name="junit.test.packagename.two.TestClassThree">
+        <TestCase succeeded="true" name="testMethodFive" />
+      </TestSuite>
+    </TestSession>
+  </Command>
+  <Command __id="2" _type="RunCommand" kind="Terminate" projectName="JUnitTestProject" timestamp="52406" type="Run" />
+  <Command __id="3" _type="RunCommand" kind="Create" projectName="JUnitTestProject" timestamp="57412" type="Run" />
+  <Command __id="4" _type="JUnitCommand" elapsedTimeInSeconds="0.0" projectName="JUnitTestProject" timestamp="57732">
+    <TestSession succeeded="true" name="Rerun junit.test.packagename.two.TestClassTwo.testMethodThree">
+      <TestCase succeeded="true" name="testMethodThree" />
+    </TestSession>
+  </Command>
+  <Command __id="5" _type="RunCommand" kind="Terminate" projectName="JUnitTestProject" timestamp="57745" type="Run" />
+  <Command __id="6" _type="FileOpenCommand" docASTNodeCount="42" docActiveCodeLength="251" docExpressionCount="27" docLength="251" projectName="JUnitTestProject" timestamp="59546">
+    <snapshot><![CDATA[package junit.test.packagename.two;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class TestClassTwo {
+
+	@Test
+	public void testMethodThree() {
+	}
+	
+	@Test
+	public void testMethodFour() {
+		fail("Failed");
+	}
+
+}
+]]></snapshot>
+    <filePath><![CDATA[D:\Programming\RuntimeWorkspaces\runtime-Azurite\JUnitTestProject\src\junit\test\packagename\two\TestClassTwo.java]]></filePath>
+  </Command>
+  <Command __id="7" _type="MoveCaretCommand" caretOffset="225" docOffset="251" timestamp="59725" />
+  <Command __id="8" _type="MoveCaretCommand" caretOffset="183" docOffset="209" timestamp="60474" />
+  <Command __id="9" _type="EclipseCommand" commandID="org.eclipse.jdt.junit.junitShortcut.run" timestamp="63146" />
+  <Command __id="10" _type="RunCommand" kind="Create" projectName="JUnitTestProject" timestamp="63174" type="Run" />
+  <Command __id="11" _type="JUnitCommand" elapsedTimeInSeconds="0.0010001659393310547" projectName="JUnitTestProject" timestamp="63452">
+    <TestSession succeeded="false" name="TestClassTwo.testMethodFour">
+      <TestCase succeeded="false" name="testMethodFour" />
+    </TestSession>
+  </Command>
+  <Command __id="12" _type="RunCommand" kind="Terminate" projectName="JUnitTestProject" timestamp="63470" type="Run" />
+  <Command __id="13" _type="EclipseCommand" commandID="org.eclipse.jdt.junit.junitShortcut.run" timestamp="373994" />
+  <Command __id="14" _type="RunCommand" kind="Create" projectName="JUnitTestProject" timestamp="374024" type="Run" />
+  <Command __id="15" _type="RunCommand" kind="Terminate" projectName="JUnitTestProject" timestamp="374313" type="Run" />
+  <Command __id="16" _type="JUnitCommand" elapsedTimeInSeconds="9.999275207519531E-4" projectName="JUnitTestProject" timestamp="374347">
+    <TestSession succeeded="false" name="TestClassTwo">
+      <TestSuite succeeded="false" name="junit.test.packagename.two.TestClassTwo">
+        <TestCase succeeded="true" name="testMethodThree" />
+        <TestCase succeeded="false" name="testMethodFour" />
+      </TestSuite>
+    </TestSession>
+  </Command>
+</Events>
