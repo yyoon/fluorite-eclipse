@@ -2,6 +2,7 @@ package edu.cmu.scs.fluorite.commands;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,8 @@ import org.eclipse.jdt.junit.model.ITestElementContainer;
 import org.eclipse.jdt.junit.model.ITestRunSession;
 import org.eclipse.jdt.junit.model.ITestSuiteElement;
 import org.eclipse.ui.IEditorPart;
+
+import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 	
@@ -26,61 +29,53 @@ public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 
 	@Override
 	public boolean execute(IEditorPart target) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void dump() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public Map<String, String> getAttributesMap() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, String> attrMap = new HashMap<String, String>();
+		attrMap.put("projectName", getProjectName());
+		attrMap.put("elapsedTimeInSeconds", Double.toString(getElapsedTimeInSeconds()));
+		return attrMap;
 	}
 
 	@Override
 	public Map<String, String> getDataMap() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getCommandType() {
-		// TODO Auto-generated method stub
-		return null;
+		return "JUnitCommand";
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "JUnit Command";
 	}
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getCategory() {
-		// TODO Auto-generated method stub
-		return null;
+		return EventRecorder.MacroCommandCategory;
 	}
 
 	@Override
 	public String getCategoryID() {
-		// TODO Auto-generated method stub
-		return null;
+		return EventRecorder.MacroCommandCategoryID;
 	}
 
 	@Override
 	public boolean combine(ICommand anotherCommand) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -99,24 +94,24 @@ public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 	public static class TestData {
 		
 		public enum ElementType {
-			TEST_SESSION,
-			TEST_SUITE,
-			TEST_CASE,
+			TestSession,
+			TestSuite,
+			TestCase,
 		}
 		
 		public TestData(ITestElement testElement) {
 			if (testElement instanceof ITestRunSession) {
 				ITestRunSession testRunSession = (ITestRunSession) testElement;
-				mType = ElementType.TEST_SESSION;
+				mType = ElementType.TestSession;
 				mName = testRunSession.getTestRunName();
 			}
 			else if (testElement instanceof ITestSuiteElement) {
 				ITestSuiteElement testSuiteElement = (ITestSuiteElement) testElement;
-				mType = ElementType.TEST_SUITE;
+				mType = ElementType.TestSuite;
 				mName = testSuiteElement.getSuiteTypeName();
 			} else if (testElement instanceof ITestCaseElement) {
 				ITestCaseElement testCaseElement = (ITestCaseElement) testElement;
-				mType = ElementType.TEST_CASE;
+				mType = ElementType.TestCase;
 				mName = testCaseElement.getTestMethodName();
 			}
 			
@@ -150,31 +145,53 @@ public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 		}
 		
 		public List<TestData> getChildren() {
-			return Collections.unmodifiableList(mChildren);
+			if (mChildren != null) {
+				return Collections.unmodifiableList(mChildren);
+			} else {
+				return null;
+			}
 		}
 	}
 
 	@Override
 	public Object getRootElement() {
-		// TODO Auto-generated method stub
-		return null;
+		return getRootData();
 	}
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		// TODO Auto-generated method stub
+		if (parentElement instanceof TestData) {
+			List<TestData> children = ((TestData) parentElement).getChildren();
+			if (children != null) {
+				return children.toArray();
+			} else {
+				return null;
+			}
+		}
+		
 		return null;
 	}
 
 	@Override
 	public String getTagName(Object element) {
-		// TODO Auto-generated method stub
+		if (element instanceof TestData) {
+			return ((TestData) element).getType().toString();
+		}
+		
 		return null;
 	}
 
 	@Override
 	public Map<String, String> getAttrMap(Object element) {
-		// TODO Auto-generated method stub
+		if (element instanceof TestData) {
+			TestData testData = (TestData) element;
+			
+			Map<String, String> attrMap = new HashMap<String, String>();
+			attrMap.put("name", testData.getName());
+			attrMap.put("succeeded", Boolean.toString(testData.getSucceeded()));
+			return attrMap;
+		}
+		
 		return null;
 	}
 
