@@ -1,14 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <artifactId>edu.cmu.scs.fluorite.tests</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
   <name>Fluorite plug-in tests</name>
   <parent>
-  	<groupId>edu.cmu.scs.fluorite</groupId>
-  	<artifactId>edu.cmu.scs.fluorite.parent</artifactId>
-  	<version>0.8.6-SNAPSHOT</version>
-  	<relativePath>../edu.cmu.scs.fluorite.parent</relativePath>
+    <groupId>edu.cmu.scs.fluorite</groupId>
+    <artifactId>edu.cmu.scs.fluorite.parent</artifactId>
+    <version>0.8.6-SNAPSHOT</version>
+    <relativePath>../edu.cmu.scs.fluorite.parent</relativePath>
   </parent>
+
+  <repositories>
+    <repository>
+      <id>Orbit</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository/</url>
+    </repository>
+  </repositories>
+  
+  <build>
+  </build>
 </project>
