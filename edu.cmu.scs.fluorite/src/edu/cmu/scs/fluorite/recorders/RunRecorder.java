@@ -1,11 +1,10 @@
 package edu.cmu.scs.fluorite.recorders;
 
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.ui.IEditorPart;
@@ -14,6 +13,9 @@ import edu.cmu.scs.fluorite.commands.RunCommand;
 
 public class RunRecorder extends BaseRecorder implements
 		IDebugEventSetListener {
+	
+	private static final String PROJECT_ATTR_KEY =
+			"org.eclipse.jdt.launching.PROJECT_ATTR";
 
 	private static RunRecorder instance = null;
 
@@ -41,41 +43,72 @@ public class RunRecorder extends BaseRecorder implements
 
 	public void handleDebugEvents(DebugEvent[] debugEvents) {
 		for (DebugEvent event : debugEvents) {
-			if (event.getKind() == DebugEvent.CREATE
-					|| event.getKind() == DebugEvent.TERMINATE) {
-				Object source = event.getSource();
-				boolean terminate = event.getKind() == DebugEvent.TERMINATE;
-
-				if (source instanceof IProcess) {
-					IProcess process = (IProcess) source;
-					ILaunchConfiguration config = process.getLaunch()
-							.getLaunchConfiguration();
-
-					if (config == null) {
-						return;
-					}
-
-					@SuppressWarnings("rawtypes")
-					Map attributes = null;
-					try {
-						attributes = config.getAttributes();
-					} catch (CoreException e) {
-						e.printStackTrace();
-					}
-
-					// Retrieve the corresponding project name
-					String projectName = (String) (attributes
-							.get("org.eclipse.jdt.launching.PROJECT_ATTR"));
-
-					getRecorder().recordCommand(
-							new RunCommand(false, terminate, projectName));
-
-				} else if (source instanceof IDebugTarget) {
-					getRecorder().recordCommand(
-							new RunCommand(true, terminate, null));
-				}
-			}
+			handleDebugEvent(event);
 		}
+	}
+	
+	private void handleDebugEvent(DebugEvent event) {
+		int kind = event.getKind();
+		if (kind != DebugEvent.CREATE && kind != DebugEvent.TERMINATE) {
+			return;
+		}
+
+		Object source = event.getSource();
+		boolean terminate = event.getKind() == DebugEvent.TERMINATE;
+		
+		IProcess process = getProcess(source);
+		boolean debug = source instanceof IDebugTarget;
+		if (process == null) {
+			return;
+		}
+
+		ILaunchConfiguration config = process.getLaunch()
+				.getLaunchConfiguration();
+		if (config == null) {
+			return;
+		}
+
+		ILaunchConfigurationType configType = getConfigurationType(config);
+		if (configType == null) {
+			return;
+		}
+
+		// Filter out JUnit runs, because they are handled separately
+		// by JUnitRecorder.
+		if (configType.getIdentifier().contains("junit")) {
+			return;
+		}
+		
+		String projectName = "null";
+		try {
+			projectName = config.getAttribute(PROJECT_ATTR_KEY, "null");
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
+		getRecorder().recordCommand(
+				new RunCommand(debug, terminate, projectName));
+	}
+
+	private IProcess getProcess(Object source) {
+		if (source instanceof IDebugTarget) {
+			return ((IDebugTarget) source).getProcess();
+		} else if (source instanceof IProcess) {
+			return (IProcess) source;
+		}
+		return null;
+	}
+
+	private ILaunchConfigurationType getConfigurationType(
+			ILaunchConfiguration config) {
+		ILaunchConfigurationType configType = null;
+		try {
+			configType = config.getType();
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+		}
+		
+		return configType;
 	}
 
 }
