@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.ui.IEditorPart;
@@ -52,6 +53,24 @@ public class RunRecorder extends BaseRecorder implements
 							.getLaunchConfiguration();
 
 					if (config == null) {
+						return;
+					}
+					
+					// Get the configuration type
+					ILaunchConfigurationType configType = null;
+					try {
+						configType = config.getType();
+					} catch (CoreException e1) {
+						e1.printStackTrace();
+					}
+					
+					if (configType == null) {
+						return;
+					}
+					
+					// Filter out JUnit runs, because they are handled
+					// separately in JUnitRecorder.
+					if (configType.getIdentifier().contains("junit")) {
 						return;
 					}
 
