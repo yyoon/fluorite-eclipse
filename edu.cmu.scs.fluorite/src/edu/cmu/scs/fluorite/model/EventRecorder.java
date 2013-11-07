@@ -55,9 +55,9 @@ import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.recorders.CompletionRecorder;
-import edu.cmu.scs.fluorite.recorders.DebugEventSetRecorder;
+import edu.cmu.scs.fluorite.recorders.RunRecorder;
 import edu.cmu.scs.fluorite.recorders.DocumentRecorder;
-import edu.cmu.scs.fluorite.recorders.ExecutionRecorder;
+import edu.cmu.scs.fluorite.recorders.EclipseCommandRecorder;
 import edu.cmu.scs.fluorite.recorders.JUnitRecorder;
 import edu.cmu.scs.fluorite.recorders.PartRecorder;
 import edu.cmu.scs.fluorite.recorders.StyledTextEventRecorder;
@@ -288,7 +288,7 @@ public class EventRecorder {
 
 		DocumentRecorder.getInstance().addListeners(editor);
 
-		ExecutionRecorder.getInstance().addListeners(editor);
+		EclipseCommandRecorder.getInstance().addListeners(editor);
 
 		CompletionRecorder.getInstance().addListeners(editor);
 
@@ -327,7 +327,7 @@ public class EventRecorder {
 
 			DocumentRecorder.getInstance().removeListeners(mEditor);
 
-			ExecutionRecorder.getInstance().removeListeners(mEditor);
+			EclipseCommandRecorder.getInstance().removeListeners(mEditor);
 
 			CompletionRecorder.getInstance().removeListeners(mEditor);
 
@@ -410,7 +410,7 @@ public class EventRecorder {
 		}
 
 		DebugPlugin.getDefault().addDebugEventListener(
-				DebugEventSetRecorder.getInstance());
+				RunRecorder.getInstance());
 		
 		JUnitCore.addTestRunListener(JUnitRecorder.getInstance());
 
@@ -461,7 +461,7 @@ public class EventRecorder {
 
 		try {
 			DebugPlugin.getDefault().removeDebugEventListener(
-					DebugEventSetRecorder.getInstance());
+					RunRecorder.getInstance());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
