@@ -1,106 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>edu.cmu.scs.fluorite</groupId>
-	<artifactId>edu.cmu.scs.fluorite.parent</artifactId>
-	<version>0.8.6-SNAPSHOT</version>
-	<packaging>pom</packaging>
+  <groupId>edu.cmu.scs.fluorite</groupId>
+  <artifactId>edu.cmu.scs.fluorite.parent</artifactId>
+  <version>0.8.6-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-	<!-- the modules that shall be built together in one reactor -->
+  <!-- the modules that shall be built together in one reactor -->
 
-	<!-- common settings for all modules -->
-	<properties>
-		<tycho-version>0.19.0</tycho-version>
-	</properties>
+  <!-- common settings for all modules -->
+  <properties>
+    <tycho-version>0.19.0</tycho-version>
+  </properties>
 
-	<repositories>
-		<repository>
-			<id>Indigo Updates</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/eclipse/updates/3.7</url>
-		</repository>
-	</repositories>
+  <repositories>
+    <repository>
+      <id>Indigo Updates</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/eclipse/updates/3.7</url>
+    </repository>
+  </repositories>
 
-	<build>
-		<plugins>
-			<plugin>
-				<!-- enable the Tycho build extension -->
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<extensions>true</extensions>
-			</plugin>
-		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.eclipse.tycho
-										</groupId>
-										<artifactId>
-											tycho-compiler-plugin
-										</artifactId>
-										<versionRange>
-											[0.19.0,)
-										</versionRange>
-										<goals>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.eclipse.tycho
-										</groupId>
-										<artifactId>
-											tycho-packaging-plugin
-										</artifactId>
-										<versionRange>
-											[0.19.0,)
-										</versionRange>
-										<goals>
-											<goal>build-qualifier</goal>
-											<goal>validate-id</goal>
-											<goal>
-												validate-version
-											</goal>
-											<goal>
-												build-qualifier-aggregator
-											</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+  <profiles>
+    <profile>
+      <id>codeCoverage</id>
+      <properties>
+        <!-- Properties to enable jacoco code coverage analysis -->
+        <jacoco-version>0.6.3.201306030806</jacoco-version>
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>../edu.cmu.scs.fluorite.parent/target/jacoco.exec</sonar.jacoco.reportPath>
+      </properties>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco-version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <destFile>${sonar.jacoco.reportPath}</destFile>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
-	<modules>
-		<module>../edu.cmu.scs.fluorite</module>
-		
-		<module>../edu.cmu.scs.fluorite.tests</module>
-		<module>../edu.cmu.scs.fluorite.feature</module>
-	</modules>
+  <build>
+    <plugins>
+      <plugin>
+        <!-- enable the Tycho build extension -->
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          only. It has no influence on the Maven build itself. -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.eclipse.tycho
+                    </groupId>
+                    <artifactId>
+                      tycho-compiler-plugin
+                    </artifactId>
+                    <versionRange>
+                      [0.19.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>compile</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.eclipse.tycho
+                    </groupId>
+                    <artifactId>
+                      tycho-packaging-plugin
+                    </artifactId>
+                    <versionRange>
+                      [0.19.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>build-qualifier</goal>
+                      <goal>validate-id</goal>
+                      <goal>
+                        validate-version
+                      </goal>
+                      <goal>
+                        build-qualifier-aggregator
+                      </goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <modules>
+    <module>../edu.cmu.scs.fluorite</module>
+
+    <module>../edu.cmu.scs.fluorite.tests</module>
+    <module>../edu.cmu.scs.fluorite.feature</module>
+  </modules>
 </project>
