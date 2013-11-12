@@ -2,14 +2,15 @@ package edu.cmu.scs.fluorite.recorders;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 
 import edu.cmu.scs.fluorite.commands.FileOpenCommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.util.Utilities;
 
-public class PartRecorder extends BaseRecorder implements IPartListener {
+public class PartRecorder extends BaseRecorder implements IPartListener2 {
 
 	private static PartRecorder instance = null;
 
@@ -35,7 +36,10 @@ public class PartRecorder extends BaseRecorder implements IPartListener {
 		// Do nothing.
 	}
 
-	public void partActivated(IWorkbenchPart part) {
+	@Override
+	public void partActivated(IWorkbenchPartReference partRef) {
+		IWorkbenchPart part = partRef.getPart(false);
+		
 		if (part instanceof IEditorPart) {
 			if (getRecorder().getEditor() == part) {
 				return;
@@ -61,27 +65,40 @@ public class PartRecorder extends BaseRecorder implements IPartListener {
 			FileOpenCommand newFoc = new FileOpenCommand(editor);
 			getRecorder().recordCommand(newFoc);
 			getRecorder().fireActiveFileChangedEvent(newFoc);
-			
-			
 		}
 	}
 
-	public void partBroughtToTop(IWorkbenchPart part) {
+	@Override
+	public void partBroughtToTop(IWorkbenchPartReference partRef) {
 	}
 
-	public void partClosed(IWorkbenchPart part) {
+	@Override
+	public void partClosed(IWorkbenchPartReference partRef) {
+		IWorkbenchPart part = partRef.getPart(false);
+		
 		if (part instanceof IEditorPart) {
 			getRecorder().removeListeners();
 		}
 	}
 
-	public void partDeactivated(IWorkbenchPart part) {
-		// if (part instanceof IEditorPart) {
-		// removeListeners();
-		// }
+	@Override
+	public void partDeactivated(IWorkbenchPartReference partRef) {
 	}
 
-	public void partOpened(IWorkbenchPart part) {
+	@Override
+	public void partHidden(IWorkbenchPartReference partRef) {
+	}
+
+	@Override
+	public void partVisible(IWorkbenchPartReference partRef) {
+	}
+
+	@Override
+	public void partInputChanged(IWorkbenchPartReference partRef) {
+	}
+
+	@Override
+	public void partOpened(IWorkbenchPartReference partRef) {
 	}
 
 }

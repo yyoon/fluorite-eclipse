@@ -35,6 +35,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchCommandConstants;
@@ -55,11 +56,11 @@ import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.recorders.CompletionRecorder;
-import edu.cmu.scs.fluorite.recorders.RunRecorder;
 import edu.cmu.scs.fluorite.recorders.DocumentRecorder;
 import edu.cmu.scs.fluorite.recorders.EclipseCommandRecorder;
 import edu.cmu.scs.fluorite.recorders.JUnitRecorder;
 import edu.cmu.scs.fluorite.recorders.PartRecorder;
+import edu.cmu.scs.fluorite.recorders.RunRecorder;
 import edu.cmu.scs.fluorite.recorders.StyledTextEventRecorder;
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
 import edu.cmu.scs.fluorite.util.Utilities;
@@ -401,10 +402,9 @@ public class EventRecorder {
 			IPartService service = window.getPartService();
 			if (service != null) {
 				service.addPartListener(PartRecorder.getInstance());
-
-				if (service.getActivePart() instanceof IEditorPart) {
-					PartRecorder.getInstance().partActivated(
-							service.getActivePart());
+				
+				if (service.getActivePartReference() instanceof IEditorReference) {
+					PartRecorder.getInstance().partActivated(service.getActivePartReference());
 				}
 			}
 		}
