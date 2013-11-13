@@ -32,6 +32,7 @@
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>../edu.cmu.scs.fluorite.parent/target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.tests.exclusion>../edu.cmu.scs.fluorite.tests/**/*</sonar.tests.exclusion>
       </properties>
       
       <build>
