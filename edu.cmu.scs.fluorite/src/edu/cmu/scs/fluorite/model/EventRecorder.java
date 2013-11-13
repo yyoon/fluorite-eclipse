@@ -122,7 +122,7 @@ public class EventRecorder {
 
 	private static EventRecorder instance = null;
 
-	private final static Logger LOGGER = Logger.getLogger(EventRecorder.class
+	private static final Logger LOGGER = Logger.getLogger(EventRecorder.class
 			.getName());
 
 	public static EventRecorder getInstance() {

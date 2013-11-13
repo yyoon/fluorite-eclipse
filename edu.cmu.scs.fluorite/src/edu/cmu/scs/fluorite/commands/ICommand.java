@@ -7,57 +7,57 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public interface ICommand {
-	public boolean execute(IEditorPart target);
+	boolean execute(IEditorPart target);
 
-	public void dump();
+	void dump();
 
-	public String persist();
+	String persist();
 
-	public void persist(Document doc, Element commandElement);
+	void persist(Document doc, Element commandElement);
 
-	public void createFrom(Element commandElement);
+	void createFrom(Element commandElement);
 
-	public Map<String, String> getAttributesMap();
+	Map<String, String> getAttributesMap();
 
-	public Map<String, String> getDataMap();
+	Map<String, String> getDataMap();
 
-	public String getCommandType();
+	String getCommandType();
 
-	public String getName();
+	String getName();
 
-	public String getDescription();
+	String getDescription();
 
-	public String getCategory();
+	String getCategory();
 
-	public String getCategoryID();
+	String getCategoryID();
 
-	public void setTimestamp(long timestamp);
+	void setTimestamp(long timestamp);
 
-	public long getTimestamp();
+	long getTimestamp();
 
-	public void setTimestamp2(long timestamp);
+	void setTimestamp2(long timestamp);
 
-	public long getTimestamp2();
+	long getTimestamp2();
 
-	public void increaseRepeatCount();
+	void increaseRepeatCount();
 
-	public int getRepeatCount();
+	int getRepeatCount();
 	
-	public long getSessionId();
+	long getSessionId();
 	
-	public void setSessionId(long sessionId);
+	void setSessionId(long sessionId);
 
-	public int getCommandIndex();
+	int getCommandIndex();
 	
-	public void setCommandIndex(int id);
+	void setCommandIndex(int id);
 	
-	public boolean areTopBottomLinesRecorded();
+	boolean areTopBottomLinesRecorded();
 	
-	public int getTopLineNumber();
+	int getTopLineNumber();
 	
-	public int getBottomLineNumber();
+	int getBottomLineNumber();
 
-	public boolean combineWith(ICommand anotherCommand);
+	boolean combineWith(ICommand anotherCommand);
 
-	public String getCommandTag();
+	String getCommandTag();
 }
