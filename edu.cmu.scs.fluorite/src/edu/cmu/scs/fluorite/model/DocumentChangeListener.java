@@ -8,21 +8,21 @@ public interface DocumentChangeListener {
 	/**
 	 * Fired when a new file was opened and the corresponding FileOpenCommand was recorded. 
 	 */
-	public void activeFileChanged(FileOpenCommand foc);
+	void activeFileChanged(FileOpenCommand foc);
 	
 	/**
 	 * Fired when a new documentChange event was recorded.
 	 */
-	public void documentChanged(BaseDocumentChangeEvent docChange);
+	void documentChanged(BaseDocumentChangeEvent docChange);
 	
 	/**
 	 * Fired when a new documentChange event was recorded and its values are fixed.
 	 */
-	public void documentChangeFinalized(BaseDocumentChangeEvent docChange);
+	void documentChangeFinalized(BaseDocumentChangeEvent docChange);
 	
 	/**
 	 * Fired when a documentChange event was updated (due to combining).
 	 */
-	public void documentChangeUpdated(BaseDocumentChangeEvent docChange);
+	void documentChangeUpdated(BaseDocumentChangeEvent docChange);
 
 }
