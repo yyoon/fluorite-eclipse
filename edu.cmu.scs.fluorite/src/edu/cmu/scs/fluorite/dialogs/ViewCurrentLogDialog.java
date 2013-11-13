@@ -40,9 +40,4 @@ public class ViewCurrentLogDialog extends Dialog {
 
 		return comp;
 	}
-
-	@Override
-	protected void okPressed() {
-		super.okPressed();
-	}
 }
