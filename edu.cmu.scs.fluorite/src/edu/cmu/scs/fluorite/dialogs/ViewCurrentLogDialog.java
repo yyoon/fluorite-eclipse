@@ -14,7 +14,6 @@ import edu.cmu.scs.fluorite.model.Events;
 
 public class ViewCurrentLogDialog extends Dialog {
 	private Events mEvents;
-	private StyledText mExportText;
 
 	public ViewCurrentLogDialog(Shell shell, Events events) {
 		super(shell);
@@ -29,15 +28,15 @@ public class ViewCurrentLogDialog extends Dialog {
 		comp.setLayout(new GridLayout());
 		comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		mExportText = new StyledText(comp, SWT.V_SCROLL | SWT.H_SCROLL
+		StyledText exportText = new StyledText(comp, SWT.V_SCROLL | SWT.H_SCROLL
 				| SWT.WRAP);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 600;
 		gd.widthHint = 800;
-		mExportText.setLayoutData(gd);
+		exportText.setLayoutData(gd);
 
 		String eventsXML = EventRecorder.persistMacro(mEvents);
-		mExportText.setText(eventsXML);
+		exportText.setText(eventsXML);
 
 		return comp;
 	}
