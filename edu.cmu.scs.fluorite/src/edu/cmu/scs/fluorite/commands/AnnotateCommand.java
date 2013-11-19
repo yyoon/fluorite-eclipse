@@ -109,7 +109,7 @@ public class AnnotateCommand extends AbstractCommand {
 	}
 
 	public String getDescription() {
-		return null;
+		return getComment();
 	}
 
 	public String getCategory() {

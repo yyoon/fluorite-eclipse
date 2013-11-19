@@ -84,7 +84,7 @@ public class RunCommand extends AbstractCommand {
 	}
 
 	public String getDescription() {
-		return null;
+		return "Run: " + mProjectName + (mDebug ? " (Debug)" : "");
 	}
 
 	public String getCategory() {

@@ -98,7 +98,8 @@ public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 
 	@Override
 	public String getDescription() {
-		return null;
+		return "JUnit Run: " + getProjectName()
+				+ (getRootData().getSucceeded() ? " (Succeeded)" : " (Failed)");
 	}
 
 	@Override
