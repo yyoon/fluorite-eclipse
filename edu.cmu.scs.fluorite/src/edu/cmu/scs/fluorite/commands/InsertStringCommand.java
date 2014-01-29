@@ -36,6 +36,10 @@ public class InsertStringCommand extends AbstractCommand {
 	public void dump() {
 		System.out.println(getName());
 	}
+	
+	public String getData() {
+		return mData;
+	}
 
 	public boolean execute(final IEditorPart target) {
 		if (mData != null) {
