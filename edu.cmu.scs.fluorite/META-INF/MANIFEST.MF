@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.junit;bundle-version="3.3.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: edu.cmu.scs.fluorite.jar
+Bundle-ClassPath: .
 Bundle-Vendor: School of Computer Science, Carnegie Mellon University
 Export-Package: edu.cmu.scs.fluorite.commands,
  edu.cmu.scs.fluorite.model,
