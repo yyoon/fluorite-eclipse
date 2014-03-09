@@ -38,8 +38,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPartService;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
@@ -83,14 +82,8 @@ public class Utilities {
 		IWorkbenchWindow window = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow();
 		if (window != null) {
-			IPartService partService = window.getPartService();
-			IWorkbenchPart part = partService.getActivePart();
-
-			// Is the part an editor?
-			if (part instanceof IEditorPart) {
-
-				editor = (IEditorPart) part;
-			}
+			IWorkbenchPage page = window.getActivePage();
+			editor = page.getActiveEditor();
 		}
 
 		return editor;
