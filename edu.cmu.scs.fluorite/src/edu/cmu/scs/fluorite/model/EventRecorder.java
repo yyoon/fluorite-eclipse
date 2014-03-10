@@ -255,6 +255,12 @@ public class EventRecorder {
 		}
 	}
 	
+	public void fireLastDocumentChangeFinalizedEvent() {
+		if (mDocumentChangeCommands.size() > 0) {
+			fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent) mDocumentChangeCommands.get(mDocumentChangeCommands.size() - 1));
+		}
+	}
+	
 	public synchronized void fireDocumentChangeFinalizedEvent(BaseDocumentChangeEvent docChange) {
 		if (docChange instanceof FileOpenCommand) { return; }
 		
@@ -265,11 +271,18 @@ public class EventRecorder {
 		}
 		
 		mLastFiredDocumentChange = docChange;
+		mDocChangeCombinable = false;
 	}
 	
 	public void fireDocumentChangeUpdatedEvent(BaseDocumentChangeEvent docChange) {
 		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
 			((DocumentChangeListener)listenerObj).documentChangeUpdated(docChange);
+		}
+	}
+	
+	public void fireDocumentChangeAmendedEvent(BaseDocumentChangeEvent oldDocChange, BaseDocumentChangeEvent newDocChange) {
+		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
+			((DocumentChangeListener)listenerObj).documentChangeAmended(oldDocChange, newDocChange);
 		}
 	}
 
@@ -562,7 +575,34 @@ public class EventRecorder {
 	public void resumeRecording() {
 		mRecordCommands = true;
 	}
+	
+	public void amendLastDocumentChange(BaseDocumentChangeEvent newDocChange, boolean usePreviousTimestamp) {
+		BaseDocumentChangeEvent lastDocChange = (BaseDocumentChangeEvent) mDocumentChangeCommands.getLast();
+		int index = mCommands.indexOf(lastDocChange);
+		
+		// Make sure that this document change is finalized!
+		// If not, finalize it now!
+		fireDocumentChangeFinalizedEvent(lastDocChange);
 
+		// Preserve the command index.
+		newDocChange.setCommandIndex(lastDocChange.getCommandIndex());
+		
+		// Timestamp
+		long timestamp = Calendar.getInstance().getTime().getTime();
+		timestamp -= mStartTimestamp;
+		
+		newDocChange.setTimestamp(usePreviousTimestamp ? lastDocChange.getTimestamp() : timestamp);
+		newDocChange.setTimestamp2(timestamp);
+		
+		mDocumentChangeCommands.set(mDocumentChangeCommands.size() - 1, newDocChange);
+		mCommands.set(index, newDocChange);
+		
+		// To prevent from firing finalized event more than once.
+		mLastFiredDocumentChange = newDocChange;
+		
+		fireDocumentChangeAmendedEvent(lastDocChange, newDocChange);
+	}
+	
 	public void recordCommand(ICommand newCommand) {
 		if (!mRecordCommands) {
 			return;
@@ -614,13 +654,19 @@ public class EventRecorder {
 		}
 
 		// Log to the file.
-		while (commands.size() > 1
-				&& commands.getFirst() == mCommands.getFirst()) {
-			ICommand firstCmd = commands.getFirst();
+		while (!mCommands.isEmpty()) {
+			ICommand firstCmd = mCommands.getFirst();
+			LinkedList<ICommand> typeList = firstCmd instanceof BaseDocumentChangeEvent
+					? mDocumentChangeCommands
+					: mNormalCommands;
+			
+			if (typeList.size() <= 1 || typeList.getFirst() != firstCmd) {
+				break;
+			}
+			
 			LOGGER.log(Level.FINE, null, firstCmd);
-
-			// Remove the first item from the list
-			commands.removeFirst();
+			
+			typeList.removeFirst();
 			mCommands.removeFirst();
 		}
 

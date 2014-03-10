@@ -24,5 +24,10 @@ public interface DocumentChangeListener {
 	 * Fired when a documentChange event was updated (due to combining).
 	 */
 	void documentChangeUpdated(BaseDocumentChangeEvent docChange);
+	
+	/**
+	 * Fired when a document change event was replaced with another one.
+	 */
+	void documentChangeAmended(BaseDocumentChangeEvent oldDocChange, BaseDocumentChangeEvent newDocChange);
 
 }

@@ -22,5 +22,6 @@ Bundle-ClassPath: .
 Bundle-Vendor: School of Computer Science, Carnegie Mellon University
 Export-Package: edu.cmu.scs.fluorite.commands,
  edu.cmu.scs.fluorite.model,
+ edu.cmu.scs.fluorite.recorders,
  edu.cmu.scs.fluorite.util
 Eclipse-BundleShape: dir
