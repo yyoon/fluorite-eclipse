@@ -256,7 +256,7 @@ public class EventRecorder {
 	}
 	
 	public void fireLastDocumentChangeFinalizedEvent() {
-		if (mDocumentChangeCommands.size() > 0) {
+		if (mDocumentChangeCommands != null && mDocumentChangeCommands.size() > 0) {
 			fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent) mDocumentChangeCommands.get(mDocumentChangeCommands.size() - 1));
 		}
 	}
