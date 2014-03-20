@@ -25,6 +25,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.jdt.junit.JUnitCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextViewerExtension5;
@@ -34,6 +35,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchCommandConstants;
@@ -54,10 +56,11 @@ import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.recorders.CompletionRecorder;
-import edu.cmu.scs.fluorite.recorders.DebugEventSetRecorder;
 import edu.cmu.scs.fluorite.recorders.DocumentRecorder;
-import edu.cmu.scs.fluorite.recorders.ExecutionRecorder;
+import edu.cmu.scs.fluorite.recorders.EclipseCommandRecorder;
+import edu.cmu.scs.fluorite.recorders.JUnitRecorder;
 import edu.cmu.scs.fluorite.recorders.PartRecorder;
+import edu.cmu.scs.fluorite.recorders.RunRecorder;
 import edu.cmu.scs.fluorite.recorders.StyledTextEventRecorder;
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
 import edu.cmu.scs.fluorite.util.Utilities;
@@ -119,7 +122,7 @@ public class EventRecorder {
 
 	private static EventRecorder instance = null;
 
-	private final static Logger LOGGER = Logger.getLogger(EventRecorder.class
+	private static final Logger LOGGER = Logger.getLogger(EventRecorder.class
 			.getName());
 
 	public static EventRecorder getInstance() {
@@ -252,6 +255,12 @@ public class EventRecorder {
 		}
 	}
 	
+	public void fireLastDocumentChangeFinalizedEvent() {
+		if (mDocumentChangeCommands != null && mDocumentChangeCommands.size() > 0) {
+			fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent) mDocumentChangeCommands.get(mDocumentChangeCommands.size() - 1));
+		}
+	}
+	
 	public synchronized void fireDocumentChangeFinalizedEvent(BaseDocumentChangeEvent docChange) {
 		if (docChange instanceof FileOpenCommand) { return; }
 		
@@ -262,11 +271,18 @@ public class EventRecorder {
 		}
 		
 		mLastFiredDocumentChange = docChange;
+		mDocChangeCombinable = false;
 	}
 	
 	public void fireDocumentChangeUpdatedEvent(BaseDocumentChangeEvent docChange) {
 		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
 			((DocumentChangeListener)listenerObj).documentChangeUpdated(docChange);
+		}
+	}
+	
+	public void fireDocumentChangeAmendedEvent(BaseDocumentChangeEvent oldDocChange, BaseDocumentChangeEvent newDocChange) {
+		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
+			((DocumentChangeListener)listenerObj).documentChangeAmended(oldDocChange, newDocChange);
 		}
 	}
 
@@ -286,7 +302,7 @@ public class EventRecorder {
 
 		DocumentRecorder.getInstance().addListeners(editor);
 
-		ExecutionRecorder.getInstance().addListeners(editor);
+		EclipseCommandRecorder.getInstance().addListeners(editor);
 
 		CompletionRecorder.getInstance().addListeners(editor);
 
@@ -325,7 +341,7 @@ public class EventRecorder {
 
 			DocumentRecorder.getInstance().removeListeners(mEditor);
 
-			ExecutionRecorder.getInstance().removeListeners(mEditor);
+			EclipseCommandRecorder.getInstance().removeListeners(mEditor);
 
 			CompletionRecorder.getInstance().removeListeners(mEditor);
 
@@ -399,16 +415,17 @@ public class EventRecorder {
 			IPartService service = window.getPartService();
 			if (service != null) {
 				service.addPartListener(PartRecorder.getInstance());
-
-				if (service.getActivePart() instanceof IEditorPart) {
-					PartRecorder.getInstance().partActivated(
-							service.getActivePart());
+				
+				if (service.getActivePartReference() instanceof IEditorReference) {
+					PartRecorder.getInstance().partActivated(service.getActivePartReference());
 				}
 			}
 		}
 
 		DebugPlugin.getDefault().addDebugEventListener(
-				DebugEventSetRecorder.getInstance());
+				RunRecorder.getInstance());
+		
+		JUnitCore.addTestRunListener(JUnitRecorder.getInstance());
 
 		initializeLogger();
 
@@ -457,7 +474,7 @@ public class EventRecorder {
 
 		try {
 			DebugPlugin.getDefault().removeDebugEventListener(
-					DebugEventSetRecorder.getInstance());
+					RunRecorder.getInstance());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -558,7 +575,34 @@ public class EventRecorder {
 	public void resumeRecording() {
 		mRecordCommands = true;
 	}
+	
+	public void amendLastDocumentChange(BaseDocumentChangeEvent newDocChange, boolean usePreviousTimestamp) {
+		BaseDocumentChangeEvent lastDocChange = (BaseDocumentChangeEvent) mDocumentChangeCommands.getLast();
+		int index = mCommands.indexOf(lastDocChange);
+		
+		// Make sure that this document change is finalized!
+		// If not, finalize it now!
+		fireDocumentChangeFinalizedEvent(lastDocChange);
 
+		// Preserve the command index.
+		newDocChange.setCommandIndex(lastDocChange.getCommandIndex());
+		
+		// Timestamp
+		long timestamp = Calendar.getInstance().getTime().getTime();
+		timestamp -= mStartTimestamp;
+		
+		newDocChange.setTimestamp(usePreviousTimestamp ? lastDocChange.getTimestamp() : timestamp);
+		newDocChange.setTimestamp2(timestamp);
+		
+		mDocumentChangeCommands.set(mDocumentChangeCommands.size() - 1, newDocChange);
+		mCommands.set(index, newDocChange);
+		
+		// To prevent from firing finalized event more than once.
+		mLastFiredDocumentChange = newDocChange;
+		
+		fireDocumentChangeAmendedEvent(lastDocChange, newDocChange);
+	}
+	
 	public void recordCommand(ICommand newCommand) {
 		if (!mRecordCommands) {
 			return;
@@ -610,13 +654,19 @@ public class EventRecorder {
 		}
 
 		// Log to the file.
-		while (commands.size() > 1
-				&& commands.getFirst() == mCommands.getFirst()) {
-			ICommand firstCmd = commands.getFirst();
+		while (!mCommands.isEmpty()) {
+			ICommand firstCmd = mCommands.getFirst();
+			LinkedList<ICommand> typeList = firstCmd instanceof BaseDocumentChangeEvent
+					? mDocumentChangeCommands
+					: mNormalCommands;
+			
+			if (typeList.size() <= 1 || typeList.getFirst() != firstCmd) {
+				break;
+			}
+			
 			LOGGER.log(Level.FINE, null, firstCmd);
-
-			// Remove the first item from the list
-			commands.removeFirst();
+			
+			typeList.removeFirst();
 			mCommands.removeFirst();
 		}
 

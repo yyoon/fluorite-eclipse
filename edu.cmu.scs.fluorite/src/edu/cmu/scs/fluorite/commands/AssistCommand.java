@@ -37,6 +37,14 @@ public class AssistCommand extends AbstractCommand {
 				: autoActivated;
 		mContext = context;
 	}
+	
+	public AssistType getAssistType() {
+		return mAssistType;
+	}
+	
+	public StartEndType getStartEndType() {
+		return mStartEndType;
+	}
 
 	public boolean execute(IEditorPart target) {
 		return false;

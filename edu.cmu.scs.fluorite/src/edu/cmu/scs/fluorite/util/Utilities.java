@@ -38,8 +38,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPartService;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
@@ -51,6 +50,7 @@ import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.commands.EclipseCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
+import edu.cmu.scs.fluorite.commands.ITreeDataCommand;
 import edu.cmu.scs.fluorite.commands.InsertStringCommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.plugin.Activator;
@@ -82,14 +82,8 @@ public class Utilities {
 		IWorkbenchWindow window = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow();
 		if (window != null) {
-			IPartService partService = window.getPartService();
-			IWorkbenchPart part = partService.getActivePart();
-
-			// Is the part an editor?
-			if (part instanceof IEditorPart) {
-
-				editor = (IEditorPart) part;
-			}
+			IWorkbenchPage page = window.getActivePage();
+			editor = page.getActiveEditor();
 		}
 
 		return editor;
@@ -559,20 +553,29 @@ public class Utilities {
 		}
 
 		// if there's no data
-		if (data == null || data.size() == 0) {
+		boolean treeDataExists = command instanceof ITreeDataCommand && ((ITreeDataCommand) command).getRootElement() != null;
+		if ((data == null || data.size() == 0) && treeDataExists == false) {
 			buf.append(" />" + NewLine);
 		} else {
 			buf.append(">" + NewLine);
 
 			// write each data element
-			for (String dataKey : data.keySet()) {
-				String dataValue = data.get(dataKey);
-
-				buf.append("    <" + dataKey + ">");
-				String adjustedDataValue = dataValue.replace("]]>",
-						"]]]]><![CDATA[>");
-				buf.append("<![CDATA[" + adjustedDataValue + "]]>");
-				buf.append("</" + dataKey + ">" + NewLine);
+			if (data != null) {
+				for (String dataKey : data.keySet()) {
+					String dataValue = data.get(dataKey);
+	
+					buf.append("    <" + dataKey + ">");
+					String adjustedDataValue = dataValue.replace("]]>",
+							"]]]]><![CDATA[>");
+					buf.append("<![CDATA[" + adjustedDataValue + "]]>");
+					buf.append("</" + dataKey + ">" + NewLine);
+				}
+			}
+			
+			// write tree data
+			if (treeDataExists) {
+				ITreeDataCommand treeCommand = (ITreeDataCommand) command;
+				writeTreeData(buf, 2, treeCommand.getRootElement(), treeCommand);
 			}
 
 			// close the tag
@@ -580,6 +583,40 @@ public class Utilities {
 		}
 
 		return buf.toString();
+	}
+	
+	private static void writeTreeData(StringBuffer buf, int indentLevel, Object element, ITreeDataCommand treeCommand) {
+		if (element == null) {
+			return;
+		}
+		
+		for (int i = 0; i < indentLevel; ++i) {
+			buf.append("  ");
+		}
+		
+		String tagName = treeCommand.getTagName(element);
+		buf.append("<" + tagName);
+		
+		Map<String, String> attrMap = treeCommand.getAttrMap(element);
+		for (String attrKey : attrMap.keySet()) {
+			buf.append(" " + attrKey + "=\"" + attrMap.get(attrKey) + "\"");
+		}
+		
+		Object[] children = treeCommand.getChildren(element);
+		if (children != null && children.length > 0) {
+			buf.append(">" + NewLine);
+			for (Object childElement : children) {
+				writeTreeData(buf, indentLevel + 1, childElement, treeCommand);
+			}
+			
+			for (int i = 0; i < indentLevel; ++i) {
+				buf.append("  ");
+			}
+			buf.append("</" + tagName + ">" + NewLine);
+		}
+		else {
+			buf.append(" />" + NewLine);
+		}
 	}
 
 	public static void persistCommand(Document doc, Element commandElement,

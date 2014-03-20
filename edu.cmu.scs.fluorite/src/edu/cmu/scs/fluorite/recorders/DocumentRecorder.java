@@ -24,6 +24,42 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 
 		return instance;
 	}
+	
+	private static class InterceptInfo {
+		private IDocument doc;
+		private long beforeStamp;
+		private long afterStamp;
+		private IDocumentRecorderInterceptor interceptor;
+		
+		private boolean beforeMatched;
+		
+		public InterceptInfo(IDocument doc, long beforeStamp, long afterStamp, IDocumentRecorderInterceptor interceptor) {
+			this.doc = doc;
+			this.beforeStamp = beforeStamp;
+			this.afterStamp = afterStamp;
+			this.interceptor = interceptor;
+			
+			this.beforeMatched = false;
+		}
+		
+		public boolean matchesBefore(IDocument doc, long beforeStamp) {
+			return this.doc == doc && this.beforeStamp == beforeStamp;
+		}
+		
+		public void setBeforeMatched() {
+			this.beforeMatched = true;
+		}
+		
+		public boolean matchesAfter(IDocument doc, long afterStamp) {
+			return this.beforeMatched == true && this.doc == doc && this.afterStamp == afterStamp;
+		}
+		
+		public IDocumentRecorderInterceptor getListener() {
+			return this.interceptor;
+		}
+	}
+	
+	private InterceptInfo interceptInfo;
 
 	private DocumentRecorder() {
 		super();
@@ -48,8 +84,26 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 			e.printStackTrace();
 		}
 	}
+	
+	public void setIntercept(IDocument doc, long beforeStamp, long afterStamp, IDocumentRecorderInterceptor interceptor) {
+		if (this.interceptInfo != null) {
+			throw new IllegalStateException();
+		}
+		
+		this.interceptInfo = new InterceptInfo(doc, beforeStamp, afterStamp, interceptor);
+	}
 
 	public void documentAboutToBeChanged(DocumentEvent event) {
+		// Check if there is an interceptor set.
+		if (this.interceptInfo != null) {
+			if (this.interceptInfo.matchesBefore(event.getDocument(), event.getModificationStamp())) {
+				this.interceptInfo.setBeforeMatched();
+				return;
+			} else {
+				this.interceptInfo = null;
+			}
+		}
+		
 		// DeleteCommand or ReplaceCommand
 		if (event.getLength() > 0) {
 			IDocument doc = event.getDocument();
@@ -97,6 +151,17 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 			getRecorder().endIncrementalFindMode();
 		}
 
+		// Check if there is an interceptor set.
+		if (this.interceptInfo != null) {
+			if (this.interceptInfo.matchesAfter(event.getDocument(), event.getModificationStamp())) {
+				this.interceptInfo.getListener().documentChanged(event, getRecorder());
+				this.interceptInfo = null;
+				return;
+			} else {
+				this.interceptInfo = null;
+			}
+		}
+		
 		// InsertCommand
 		if (event.getText().length() > 0 && event.getLength() <= 0) {
 			try {

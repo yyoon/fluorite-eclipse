@@ -123,7 +123,17 @@ public class EclipseCommand extends AbstractCommand {
 				.getAdapter(ICommandService.class);
 		Command command = cs.getCommand(mCommandId);
 		try {
-			return command.getDescription();
+			String description = command.getDescription();
+			if (description == null) {
+				description = command.getName();
+				
+				// Trim ... at the end.
+				if (description != null && description.endsWith("...")) {
+					description = description.substring(0, description.length() - 3);
+				}
+			}
+			
+			return description;
 		} catch (NotDefinedException e) {
 			e.printStackTrace();
 		}

@@ -53,8 +53,23 @@ public class FluoriteXMLFormatter extends Formatter {
 
 	@Override
 	public String getHead(Handler h) {
-		return "<Events startTimestamp=\"" + Long.toString(mStartTimestamp)
-				+ "\" logVersion=\"" + mLogVersion + "\">" + Utilities.NewLine;
+		String lineSeparator = Utilities.NewLine;
+		lineSeparator = lineSeparator.replace("\r", "\\r");
+		lineSeparator = lineSeparator.replace("\n", "\\n");
+		
+		return String.format(
+				"<Events"
+				+ " startTimestamp=\"%1$s\""
+				+ " logVersion=\"%2$s\""
+				+ " osName=\"%3$s\""
+				+ " osVersion=\"%4$s\""
+				+ " lineSeparator=\"%5$s\""
+				+ ">%n",
+				mStartTimestamp,
+				mLogVersion,
+				System.getProperty("os.name"),
+				System.getProperty("os.version"),
+				lineSeparator);
 	}
 
 	@Override

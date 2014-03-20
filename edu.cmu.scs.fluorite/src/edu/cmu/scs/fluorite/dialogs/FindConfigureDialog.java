@@ -37,12 +37,9 @@ public class FindConfigureDialog extends Dialog {
 	private Text mReplaceText;
 	private Button mCaseSensitive;
 	private Button mForward;
-	private Button mBackward;
 	private Button mRegExpMode;
 	private Button mMatchWord;
 	private Button mWrap;
-	private Button mIncremental;
-	private Button mAll;
 	private Button mSelectedLines;
 
 	private Button mReplaceAndFindButton;
@@ -124,17 +121,17 @@ public class FindConfigureDialog extends Dialog {
 
 		mForward = new Button(dirGroup, SWT.RADIO);
 		mForward.setText("F&orward");
-		mBackward = new Button(dirGroup, SWT.RADIO);
-		mBackward.setText("&Backward");
+		Button backward = new Button(dirGroup, SWT.RADIO);
+		backward.setText("&Backward");
 
 		Group scopeGroup = new Group(dirScopeComp, SWT.NONE);
 		scopeGroup.setText("Scope");
 		scopeGroup.setLayout(new GridLayout());
 		scopeGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		mAll = new Button(scopeGroup, SWT.RADIO);
-		mAll.setText("A&ll");
-		mAll.addSelectionListener(new SelectionAdapter() {
+		Button all = new Button(scopeGroup, SWT.RADIO);
+		all.setText("A&ll");
+		all.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -174,9 +171,9 @@ public class FindConfigureDialog extends Dialog {
 		mMatchWord = new Button(optionsGroup, SWT.CHECK);
 		mMatchWord.setText("&Whole word");
 
-		mIncremental = new Button(optionsGroup, SWT.CHECK);
-		mIncremental.setText("&Incremental");
-		mIncremental.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		Button incremental = new Button(optionsGroup, SWT.CHECK);
+		incremental.setText("&Incremental");
+		incremental.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		mRegExpMode = new Button(optionsGroup, SWT.CHECK);
 		mRegExpMode.setText("Regular e&xpressions");
@@ -213,7 +210,7 @@ public class FindConfigureDialog extends Dialog {
 		if (prefStore.getBoolean(Initializer.Pref_FindForward)) {
 			mForward.setSelection(true);
 		} else {
-			mBackward.setSelection(true);
+			backward.setSelection(true);
 		}
 
 		mCaseSensitive.setSelection(prefStore
@@ -224,7 +221,7 @@ public class FindConfigureDialog extends Dialog {
 				.getBoolean(Initializer.Pref_FindWholeWord));
 
 		// TODO: implement incremental find later.
-		mIncremental.setEnabled(false);
+		incremental.setEnabled(false);
 
 		mRegExpMode.setSelection(prefStore
 				.getBoolean(Initializer.Pref_FindRegExp));
@@ -246,7 +243,7 @@ public class FindConfigureDialog extends Dialog {
 
 				mSelectedLines.setSelection(true);
 			} else {
-				mAll.setSelection(true);
+				all.setSelection(true);
 			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
