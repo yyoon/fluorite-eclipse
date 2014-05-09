@@ -247,6 +247,10 @@ public class Replace extends BaseDocumentChangeEvent {
 	public boolean isEntireFileChange() {
 		return mEntireFile;
 	}
+	
+	public void setEntireFileChange(boolean value) {
+		mEntireFile = value;
+	}
 
 	@Override
 	public boolean combine(ICommand anotherCommand) {
