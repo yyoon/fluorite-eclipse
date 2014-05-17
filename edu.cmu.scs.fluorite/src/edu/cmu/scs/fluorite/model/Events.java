@@ -26,6 +26,15 @@ public class Events {
 	public void addCommand(ICommand command) {
 		mCommands.add(command);
 	}
+	
+	public boolean removeLastCommand() {
+		if (hasEvents()) {
+			mCommands.remove(mCommands.size() - 1);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public boolean hasEvents() {
 		return mCommands.size() > 0;

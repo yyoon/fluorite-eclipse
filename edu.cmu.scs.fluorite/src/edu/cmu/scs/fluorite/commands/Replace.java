@@ -31,6 +31,8 @@ public class Replace extends BaseDocumentChangeEvent {
 		mDeletedText = deletedText;
 		mInsertedText = insertedText;
 		
+		mEntireFile = false;
+		
 		if (document != null) {
 
 			StringBuffer documentContent = new StringBuffer(document.get());
@@ -42,6 +44,10 @@ public class Replace extends BaseDocumentChangeEvent {
 
 			documentContent.replace(offset, offset, insertedText);
 			calcNumericalValues(documentContent.toString());
+			
+			if (offset == 0 && length == document.getLength()) {
+				mEntireFile = true;
+			}
 
 		}
 	}
@@ -54,6 +60,8 @@ public class Replace extends BaseDocumentChangeEvent {
 
 	private String mDeletedText;
 	private String mInsertedText;
+	
+	private boolean mEntireFile;
 
 	private Map<String, Integer> mIntermediateNumericalValues;
 
@@ -235,10 +243,22 @@ public class Replace extends BaseDocumentChangeEvent {
 	public void setInsertedText(String insertedText) {
 		this.mInsertedText = insertedText;
 	}
+	
+	public boolean isEntireFileChange() {
+		return mEntireFile;
+	}
+	
+	public void setEntireFileChange(boolean value) {
+		mEntireFile = value;
+	}
 
 	@Override
 	public boolean combine(ICommand anotherCommand) {
 		if (!(anotherCommand instanceof Insert)) {
+			return false;
+		}
+		
+		if (isEntireFileChange()) {
 			return false;
 		}
 
