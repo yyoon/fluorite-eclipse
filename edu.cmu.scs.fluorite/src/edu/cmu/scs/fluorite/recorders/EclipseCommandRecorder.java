@@ -144,6 +144,8 @@ public class EclipseCommandRecorder extends BaseRecorder implements
 			getRecorder().recordCommand(
 					createCommandByEclipseCommandId(commandId));
 		}
+		
+		mParameters.clear();
 	}
 
 	public void preExecute(String commandId, ExecutionEvent event) {
@@ -179,7 +181,11 @@ public class EclipseCommandRecorder extends BaseRecorder implements
 		} else if (commandId.equals("org.eclipse.ui.edit.paste")) {
 			return new PasteCommand();
 		} else {
-			return new EclipseCommand(commandId, mParameters);
+			// Copy the parameters.
+			Map<String, String> parameters = new HashMap<String, String>();
+			parameters.putAll(mParameters);
+			
+			return new EclipseCommand(commandId, parameters);
 		}
 	}
 }
