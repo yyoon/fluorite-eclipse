@@ -1,5 +1,6 @@
 package edu.cmu.scs.fluorite.commands;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -313,11 +314,15 @@ public class Replace extends BaseDocumentChangeEvent {
 		
 		return original;
 	}
+	
+	private Map<String, Integer> getIntermediateNumericalValues() {
+		return Collections.unmodifiableMap(mIntermediateNumericalValues);
+	}
 
 	@Override
 	public double getY1() {
-		if (getNumericalValues() != null && getNumericalValues().containsKey("docLength")) {
-			return 100.0 * getOffset() / getNumericalValues().get("docLength"); 
+		if (getIntermediateNumericalValues() != null && getIntermediateNumericalValues().containsKey("docLength")) {
+			return 100.0 * getOffset() / (getIntermediateNumericalValues().get("docLength") + getLength()); 
 		}
 		
 		return 0;
@@ -325,8 +330,8 @@ public class Replace extends BaseDocumentChangeEvent {
 
 	@Override
 	public double getY2() {
-		if (getNumericalValues() != null && getNumericalValues().containsKey("docLength")) {
-			return 100.0 * (getOffset() + getLength()) / getNumericalValues().get("docLength"); 
+		if (getIntermediateNumericalValues() != null && getIntermediateNumericalValues().containsKey("docLength")) {
+			return 100.0 * (getOffset() + getLength()) / (getIntermediateNumericalValues().get("docLength") + getLength()); 
 		}
 		
 		return 100;
