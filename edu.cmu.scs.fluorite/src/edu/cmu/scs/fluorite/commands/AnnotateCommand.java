@@ -4,18 +4,41 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IEditorPart;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.cmu.scs.fluorite.dialogs.AddAnnotationDialog;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
 public class AnnotateCommand extends AbstractCommand {
-	
-	public static final int CANCEL = AddAnnotationDialog.CANCEL;
+
+	// log version > 0.2.0
+	public static final int CANCEL = Window.CANCEL;
+	public static final int OTHER = Window.OK;
+	public static final int BACKTRACKING = 2;
+	public static final int WRITING_NEW_CODE = 3;
+	public static final int TUNING_PARAMETERS = 4;
+	public static final int LEARNING_API = 5;
+	public static final int TRYING_OUT_UI_DESIGN = 6;
+	public static final int CORRECTING_LOGIC = 7;
+	public static final int TRYING_OUT_DIFFERENT_ALGORITHMS = 8;
+	public static final int DEBUGGING = 9;
+
+	public static final String[] BUTTON_NAMES = {
+		"Other",
+		"Cancel",
+		"Backtracking",
+		"Writing new code",
+		"Tuning parameters",
+		"Learning API",
+		"Trying out UI design",
+		"Correcting Logic",
+		"Trying out different algorithms",
+		"Debugging",
+	};
 	
 	public AnnotateCommand() {
 	}
@@ -73,8 +96,7 @@ public class AnnotateCommand extends AbstractCommand {
 		NodeList nodeList = null;
 		
 		if ((attr = commandElement.getAttributeNode("selection")) != null) {
-			mId = Arrays.asList(AddAnnotationDialog.BUTTON_NAMES)
-					.indexOf(attr.getValue());
+			mId = Arrays.asList(BUTTON_NAMES).indexOf(attr.getValue());
 		}
 		else {
 			mId = -1;
@@ -97,8 +119,8 @@ public class AnnotateCommand extends AbstractCommand {
 	private String getSelectionString() {
 		String selectionString = "Other";
 		
-		if (0 <= mId && mId <= AddAnnotationDialog.BUTTON_NAMES.length) {
-			selectionString = AddAnnotationDialog.BUTTON_NAMES[mId];
+		if (0 <= mId && mId <= BUTTON_NAMES.length) {
+			selectionString = BUTTON_NAMES[mId];
 		}
 		
 		return selectionString;
