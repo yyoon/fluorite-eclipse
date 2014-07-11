@@ -48,10 +48,24 @@ public class AnnotateCommand extends AbstractCommand implements ITimestampOverri
 	public AnnotateCommand(int id, String comment) {
 		mId = id;
 		mComment = comment;
+		
+		mOverrideTimestamp = false;
+		mDisplayTimestamp = -1;
+	}
+	
+	public AnnotateCommand(int id, String comment, long displayTimestamp) {
+		mId = id;
+		mComment = comment;
+		
+		mOverrideTimestamp = true;
+		mDisplayTimestamp = displayTimestamp;
 	}
 
 	private int mId;
 	private String mComment;
+	
+	private boolean mOverrideTimestamp;
+	private long mDisplayTimestamp;
 
 	public int getId() {
 		return mId;
@@ -63,6 +77,14 @@ public class AnnotateCommand extends AbstractCommand implements ITimestampOverri
 
 	public String getComment() {
 		return mComment;
+	}
+	
+	public boolean overridesTimestamp() {
+		return mOverrideTimestamp;
+	}
+	
+	public long getDisplayTimestamp() {
+		return this.mDisplayTimestamp;
 	}
 
 	public void setmComment(String mComment) {
@@ -80,6 +102,11 @@ public class AnnotateCommand extends AbstractCommand implements ITimestampOverri
 		Map<String, String> attrMap = new HashMap<String, String>();
 		String selectionString = getSelectionString();
 		attrMap.put("selection", selectionString);
+		
+		if (overridesTimestamp()) {
+			attrMap.put("displayTimestamp", Long.toString(getDisplayTimestamp()));
+		}
+		
 		return attrMap;
 	}
 
@@ -102,6 +129,14 @@ public class AnnotateCommand extends AbstractCommand implements ITimestampOverri
 		}
 		else {
 			mId = -1;
+		}
+		
+		if ((attr = commandElement.getAttributeNode("displayTimestamp")) != null) {
+			mOverrideTimestamp = true;
+			mDisplayTimestamp = Long.parseLong(attr.getValue());
+		} else {
+			mOverrideTimestamp = false;
+			mDisplayTimestamp = -1;
 		}
 		
 		if ((nodeList = commandElement.getElementsByTagName("comment")).getLength() > 0) {
@@ -150,7 +185,11 @@ public class AnnotateCommand extends AbstractCommand implements ITimestampOverri
 
 	@Override
 	public long getTimestampForDisplay() {
-		return getSessionId() + getTimestamp();
+		if (overridesTimestamp()) {
+			return getDisplayTimestamp();
+		} else {
+			return getSessionId() + getTimestamp();
+		}
 	}
 
 }
