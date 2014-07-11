@@ -13,7 +13,7 @@ import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
-public class AnnotateCommand extends AbstractCommand implements ITimestampOverridable {
+public class AnnotateCommand extends AbstractCommand implements ITimestampOverridable, ITypeOverridable {
 
 	// log version > 0.2.0
 	public static final int CANCEL = Window.CANCEL;
@@ -189,6 +189,15 @@ public class AnnotateCommand extends AbstractCommand implements ITimestampOverri
 			return getDisplayTimestamp();
 		} else {
 			return getSessionId() + getTimestamp();
+		}
+	}
+
+	@Override
+	public String getTypeForDisplay() {
+		if (getId() == TAG) {
+			return "Tag";
+		} else {
+			return getCommandType();
 		}
 	}
 

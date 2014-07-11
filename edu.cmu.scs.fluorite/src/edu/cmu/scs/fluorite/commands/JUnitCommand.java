@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
 
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
-public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
+public class JUnitCommand extends AbstractCommand implements ITreeDataCommand, ITypeOverridable {
 	
 	public JUnitCommand() {
 	}
@@ -263,6 +263,15 @@ public class JUnitCommand extends AbstractCommand implements ITreeDataCommand {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public String getTypeForDisplay() {
+		if (getRootData() != null) {
+			return getCommandType() + "(" + Boolean.toString(getRootData().getSucceeded()) + ")";
+		} else {
+			return getCommandType();
+		}
 	}
 
 }
