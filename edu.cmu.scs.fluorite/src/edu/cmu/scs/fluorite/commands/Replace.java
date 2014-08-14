@@ -295,7 +295,7 @@ public class Replace extends BaseDocumentChangeEvent {
 	}
 
 	@Override
-	public void applyToDocument(IDocument doc) {
+	public void apply(IDocument doc) {
 		try {
 			doc.replace(getOffset(), getLength(), getInsertedText());
 		} catch (BadLocationException e) {
@@ -304,7 +304,7 @@ public class Replace extends BaseDocumentChangeEvent {
 	}
 
 	@Override
-	public String applyToString(String original) {
+	public String apply(String original) {
 		try {
 			return original.substring(0, getOffset()) + getInsertedText()
 					+ original.substring(getOffset() + getLength());
@@ -315,6 +315,45 @@ public class Replace extends BaseDocumentChangeEvent {
 		return original;
 	}
 	
+	@Override
+	public void apply(StringBuilder builder) {
+		try {
+			builder.replace(getOffset(), getOffset() + getLength(), getInsertedText());
+		} catch (StringIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void applyInverse(IDocument doc) {
+		try {
+			doc.replace(getOffset(), getInsertionLength(), getDeletedText());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String applyInverse(String original) {
+		try {
+			return original.substring(0, getOffset()) + getDeletedText()
+					+ original.substring(getOffset() + getInsertionLength());
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+		
+		return original;
+	}
+
+	@Override
+	public void applyInverse(StringBuilder builder) {
+		try {
+			builder.replace(getOffset(), getOffset() + getInsertionLength(), getDeletedText());
+		} catch (StringIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private Map<String, Integer> getIntermediateNumericalValues() {
 		return Collections.unmodifiableMap(mIntermediateNumericalValues);
 	}

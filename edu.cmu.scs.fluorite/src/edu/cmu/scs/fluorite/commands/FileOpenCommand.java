@@ -178,19 +178,41 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	}
 
 	@Override
-	public void applyToDocument(IDocument doc) {
+	public void apply(IDocument doc) {
 		if (getSnapshot() != null) {
 			doc.set(getSnapshot());
 		}
 	}
 
 	@Override
-	public String applyToString(String original) {
+	public String apply(String original) {
 		if (getSnapshot() != null) {
 			return getSnapshot();
 		} else {
 			return original;
 		}
+	}
+
+	@Override
+	public void apply(StringBuilder builder) {
+		if (getSnapshot() != null) {
+			builder.replace(0, builder.length(), getSnapshot());
+		}
+	}
+
+	@Override
+	public void applyInverse(IDocument doc) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String applyInverse(String original) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void applyInverse(StringBuilder builder) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

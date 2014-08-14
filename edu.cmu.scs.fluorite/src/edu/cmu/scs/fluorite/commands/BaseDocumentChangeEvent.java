@@ -129,9 +129,17 @@ public abstract class BaseDocumentChangeEvent extends AbstractCommand {
 		return text;
 	}
 
-	public abstract void applyToDocument(IDocument doc);
+	public abstract void apply(IDocument doc);
 	
-	public abstract String applyToString(String original);
+	public abstract String apply(String original);
+	
+	public abstract void apply(StringBuilder builder);
+	
+	public abstract void applyInverse(IDocument doc);
+	
+	public abstract String applyInverse(String original);
+	
+	public abstract void applyInverse(StringBuilder builder);
 	
 	public abstract double getY1();
 	
