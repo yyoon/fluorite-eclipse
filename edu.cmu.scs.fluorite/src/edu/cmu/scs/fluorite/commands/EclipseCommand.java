@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
 
-public class EclipseCommand extends AbstractCommand {
+public class EclipseCommand extends AbstractCommand implements ITypeOverridable {
 
 	public static final String XML_ID_ATTR = "commandID";
 	
@@ -203,5 +203,10 @@ public class EclipseCommand extends AbstractCommand {
 		}
 
 		return false;
+	}
+
+	@Override
+	public String getTypeForDisplay() {
+		return getCommandID();
 	}
 }

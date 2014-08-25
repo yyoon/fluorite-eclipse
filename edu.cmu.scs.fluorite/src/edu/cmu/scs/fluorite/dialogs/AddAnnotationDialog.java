@@ -1,7 +1,6 @@
 package edu.cmu.scs.fluorite.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -11,33 +10,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import edu.cmu.scs.fluorite.commands.AnnotateCommand;
+
 public class AddAnnotationDialog extends Dialog {
-
-	// log version > 0.2.0
-	public static final int CANCEL = Window.CANCEL;
-	public static final int OTHER = Window.OK;
-	public static final int BACKTRACKING = 2;
-	public static final int WRITING_NEW_CODE = 3;
-	public static final int TUNING_PARAMETERS = 4;
-	public static final int LEARNING_API = 5;
-	public static final int TRYING_OUT_UI_DESIGN = 6;
-	public static final int CORRECTING_LOGIC = 7;
-	public static final int TRYING_OUT_DIFFERENT_ALGORITHMS = 8;
-	public static final int DEBUGGING = 9;
 	
-	public static final String[] BUTTON_NAMES = {
-		"Other",
-		"Cancel",
-		"Backtracking",
-		"Writing new code",
-		"Tuning parameters",
-		"Learning API",
-		"Trying out UI design",
-		"Correcting Logic",
-		"Trying out different algorithms",
-		"Debugging",
-	};
-
 	private Text textComment;
 	private String comment;
 
@@ -51,16 +27,16 @@ public class AddAnnotationDialog extends Dialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		// createButton(parent, BACKTRACKING, "Backtracking", true);
 		// createButton(parent, WRITING_NEW_CODE, "Writing new code", false);
-		createButton(parent, TUNING_PARAMETERS, "Tuning parameters", false);
-		createButton(parent, LEARNING_API, "Learning an API", false);
-		createButton(parent, TRYING_OUT_UI_DESIGN, "Trying another UI design",
+		createButton(parent, AnnotateCommand.TUNING_PARAMETERS, "Tuning parameters", false);
+		createButton(parent, AnnotateCommand.LEARNING_API, "Learning an API", false);
+		createButton(parent, AnnotateCommand.TRYING_OUT_UI_DESIGN, "Trying another UI design",
 				false);
-		createButton(parent, CORRECTING_LOGIC, "Correcting logic", false);
-		createButton(parent, TRYING_OUT_DIFFERENT_ALGORITHMS,
+		createButton(parent, AnnotateCommand.CORRECTING_LOGIC, "Correcting logic", false);
+		createButton(parent, AnnotateCommand.TRYING_OUT_DIFFERENT_ALGORITHMS,
 				"Trying another algorithm", false);
-		createButton(parent, DEBUGGING, "Debugging", false);
-		createButton(parent, OTHER, "Other", true);
-		createButton(parent, CANCEL, "Cancel", false);
+		createButton(parent, AnnotateCommand.DEBUGGING, "Debugging", false);
+		createButton(parent, AnnotateCommand.OTHER, "Other", true);
+		createButton(parent, AnnotateCommand.CANCEL, "Cancel", false);
 		
 		// Modify the parent's layout
 		GridLayout gridLayout = new GridLayout(3, true);

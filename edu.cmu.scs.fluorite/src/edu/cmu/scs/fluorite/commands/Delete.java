@@ -204,7 +204,7 @@ public class Delete extends BaseDocumentChangeEvent {
 	}
 
 	@Override
-	public void applyToDocument(IDocument doc) {
+	public void apply(IDocument doc) {
 		try {
 			doc.replace(getOffset(), getLength(), "");
 		} catch (BadLocationException e) {
@@ -213,7 +213,7 @@ public class Delete extends BaseDocumentChangeEvent {
 	}
 
 	@Override
-	public String applyToString(String original) {
+	public String apply(String original) {
 		try {
 			return original.substring(0, getOffset())
 					+ original.substring(getOffset() + getLength());
@@ -222,6 +222,45 @@ public class Delete extends BaseDocumentChangeEvent {
 		}
 		
 		return original;
+	}
+
+	@Override
+	public void apply(StringBuilder builder) {
+		try {
+			builder.delete(getOffset(), getOffset() + getLength());
+		} catch (StringIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void applyInverse(IDocument doc) {
+		try {
+			doc.replace(getOffset(), 0, getText());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String applyInverse(String original) {
+		try {
+			return original.substring(0, getOffset()) + getText()
+					+ original.substring(getOffset());
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+		
+		return original;
+	}
+
+	@Override
+	public void applyInverse(StringBuilder builder) {
+		try {
+			builder.insert(getOffset(), getText());
+		} catch (StringIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

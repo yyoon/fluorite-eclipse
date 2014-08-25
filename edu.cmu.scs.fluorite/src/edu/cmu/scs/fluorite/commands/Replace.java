@@ -1,5 +1,6 @@
 package edu.cmu.scs.fluorite.commands;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -294,7 +295,7 @@ public class Replace extends BaseDocumentChangeEvent {
 	}
 
 	@Override
-	public void applyToDocument(IDocument doc) {
+	public void apply(IDocument doc) {
 		try {
 			doc.replace(getOffset(), getLength(), getInsertedText());
 		} catch (BadLocationException e) {
@@ -303,7 +304,7 @@ public class Replace extends BaseDocumentChangeEvent {
 	}
 
 	@Override
-	public String applyToString(String original) {
+	public String apply(String original) {
 		try {
 			return original.substring(0, getOffset()) + getInsertedText()
 					+ original.substring(getOffset() + getLength());
@@ -313,11 +314,54 @@ public class Replace extends BaseDocumentChangeEvent {
 		
 		return original;
 	}
+	
+	@Override
+	public void apply(StringBuilder builder) {
+		try {
+			builder.replace(getOffset(), getOffset() + getLength(), getInsertedText());
+		} catch (StringIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void applyInverse(IDocument doc) {
+		try {
+			doc.replace(getOffset(), getInsertionLength(), getDeletedText());
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String applyInverse(String original) {
+		try {
+			return original.substring(0, getOffset()) + getDeletedText()
+					+ original.substring(getOffset() + getInsertionLength());
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+		
+		return original;
+	}
+
+	@Override
+	public void applyInverse(StringBuilder builder) {
+		try {
+			builder.replace(getOffset(), getOffset() + getInsertionLength(), getDeletedText());
+		} catch (StringIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Map<String, Integer> getIntermediateNumericalValues() {
+		return Collections.unmodifiableMap(mIntermediateNumericalValues);
+	}
 
 	@Override
 	public double getY1() {
-		if (getNumericalValues() != null && getNumericalValues().containsKey("docLength")) {
-			return 100.0 * getOffset() / getNumericalValues().get("docLength"); 
+		if (getIntermediateNumericalValues() != null && getIntermediateNumericalValues().containsKey("docLength")) {
+			return 100.0 * getOffset() / (getIntermediateNumericalValues().get("docLength") + getLength()); 
 		}
 		
 		return 0;
@@ -325,8 +369,8 @@ public class Replace extends BaseDocumentChangeEvent {
 
 	@Override
 	public double getY2() {
-		if (getNumericalValues() != null && getNumericalValues().containsKey("docLength")) {
-			return 100.0 * (getOffset() + getLength()) / getNumericalValues().get("docLength"); 
+		if (getIntermediateNumericalValues() != null && getIntermediateNumericalValues().containsKey("docLength")) {
+			return 100.0 * (getOffset() + getLength()) / (getIntermediateNumericalValues().get("docLength") + getLength()); 
 		}
 		
 		return 100;
