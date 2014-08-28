@@ -140,6 +140,12 @@ public class Insert extends BaseDocumentChangeEvent {
 				|| nextCommand.getText() != null && getText() == null) {
 			return false;
 		}
+		
+		// Do not merge multiple lines of edits.
+		if (getText().contains("\r") || getText().contains("\n")
+				|| nextCommand.getText().contains("\r") || nextCommand.getText().contains("\n")) {
+			return false;
+		}
 
 		if (getText() != null) {
 			mText = getText().substring(0,
