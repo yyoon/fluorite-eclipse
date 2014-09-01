@@ -1,5 +1,6 @@
 package edu.cmu.scs.fluorite.recorders;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
@@ -113,27 +114,53 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 				int endLine = doc.getLineOfOffset(event.getOffset()
 						+ event.getLength());
 
+				IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+				
 				String deletedText = null;
-				if (Activator.getDefault().getPreferenceStore()
-						.getBoolean(Initializer.Pref_LogDeletedText)) {
+				boolean logDeleted = store.getBoolean(Initializer.Pref_LogDeletedText);
+				if (logDeleted) {
 					deletedText = doc.get(event.getOffset(), event.getLength());
 				}
 
 				String insertedText = null;
-				if (Activator.getDefault().getPreferenceStore()
-						.getBoolean(Initializer.Pref_LogInsertedText)) {
+				boolean logInserted = store.getBoolean(Initializer.Pref_LogInsertedText);
+				if (logInserted) {
 					insertedText = event.getText();
 				}
 
 				ICommand command = null;
 				if (event.getText().length() > 0) {
-					command = new Replace(event.getOffset(), event.getLength(),
-							startLine, endLine, event.getText().length(),
-							deletedText, insertedText, doc);
+					if (logDeleted && deletedText != null && deletedText.length() > 0 &&
+						logInserted && insertedText != null && insertedText.length() > 0) {
+						// Find the common prefix.
+						int idx = 0;
+						while (idx < deletedText.length() && idx < insertedText.length()) {
+							if (deletedText.charAt(idx) != insertedText.charAt(idx)) {
+								break;
+							}
+							
+							++idx;
+						}
+						
+						// Strip the common prefix.
+						deletedText = deletedText.substring(idx);
+						insertedText = insertedText.substring(idx);
+						
+						if (deletedText.length() == 0) {
+							command = new Insert(event.getOffset() + idx, insertedText, doc);
+						} else {
+							command = new Replace(event.getOffset() + idx, deletedText.length(),
+									startLine, endLine, insertedText.length(),
+									deletedText, insertedText, doc);
+						}
+					} else {
+						command = new Replace(event.getOffset(), event.getLength(),
+								startLine, endLine, event.getText().length(),
+								deletedText, insertedText, doc);
+					}
 				} else {
 					command = new Delete(event.getOffset(), event.getLength(),
 							startLine, endLine, deletedText, doc);
-
 				}
 
 				if (command != null) {
