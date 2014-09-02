@@ -127,6 +127,8 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 				if (logInserted) {
 					insertedText = event.getText();
 				}
+				
+				boolean logSeparateLines = store.getBoolean(Initializer.Pref_LogSeparateLines);
 
 				ICommand command = null;
 				if (event.getText().length() > 0) {
@@ -147,12 +149,12 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 						insertedText = insertedText.substring(idx);
 						
 						if (deletedText.length() == 0) {
-							splitAndAdd(insertedText, event.getOffset() + idx, doc);
+							splitAndAdd(logSeparateLines, insertedText, event.getOffset() + idx, doc);
 						} else {
-							if (insertedText.contains("\r") || insertedText.contains("\n")) {
+							if (logSeparateLines && insertedText.contains("\r") || insertedText.contains("\n")) {
 								getRecorder().recordCommand(new Delete(event.getOffset() + idx, deletedText.length(),
 										startLine, endLine, deletedText, doc));
-								splitAndAdd(insertedText, event.getOffset() + idx, doc);
+								splitAndAdd(logSeparateLines, insertedText, event.getOffset() + idx, doc);
 							} else {
 								command = new Replace(event.getOffset() + idx, deletedText.length(),
 										startLine, endLine, insertedText.length(),
@@ -201,11 +203,12 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 				IDocument doc = event.getDocument();
 
 				String text = null;
-				if (Activator.getDefault().getPreferenceStore()
-						.getBoolean(Initializer.Pref_LogInsertedText)) {
+				IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+				if (store.getBoolean(Initializer.Pref_LogInsertedText)) {
 					text = event.getText();
 					
-					splitAndAdd(text, event.getOffset(), doc);
+					boolean logSeparateLines = store.getBoolean(Initializer.Pref_LogSeparateLines);
+					splitAndAdd(logSeparateLines, text, event.getOffset(), doc);
 				} else {
 					Insert command = new Insert(event.getOffset(), text, doc);
 					getRecorder().recordCommand(command);
@@ -216,14 +219,14 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 		}
 	}
 	
-	private void splitAndAdd(String insertedText, int offset, IDocument doc) {
+	private void splitAndAdd(boolean logSeparateLines, String insertedText, int offset, IDocument doc) {
 		// Nothing to log.
 		if (insertedText == null || insertedText.length() == 0) {
 			return;
 		}
 		
 		// No new line characters. Just record it.
-		if (!insertedText.contains("\r") && !insertedText.contains("\n")) {
+		if (!logSeparateLines || (!insertedText.contains("\r") && !insertedText.contains("\n"))) {
 			getRecorder().recordCommand(new Insert(offset, insertedText, doc));
 			return;
 		}
@@ -256,6 +259,6 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 		}
 		
 		getRecorder().recordCommand(new Insert(offset, insertedText.substring(0, index), doc));
-		splitAndAdd(insertedText.substring(index), offset + index, doc);
+		splitAndAdd(logSeparateLines, insertedText.substring(index), offset + index, doc);
 	}
 }
