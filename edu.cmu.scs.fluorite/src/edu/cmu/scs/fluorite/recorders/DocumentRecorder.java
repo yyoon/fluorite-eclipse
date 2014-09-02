@@ -147,11 +147,17 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 						insertedText = insertedText.substring(idx);
 						
 						if (deletedText.length() == 0) {
-							command = new Insert(event.getOffset() + idx, insertedText, doc);
+							splitAndAdd(insertedText, event.getOffset() + idx, doc);
 						} else {
-							command = new Replace(event.getOffset() + idx, deletedText.length(),
-									startLine, endLine, insertedText.length(),
-									deletedText, insertedText, doc);
+							if (insertedText.contains("\r") || insertedText.contains("\n")) {
+								getRecorder().recordCommand(new Delete(event.getOffset() + idx, deletedText.length(),
+										startLine, endLine, deletedText, doc));
+								splitAndAdd(insertedText, event.getOffset() + idx, doc);
+							} else {
+								command = new Replace(event.getOffset() + idx, deletedText.length(),
+										startLine, endLine, insertedText.length(),
+										deletedText, insertedText, doc);
+							}
 						}
 					} else {
 						command = new Replace(event.getOffset(), event.getLength(),
@@ -198,14 +204,58 @@ public class DocumentRecorder extends BaseRecorder implements IDocumentListener 
 				if (Activator.getDefault().getPreferenceStore()
 						.getBoolean(Initializer.Pref_LogInsertedText)) {
 					text = event.getText();
+					
+					splitAndAdd(text, event.getOffset(), doc);
+				} else {
+					Insert command = new Insert(event.getOffset(), text, doc);
+					getRecorder().recordCommand(command);
 				}
-
-				Insert command = new Insert(event.getOffset(), text, doc);
-
-				getRecorder().recordCommand(command);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private void splitAndAdd(String insertedText, int offset, IDocument doc) {
+		// Nothing to log.
+		if (insertedText == null || insertedText.length() == 0) {
+			return;
+		}
+		
+		// No new line characters. Just record it.
+		if (!insertedText.contains("\r") && !insertedText.contains("\n")) {
+			getRecorder().recordCommand(new Insert(offset, insertedText, doc));
+			return;
+		}
+		
+		int index = -1;
+		
+		// Determine whether this string starts with a new line character or not.
+		if (insertedText.startsWith("\r") || insertedText.startsWith("\n")) {
+			index = insertedText.startsWith("\r\n") ? 2 : 1;
+			while (index < insertedText.length()) {
+				char ch = insertedText.charAt(index);
+				if (!Character.isWhitespace(ch) || ch == '\r' || ch == '\n') {
+					break;
+				}
+				
+				++index;
+			}
+		} else {
+			// Find the newline character!
+			int crIndex = insertedText.indexOf('\r');
+			int lfIndex = insertedText.indexOf('\n');
+			
+			if (crIndex > -1) {
+				index = crIndex;
+			}
+			
+			if (lfIndex > -1 && (index == -1 || lfIndex < crIndex)) {
+				index = lfIndex;
+			}
+		}
+		
+		getRecorder().recordCommand(new Insert(offset, insertedText.substring(0, index), doc));
+		splitAndAdd(insertedText.substring(index), offset + index, doc);
 	}
 }
