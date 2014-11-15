@@ -1,6 +1,7 @@
 package edu.cmu.scs.fluorite.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import edu.cmu.scs.fluorite.plugin.Activator;
 
@@ -24,44 +25,35 @@ public class Initializer extends AbstractPreferenceInitializer {
 	public static final String Pref_FindWrapSearch = "EventLogger_FindWrapSearch";
 	public static final String Pref_FindWholeWord = "EventLogger_FindWholeWord";
 	public static final String Pref_FindRegExp = "EventLogger_FindRegExp";
+	
+	public static final String Pref_LogSeparateLines = "EventLogger_LogSeparateLines";
 
 	public Initializer() {
 	}
 
 	@Override
 	public void initializeDefaultPreferences() {
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_EnableEventLogger, true);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_ShowConsole, false);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_WriteToConsole, false);
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		store.setDefault(Pref_EnableEventLogger, true);
+		store.setDefault(Pref_ShowConsole, false);
+		store.setDefault(Pref_WriteToConsole, false);
 
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_CombineCommands, true);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_CombineTimeThreshold, 2000);
+		store.setDefault(Pref_CombineCommands, true);
+		store.setDefault(Pref_CombineTimeThreshold, 2000);
 
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_LogInsertedText, true);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_LogDeletedText, true);
+		store.setDefault(Pref_LogInsertedText, true);
+		store.setDefault(Pref_LogDeletedText, true);
 
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_LogTopBottomLines, false);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_LogMouseWheel, false);
+		store.setDefault(Pref_LogTopBottomLines, false);
+		store.setDefault(Pref_LogMouseWheel, false);
 
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_FindForward, true);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_FindCaseSensitive, false);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_FindWrapSearch, false);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_FindWholeWord, false);
-		Activator.getDefault().getPreferenceStore()
-				.setDefault(Pref_FindRegExp, false);
+		store.setDefault(Pref_FindForward, true);
+		store.setDefault(Pref_FindCaseSensitive, false);
+		store.setDefault(Pref_FindWrapSearch, false);
+		store.setDefault(Pref_FindWholeWord, false);
+		store.setDefault(Pref_FindRegExp, false);
+		
+		store.setDefault(Pref_LogSeparateLines, false);
 	}
 
 }
