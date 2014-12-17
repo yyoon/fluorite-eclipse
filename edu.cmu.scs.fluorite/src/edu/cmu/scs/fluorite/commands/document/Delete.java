@@ -1,4 +1,4 @@
-package edu.cmu.scs.fluorite.commands;
+package edu.cmu.scs.fluorite.commands.document;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,9 +11,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
-public class Delete extends BaseDocumentChangeEvent {
+public class Delete extends DocChange {
 	
 	public Delete() {
 	}
@@ -130,16 +131,8 @@ public class Delete extends BaseDocumentChangeEvent {
 		return EventRecorder.DocumentChangeCategoryID;
 	}
 
-	public void setOffset(int offset) {
-		mOffset = offset;
-	}
-
 	public int getOffset() {
 		return mOffset;
-	}
-
-	public void setLength(int length) {
-		mLength = length;
 	}
 
 	public int getLength() {
@@ -279,6 +272,34 @@ public class Delete extends BaseDocumentChangeEvent {
 		}
 		
 		return 100;
+	}
+
+	@Override
+	public Range getDeletionRange() {
+		if (mDeletionRange == null) {
+			mDeletionRange = new Range(getOffset(), getLength());
+		}
+		
+		return mDeletionRange;
+	}
+
+	@Override
+	public String getDeletedText() {
+		return getText();
+	}
+
+	@Override
+	public Range getInsertionRange() {
+		if (mInsertionRange == null) {
+			mInsertionRange = new Range(getOffset(), 0);
+		}
+		
+		return mInsertionRange;
+	}
+
+	@Override
+	public String getInsertedText() {
+		return "";
 	}
 	
 }

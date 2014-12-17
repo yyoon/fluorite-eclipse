@@ -1,4 +1,4 @@
-package edu.cmu.scs.fluorite.commands;
+package edu.cmu.scs.fluorite.commands.document;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,9 +12,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
-public class Replace extends BaseDocumentChangeEvent {
+public class Replace extends DocChange {
 
 	public Replace() {
 	}
@@ -201,48 +202,24 @@ public class Replace extends BaseDocumentChangeEvent {
 		return mOffset;
 	}
 
-	public void setOffset(int offset) {
-		this.mOffset = offset;
-	}
-
 	public int getLength() {
 		return mLength;
-	}
-
-	public void setLength(int length) {
-		this.mLength = length;
 	}
 
 	public int getStartLine() {
 		return mStartLine;
 	}
 
-	public void setStartLine(int startLine) {
-		this.mStartLine = startLine;
-	}
-
 	public int getEndLine() {
 		return mEndLine;
-	}
-
-	public void setEndLine(int endLine) {
-		this.mEndLine = endLine;
 	}
 
 	public String getDeletedText() {
 		return mDeletedText;
 	}
 
-	public void setDeletedText(String deletedText) {
-		this.mDeletedText = deletedText;
-	}
-
 	public String getInsertedText() {
 		return mInsertedText;
-	}
-
-	public void setInsertedText(String insertedText) {
-		this.mInsertedText = insertedText;
 	}
 	
 	public boolean isEntireFileChange() {
@@ -374,6 +351,24 @@ public class Replace extends BaseDocumentChangeEvent {
 		}
 		
 		return 100;
+	}
+
+	@Override
+	public Range getDeletionRange() {
+		if (mDeletionRange == null) {
+			mDeletionRange = new Range(getOffset(), getLength());
+		}
+		
+		return mDeletionRange;
+	}
+
+	@Override
+	public Range getInsertionRange() {
+		if (mInsertionRange == null) {
+			mInsertionRange = new Range(getOffset(), getInsertionLength());
+		}
+		
+		return mInsertionRange;
 	}
 
 }

@@ -162,7 +162,9 @@ public class LogReader {
 			}
 			
 			Package commandsPackage = ICommand.class.getPackage();
-			String fullyQualifiedName = commandsPackage.getName() + "." + typeName;
+			String fullyQualifiedName = commandsPackage.getName()
+					+ (isDocumentChange(element) ? ".document." : ".")
+					+ typeName;
 			
 			try {
 				Class<?> c = Class.forName(fullyQualifiedName);

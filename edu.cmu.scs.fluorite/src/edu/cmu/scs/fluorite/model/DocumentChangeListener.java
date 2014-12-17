@@ -1,7 +1,7 @@
 package edu.cmu.scs.fluorite.model;
 
-import edu.cmu.scs.fluorite.commands.BaseDocumentChangeEvent;
 import edu.cmu.scs.fluorite.commands.FileOpenCommand;
+import edu.cmu.scs.fluorite.commands.document.DocChange;
 
 public interface DocumentChangeListener {
 	
@@ -13,21 +13,21 @@ public interface DocumentChangeListener {
 	/**
 	 * Fired when a new documentChange event was recorded.
 	 */
-	void documentChanged(BaseDocumentChangeEvent docChange);
+	void documentChanged(DocChange docChange);
 	
 	/**
 	 * Fired when a new documentChange event was recorded and its values are fixed.
 	 */
-	void documentChangeFinalized(BaseDocumentChangeEvent docChange);
+	void documentChangeFinalized(DocChange docChange);
 	
 	/**
 	 * Fired when a documentChange event was updated (due to combining).
 	 */
-	void documentChangeUpdated(BaseDocumentChangeEvent docChange);
+	void documentChangeUpdated(DocChange docChange);
 	
 	/**
 	 * Fired when a document change event was replaced with another one.
 	 */
-	void documentChangeAmended(BaseDocumentChangeEvent oldDocChange, BaseDocumentChangeEvent newDocChange);
+	void documentChangeAmended(DocChange oldDocChange, DocChange newDocChange);
 
 }

@@ -6,10 +6,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.ui.IEditorPart;
 
-import edu.cmu.scs.fluorite.commands.Delete;
 import edu.cmu.scs.fluorite.commands.ICommand;
-import edu.cmu.scs.fluorite.commands.Insert;
-import edu.cmu.scs.fluorite.commands.Replace;
+import edu.cmu.scs.fluorite.commands.document.Delete;
+import edu.cmu.scs.fluorite.commands.document.Insert;
+import edu.cmu.scs.fluorite.commands.document.Replace;
 import edu.cmu.scs.fluorite.plugin.Activator;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.util.Utilities;
