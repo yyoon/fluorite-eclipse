@@ -172,11 +172,36 @@ public abstract class DocChange extends AbstractCommand {
 	}
 	
 	public static DocChange mergeChanges(DocChange oldEvent, DocChange newEvent, Document docBefore) {
+		if (oldEvent == null && newEvent == null) { return null; }
+		if (oldEvent == null) { return newEvent; }
+		if (newEvent == null) { return oldEvent; }
+		
 		if (overlap(oldEvent, newEvent)) {
 			return mergeChangesOverlap(oldEvent, newEvent, docBefore);
 		} else {
 			return mergeChangesApart(oldEvent, newEvent, docBefore);
 		}
+	}
+	
+	public static DocChange mergeChanges(DocChange oldEvent, List<DocChange> newEvents) {
+		return mergeChanges(oldEvent, newEvents, null);
+	}
+	
+	public static DocChange mergeChanges(DocChange oldEvent, List<DocChange> newEvents, Document docBefore) {
+		DocChange result = oldEvent;
+		for (DocChange newEvent : newEvents) {
+			result = mergeChanges(result, newEvent, docBefore);
+		}
+		
+		return result;
+	}
+	
+	public static DocChange mergeChanges(List<DocChange> events) {
+		return mergeChanges(events, null);
+	}
+	
+	public static DocChange mergeChanges(List<DocChange> events, Document docBefore) {
+		return mergeChanges(events.get(0), events.subList(1, events.size()), docBefore);
 	}
 	
 	private static DocChange mergeChangesApart(
