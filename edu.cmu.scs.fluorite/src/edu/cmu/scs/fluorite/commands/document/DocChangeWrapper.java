@@ -114,6 +114,11 @@ public class DocChangeWrapper extends DocChange {
 	public void apply(StringBuilder builder) {
 		this.original.apply(builder);
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		return this.original.apply(range);
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -128,6 +133,11 @@ public class DocChangeWrapper extends DocChange {
 	@Override
 	public void applyInverse(StringBuilder builder) {
 		this.original.applyInverse(builder);
+	}
+	
+	@Override
+	public Range applyInverse(Range range) {
+		return this.original.applyInverse(range);
 	}
 
 	@Override

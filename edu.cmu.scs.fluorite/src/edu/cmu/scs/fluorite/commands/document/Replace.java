@@ -300,6 +300,15 @@ public class Replace extends DocChange {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		if (!range.contains(getDeletionRange())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() - getLength() + getInsertionLength());
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -329,6 +338,15 @@ public class Replace extends DocChange {
 		} catch (StringIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public Range applyInverse(Range range) {
+		if (!range.contains(getInsertionRange())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() - getInsertionLength() + getLength());
 	}
 
 	private Map<String, Integer> getIntermediateNumericalValues() {

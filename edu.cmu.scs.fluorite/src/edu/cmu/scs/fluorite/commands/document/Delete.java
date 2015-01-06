@@ -225,6 +225,15 @@ public class Delete extends DocChange {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		if (!range.contains(getDeletionRange())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() - getLength());
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -254,6 +263,15 @@ public class Delete extends DocChange {
 		} catch (StringIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public Range applyInverse(Range range) {
+		if (!range.contains(getOffset())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() + getLength());
 	}
 
 	@Override

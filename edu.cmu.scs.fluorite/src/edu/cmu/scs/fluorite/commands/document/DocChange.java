@@ -144,11 +144,15 @@ public abstract class DocChange extends AbstractCommand {
 	
 	public abstract void apply(StringBuilder builder);
 	
+	public abstract Range apply(Range range);
+	
 	public abstract void applyInverse(IDocument doc);
 	
 	public abstract String applyInverse(String original);
 	
 	public abstract void applyInverse(StringBuilder builder);
+	
+	public abstract Range applyInverse(Range range);
 	
 	public abstract double getY1();
 	

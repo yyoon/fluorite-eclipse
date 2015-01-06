@@ -184,6 +184,15 @@ public class Insert extends DocChange {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		if (!range.contains(getOffset())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getOffset() + getLength());
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -212,6 +221,15 @@ public class Insert extends DocChange {
 		} catch (StringIndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public Range applyInverse(Range range) {
+		if (!range.contains(getInsertionRange())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() - getLength());
 	}
 
 	@Override

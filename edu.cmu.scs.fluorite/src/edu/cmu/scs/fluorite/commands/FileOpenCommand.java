@@ -201,6 +201,15 @@ public class FileOpenCommand extends DocChange {
 			builder.replace(0, builder.length(), getSnapshot());
 		}
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		if (getSnapshot() != null) {
+			return new Range(0, getSnapshot().length());
+		} else {
+			return range;
+		}
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -214,6 +223,11 @@ public class FileOpenCommand extends DocChange {
 
 	@Override
 	public void applyInverse(StringBuilder builder) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public Range applyInverse(Range range) {
 		throw new UnsupportedOperationException();
 	}
 
