@@ -277,5 +277,10 @@ public class Insert extends DocChange {
 	public String getInsertedText() {
 		return getText();
 	}
+
+	@Override
+	public String toString() {
+		return String.format("[Insert:%d]\n%s", getCommandIndex(), getText());
+	}
 	
 }

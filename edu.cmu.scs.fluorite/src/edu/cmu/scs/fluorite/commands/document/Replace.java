@@ -389,4 +389,9 @@ public class Replace extends DocChange {
 		return mInsertionRange;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("[Replace:%d]\n---\n%s\n---\n+++\n%s\n+++", getCommandIndex(), getDeletedText(), getInsertedText());
+	}
+
 }

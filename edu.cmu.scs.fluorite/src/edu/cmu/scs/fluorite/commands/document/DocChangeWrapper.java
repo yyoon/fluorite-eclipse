@@ -175,4 +175,23 @@ public class DocChangeWrapper extends DocChange {
 		return this.original.getInsertedText();
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("[DocWrapper:");
+		builder.append(getCommandIndex());
+		builder.append("] ");
+		
+		List<Integer> mergedFrom = getMergedFrom();
+		for (int i = 0; i < mergedFrom.size(); ++i) {
+			if (i != 0) { builder.append(", "); }
+			builder.append(mergedFrom.get(i));
+		}
+		
+		builder.append("\n");
+		builder.append(getOriginal().toString());
+		
+		return builder.toString();
+	}
+	
 }

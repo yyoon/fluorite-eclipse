@@ -319,5 +319,10 @@ public class Delete extends DocChange {
 	public String getInsertedText() {
 		return "";
 	}
+
+	@Override
+	public String toString() {
+		return String.format("[Delete:%d]\n%s", getCommandIndex(), getText());
+	}
 	
 }
