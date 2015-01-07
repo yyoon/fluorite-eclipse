@@ -166,6 +166,10 @@ public abstract class DocChange extends AbstractCommand {
 	
 	public abstract String getInsertedText();
 	
+	public boolean isWhitespaceOnly() {
+		return getDeletedText().trim().isEmpty() && getInsertedText().trim().isEmpty();
+	}
+	
 	// --- Helper methods for merging two doc changes into one.
 	public static boolean overlap(DocChange oldEvent, DocChange newEvent) {
 		return Range.overlap(oldEvent.getInsertionRange(), newEvent.getDeletionRange());
