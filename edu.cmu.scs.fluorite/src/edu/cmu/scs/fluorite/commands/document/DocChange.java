@@ -179,7 +179,7 @@ public abstract class DocChange extends AbstractCommand {
 		return mergeChanges(oldEvent, newEvent, null);
 	}
 	
-	public static DocChange mergeChanges(DocChange oldEvent, DocChange newEvent, Document docBefore) {
+	public static DocChange mergeChanges(DocChange oldEvent, DocChange newEvent, IDocument docBefore) {
 		if (oldEvent == null && newEvent == null) { return null; }
 		if (oldEvent == null) { return newEvent; }
 		if (newEvent == null) { return oldEvent; }
@@ -195,7 +195,7 @@ public abstract class DocChange extends AbstractCommand {
 		return mergeChanges(oldEvent, newEvents, null);
 	}
 	
-	public static DocChange mergeChanges(DocChange oldEvent, List<DocChange> newEvents, Document docBefore) {
+	public static DocChange mergeChanges(DocChange oldEvent, List<DocChange> newEvents, IDocument docBefore) {
 		DocChange result = oldEvent;
 		for (DocChange newEvent : newEvents) {
 			result = mergeChanges(result, newEvent, docBefore);
@@ -208,14 +208,14 @@ public abstract class DocChange extends AbstractCommand {
 		return mergeChanges(events, null);
 	}
 	
-	public static DocChange mergeChanges(List<DocChange> events, Document docBefore) {
+	public static DocChange mergeChanges(List<DocChange> events, IDocument docBefore) {
 		return mergeChanges(events.get(0), events.subList(1, events.size()), docBefore);
 	}
 	
 	private static DocChange mergeChangesApart(
 			DocChange oldEvent,
 			DocChange newEvent,
-			Document docBefore) {
+			IDocument docBefore) {
 		Range oldDeletionRange = oldEvent.getDeletionRange();
 		String oldDeletedText = oldEvent.getDeletedText();
 		
@@ -265,7 +265,7 @@ public abstract class DocChange extends AbstractCommand {
 		}
 	}
 	
-	private static String getDocStringOrNullString(Document doc, int pos, int length) {
+	private static String getDocStringOrNullString(IDocument doc, int pos, int length) {
 		if (doc != null) {
 			try {
 				return doc.get(pos, length);
@@ -290,7 +290,7 @@ public abstract class DocChange extends AbstractCommand {
 	private static DocChange mergeChangesOverlap(
 			DocChange oldEvent,
 			DocChange newEvent,
-			Document docBefore) {
+			IDocument docBefore) {
 		Range oldDeletionRange = oldEvent.getDeletionRange();
 		String oldDeletedText = oldEvent.getDeletedText();
 		
@@ -331,7 +331,7 @@ public abstract class DocChange extends AbstractCommand {
 	}
 
 	private static DocChange createMergedChange(DocChange oldEvent,
-			DocChange newEvent, Document docBefore, Range deletionRange,
+			DocChange newEvent, IDocument docBefore, Range deletionRange,
 			String deletedText, Range insertionRange, String insertedText) {
 		// Strip out common prefix.
 		diff_match_patch dmp = new diff_match_patch();
