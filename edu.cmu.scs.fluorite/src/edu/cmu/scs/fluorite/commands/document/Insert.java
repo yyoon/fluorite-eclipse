@@ -47,8 +47,10 @@ public class Insert extends DocChange {
 		attrMap.put("offset", Integer.toString(mOffset));
 		attrMap.put("length", Integer.toString(mLength));
 
-		for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
-			attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+		if (getNumericalValues() != null) {
+			for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
+				attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+			}
 		}
 
 		return attrMap;

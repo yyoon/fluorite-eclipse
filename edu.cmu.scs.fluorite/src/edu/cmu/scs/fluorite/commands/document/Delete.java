@@ -59,8 +59,10 @@ public class Delete extends DocChange {
 		attrMap.put("startLine", Integer.toString(mStartLine));
 		attrMap.put("endLine", Integer.toString(mEndLine));
 
-		for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
-			attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+		if (getNumericalValues() != null) {
+			for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
+				attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+			}
 		}
 
 		return attrMap;

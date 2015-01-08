@@ -82,14 +82,16 @@ public class Replace extends DocChange {
 		attrMap.put("endLine", Integer.toString(mEndLine));
 		attrMap.put("insertionLength", Integer.toString(mInsertionLength));
 
-		for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
-			attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+		if (getNumericalValues() != null) {
+			for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
+				attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+			}
 		}
 
-		for (Map.Entry<String, Integer> pair : mIntermediateNumericalValues
-				.entrySet()) {
-			attrMap.put("int_" + pair.getKey(),
-					Integer.toString(pair.getValue()));
+		if (mIntermediateNumericalValues != null) {
+			for (Map.Entry<String, Integer> pair : mIntermediateNumericalValues.entrySet()) {
+				attrMap.put("int_" + pair.getKey(), Integer.toString(pair.getValue()));
+			}
 		}
 
 		return attrMap;
