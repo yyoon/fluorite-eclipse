@@ -14,11 +14,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.cmu.scs.fluorite.commands.document.DocChange;
+import edu.cmu.scs.fluorite.commands.document.Range;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 import edu.cmu.scs.fluorite.model.FileSnapshotManager;
 import edu.cmu.scs.fluorite.util.Utilities;
 
-public class FileOpenCommand extends BaseDocumentChangeEvent {
+public class FileOpenCommand extends DocChange {
 	
 	public FileOpenCommand() {
 	}
@@ -199,6 +201,15 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 			builder.replace(0, builder.length(), getSnapshot());
 		}
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		if (getSnapshot() != null) {
+			return new Range(0, getSnapshot().length());
+		} else {
+			return range;
+		}
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -214,6 +225,11 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	public void applyInverse(StringBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public Range applyInverse(Range range) {
+		throw new UnsupportedOperationException();
+	}
 
 	@Override
 	public double getY1() {
@@ -223,5 +239,25 @@ public class FileOpenCommand extends BaseDocumentChangeEvent {
 	@Override
 	public double getY2() {
 		return 100;
+	}
+
+	@Override
+	public Range getDeletionRange() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getDeletedText() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Range getInsertionRange() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getInsertedText() {
+		throw new UnsupportedOperationException();
 	}
 }

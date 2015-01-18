@@ -1,4 +1,4 @@
-package edu.cmu.scs.fluorite.commands;
+package edu.cmu.scs.fluorite.commands.document;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,9 +11,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
-public class Delete extends BaseDocumentChangeEvent {
+public class Delete extends DocChange {
 	
 	public Delete() {
 	}
@@ -58,8 +59,10 @@ public class Delete extends BaseDocumentChangeEvent {
 		attrMap.put("startLine", Integer.toString(mStartLine));
 		attrMap.put("endLine", Integer.toString(mEndLine));
 
-		for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
-			attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+		if (getNumericalValues() != null) {
+			for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
+				attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+			}
 		}
 
 		return attrMap;
@@ -130,16 +133,8 @@ public class Delete extends BaseDocumentChangeEvent {
 		return EventRecorder.DocumentChangeCategoryID;
 	}
 
-	public void setOffset(int offset) {
-		mOffset = offset;
-	}
-
 	public int getOffset() {
 		return mOffset;
-	}
-
-	public void setLength(int length) {
-		mLength = length;
 	}
 
 	public int getLength() {
@@ -232,6 +227,15 @@ public class Delete extends BaseDocumentChangeEvent {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		if (!range.contains(getDeletionRange())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() - getLength());
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -262,6 +266,15 @@ public class Delete extends BaseDocumentChangeEvent {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Range applyInverse(Range range) {
+		if (!range.contains(getOffset())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() + getLength());
+	}
 
 	@Override
 	public double getY1() {
@@ -279,6 +292,39 @@ public class Delete extends BaseDocumentChangeEvent {
 		}
 		
 		return 100;
+	}
+
+	@Override
+	public Range getDeletionRange() {
+		if (mDeletionRange == null) {
+			mDeletionRange = new Range(getOffset(), getLength());
+		}
+		
+		return mDeletionRange;
+	}
+
+	@Override
+	public String getDeletedText() {
+		return getText();
+	}
+
+	@Override
+	public Range getInsertionRange() {
+		if (mInsertionRange == null) {
+			mInsertionRange = new Range(getOffset(), 0);
+		}
+		
+		return mInsertionRange;
+	}
+
+	@Override
+	public String getInsertedText() {
+		return "";
+	}
+
+	@Override
+	public String toString() {
+		return String.format("[Delete:%d]\n%s", getCommandIndex(), getText());
 	}
 	
 }

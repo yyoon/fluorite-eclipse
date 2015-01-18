@@ -1,4 +1,4 @@
-package edu.cmu.scs.fluorite.commands;
+package edu.cmu.scs.fluorite.commands.document;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,9 +12,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.model.EventRecorder;
 
-public class Replace extends BaseDocumentChangeEvent {
+public class Replace extends DocChange {
 
 	public Replace() {
 	}
@@ -81,14 +82,16 @@ public class Replace extends BaseDocumentChangeEvent {
 		attrMap.put("endLine", Integer.toString(mEndLine));
 		attrMap.put("insertionLength", Integer.toString(mInsertionLength));
 
-		for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
-			attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+		if (getNumericalValues() != null) {
+			for (Map.Entry<String, Integer> pair : getNumericalValues().entrySet()) {
+				attrMap.put(pair.getKey(), Integer.toString(pair.getValue()));
+			}
 		}
 
-		for (Map.Entry<String, Integer> pair : mIntermediateNumericalValues
-				.entrySet()) {
-			attrMap.put("int_" + pair.getKey(),
-					Integer.toString(pair.getValue()));
+		if (mIntermediateNumericalValues != null) {
+			for (Map.Entry<String, Integer> pair : mIntermediateNumericalValues.entrySet()) {
+				attrMap.put("int_" + pair.getKey(), Integer.toString(pair.getValue()));
+			}
 		}
 
 		return attrMap;
@@ -201,48 +204,24 @@ public class Replace extends BaseDocumentChangeEvent {
 		return mOffset;
 	}
 
-	public void setOffset(int offset) {
-		this.mOffset = offset;
-	}
-
 	public int getLength() {
 		return mLength;
-	}
-
-	public void setLength(int length) {
-		this.mLength = length;
 	}
 
 	public int getStartLine() {
 		return mStartLine;
 	}
 
-	public void setStartLine(int startLine) {
-		this.mStartLine = startLine;
-	}
-
 	public int getEndLine() {
 		return mEndLine;
-	}
-
-	public void setEndLine(int endLine) {
-		this.mEndLine = endLine;
 	}
 
 	public String getDeletedText() {
 		return mDeletedText;
 	}
 
-	public void setDeletedText(String deletedText) {
-		this.mDeletedText = deletedText;
-	}
-
 	public String getInsertedText() {
 		return mInsertedText;
-	}
-
-	public void setInsertedText(String insertedText) {
-		this.mInsertedText = insertedText;
 	}
 	
 	public boolean isEntireFileChange() {
@@ -323,6 +302,15 @@ public class Replace extends BaseDocumentChangeEvent {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Range apply(Range range) {
+		if (!range.contains(getDeletionRange())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() - getLength() + getInsertionLength());
+	}
 
 	@Override
 	public void applyInverse(IDocument doc) {
@@ -353,6 +341,15 @@ public class Replace extends BaseDocumentChangeEvent {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public Range applyInverse(Range range) {
+		if (!range.contains(getInsertionRange())) {
+			throw new IllegalArgumentException();
+		}
+		
+		return new Range(range.getOffset(), range.getLength() - getInsertionLength() + getLength());
+	}
 
 	private Map<String, Integer> getIntermediateNumericalValues() {
 		return Collections.unmodifiableMap(mIntermediateNumericalValues);
@@ -374,6 +371,29 @@ public class Replace extends BaseDocumentChangeEvent {
 		}
 		
 		return 100;
+	}
+
+	@Override
+	public Range getDeletionRange() {
+		if (mDeletionRange == null) {
+			mDeletionRange = new Range(getOffset(), getLength());
+		}
+		
+		return mDeletionRange;
+	}
+
+	@Override
+	public Range getInsertionRange() {
+		if (mInsertionRange == null) {
+			mInsertionRange = new Range(getOffset(), getInsertionLength());
+		}
+		
+		return mInsertionRange;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("[Replace:%d]\n---\n%s\n---\n+++\n%s\n+++", getCommandIndex(), getDeletedText(), getInsertedText());
 	}
 
 }

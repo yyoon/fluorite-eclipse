@@ -48,12 +48,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.cmu.scs.fluorite.actions.FindAction;
-import edu.cmu.scs.fluorite.commands.BaseDocumentChangeEvent;
 import edu.cmu.scs.fluorite.commands.FileOpenCommand;
 import edu.cmu.scs.fluorite.commands.FindCommand;
 import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.commands.MoveCaretCommand;
 import edu.cmu.scs.fluorite.commands.SelectTextCommand;
+import edu.cmu.scs.fluorite.commands.document.DocChange;
 import edu.cmu.scs.fluorite.preferences.Initializer;
 import edu.cmu.scs.fluorite.recorders.CompletionRecorder;
 import edu.cmu.scs.fluorite.recorders.DocumentRecorder;
@@ -107,7 +107,7 @@ public class EventRecorder {
 	private boolean mDocChangeCombinable;
 	private int mCombineTimeThreshold;
 	
-	private BaseDocumentChangeEvent mLastFiredDocumentChange;
+	private DocChange mLastFiredDocumentChange;
 	
 	private Timer mTimer;
 	private TimerTask mNormalTimerTask;
@@ -243,7 +243,7 @@ public class EventRecorder {
 		}
 	}
 	
-	public void fireDocumentChangedEvent(BaseDocumentChangeEvent docChange) {
+	public void fireDocumentChangedEvent(DocChange docChange) {
 		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
 			((DocumentChangeListener)listenerObj).documentChanged(docChange);
 		}
@@ -257,11 +257,11 @@ public class EventRecorder {
 	
 	public void fireLastDocumentChangeFinalizedEvent() {
 		if (mDocumentChangeCommands != null && mDocumentChangeCommands.size() > 0) {
-			fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent) mDocumentChangeCommands.get(mDocumentChangeCommands.size() - 1));
+			fireDocumentChangeFinalizedEvent((DocChange) mDocumentChangeCommands.get(mDocumentChangeCommands.size() - 1));
 		}
 	}
 	
-	public synchronized void fireDocumentChangeFinalizedEvent(BaseDocumentChangeEvent docChange) {
+	public synchronized void fireDocumentChangeFinalizedEvent(DocChange docChange) {
 		if (docChange instanceof FileOpenCommand) { return; }
 		
 		if (docChange == mLastFiredDocumentChange) { return; }
@@ -274,13 +274,13 @@ public class EventRecorder {
 		mDocChangeCombinable = false;
 	}
 	
-	public void fireDocumentChangeUpdatedEvent(BaseDocumentChangeEvent docChange) {
+	public void fireDocumentChangeUpdatedEvent(DocChange docChange) {
 		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
 			((DocumentChangeListener)listenerObj).documentChangeUpdated(docChange);
 		}
 	}
 	
-	public void fireDocumentChangeAmendedEvent(BaseDocumentChangeEvent oldDocChange, BaseDocumentChangeEvent newDocChange) {
+	public void fireDocumentChangeAmendedEvent(DocChange oldDocChange, DocChange newDocChange) {
 		for (Object listenerObj : mDocumentChangeListeners.getListeners()) {
 			((DocumentChangeListener)listenerObj).documentChangeAmended(oldDocChange, newDocChange);
 		}
@@ -576,8 +576,8 @@ public class EventRecorder {
 		mRecordCommands = true;
 	}
 	
-	public void amendLastDocumentChange(BaseDocumentChangeEvent newDocChange, boolean usePreviousTimestamp) {
-		BaseDocumentChangeEvent lastDocChange = (BaseDocumentChangeEvent) mDocumentChangeCommands.getLast();
+	public void amendLastDocumentChange(DocChange newDocChange, boolean usePreviousTimestamp) {
+		DocChange lastDocChange = (DocChange) mDocumentChangeCommands.getLast();
 		int index = mCommands.indexOf(lastDocChange);
 		
 		// Make sure that this document change is finalized!
@@ -617,12 +617,12 @@ public class EventRecorder {
 		newCommand.setTimestamp(timestamp);
 		newCommand.setTimestamp2(timestamp);
 
-		final boolean isNewCmdDocChange = (newCommand instanceof BaseDocumentChangeEvent);
+		final boolean isNewCmdDocChange = (newCommand instanceof DocChange);
 		final LinkedList<ICommand> commands = isNewCmdDocChange ? mDocumentChangeCommands : mNormalCommands;
 
 		boolean combined = false;
 		final ICommand lastCommand = commands.size() > 0 ? commands.get(commands.size() - 1) : null;
-		final boolean isLastCmdDocChange = (lastCommand instanceof BaseDocumentChangeEvent);
+		final boolean isLastCmdDocChange = (lastCommand instanceof DocChange);
 
 		// See if combining with previous command is possible .
 		if (lastCommand != null && isCombineEnabled(newCommand, lastCommand, isNewCmdDocChange)) {
@@ -631,7 +631,7 @@ public class EventRecorder {
 		
 		// If combined, fire the updated event.
 		if (combined && isLastCmdDocChange) {
-			fireDocumentChangeUpdatedEvent((BaseDocumentChangeEvent)lastCommand);
+			fireDocumentChangeUpdatedEvent((DocChange)lastCommand);
 		}
 
 		// If combining is failed, just add it.
@@ -639,13 +639,13 @@ public class EventRecorder {
 			commands.add(newCommand);
 			mCommands.add(newCommand);
 			
-			if (newCommand instanceof BaseDocumentChangeEvent) {
+			if (newCommand instanceof DocChange) {
 				if (!(newCommand instanceof FileOpenCommand)) {
-					fireDocumentChangedEvent((BaseDocumentChangeEvent)newCommand);
+					fireDocumentChangedEvent((DocChange)newCommand);
 				}
 				
 				if (isLastCmdDocChange && lastCommand != mLastFiredDocumentChange) {
-					fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent)lastCommand);
+					fireDocumentChangeFinalizedEvent((DocChange)lastCommand);
 				}
 			}
 			else {
@@ -656,7 +656,7 @@ public class EventRecorder {
 		// Log to the file.
 		while (!mCommands.isEmpty()) {
 			ICommand firstCmd = mCommands.getFirst();
-			LinkedList<ICommand> typeList = firstCmd instanceof BaseDocumentChangeEvent
+			LinkedList<ICommand> typeList = firstCmd instanceof DocChange
 					? mDocumentChangeCommands
 					: mNormalCommands;
 			
@@ -693,7 +693,7 @@ public class EventRecorder {
 						if (lastCommand != null && lastCommand != mLastFiredDocumentChange) {
 							Display.getDefault().asyncExec(new Runnable() {
 								public void run() {
-									fireDocumentChangeFinalizedEvent((BaseDocumentChangeEvent)lastCommand);
+									fireDocumentChangeFinalizedEvent((DocChange)lastCommand);
 								}
 							});
 						}
