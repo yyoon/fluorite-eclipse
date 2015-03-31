@@ -34,6 +34,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartService;
@@ -61,6 +62,7 @@ import edu.cmu.scs.fluorite.recorders.EclipseCommandRecorder;
 import edu.cmu.scs.fluorite.recorders.JUnitRecorder;
 import edu.cmu.scs.fluorite.recorders.PartRecorder;
 import edu.cmu.scs.fluorite.recorders.RunRecorder;
+import edu.cmu.scs.fluorite.recorders.ShellBoundsRecorder;
 import edu.cmu.scs.fluorite.recorders.StyledTextEventRecorder;
 import edu.cmu.scs.fluorite.util.EventLoggerConsole;
 import edu.cmu.scs.fluorite.util.Utilities;
@@ -122,8 +124,7 @@ public class EventRecorder {
 
 	private static EventRecorder instance = null;
 
-	private static final Logger LOGGER = Logger.getLogger(EventRecorder.class
-			.getName());
+	private static final Logger LOGGER = Logger.getLogger(EventRecorder.class.getName());
 
 	public static EventRecorder getInstance() {
 		if (instance == null) {
@@ -410,6 +411,15 @@ public class EventRecorder {
 		mRecordCommands = true;
 		mStartTimestamp = Calendar.getInstance().getTime().getTime();
 
+		initializeLogger();
+		
+		// Log the initial shell size, and attached the shell size listener.
+		ShellBoundsRecorder shellRecorder = ShellBoundsRecorder.getInstance();
+		Shell shell = Display.getDefault().getActiveShell();
+		shellRecorder.logShellSize(shell);
+		shell.addListener(SWT.Resize, shellRecorder);
+		shell.addListener(SWT.Move, shellRecorder);
+
 		for (IWorkbenchWindow window : PlatformUI.getWorkbench()
 				.getWorkbenchWindows()) {
 			IPartService service = window.getPartService();
@@ -426,8 +436,6 @@ public class EventRecorder {
 				RunRecorder.getInstance());
 		
 		JUnitCore.addTestRunListener(JUnitRecorder.getInstance());
-
-		initializeLogger();
 
 		// Set the combine time threshold.
 		IPreferenceStore prefStore = edu.cmu.scs.fluorite.plugin.Activator
@@ -490,9 +498,9 @@ public class EventRecorder {
 		File outputFile = null;
 		try {
 			File logLocation = Utilities.getLogLocation();
-			outputFile = new File(logLocation,
-					Utilities.getUniqueLogNameByTimestamp(
-							getStartTimestamp(), false));
+			outputFile = new File(
+					logLocation,
+					Utilities.getUniqueLogNameByTimestamp(getStartTimestamp(), false));
 
 			FileHandler handler = new FileHandler(outputFile.getPath());
 			handler.setEncoding("UTF-8");

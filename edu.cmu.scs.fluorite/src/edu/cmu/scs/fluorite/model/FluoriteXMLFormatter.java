@@ -5,6 +5,9 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Monitor;
 
 import edu.cmu.scs.fluorite.commands.ICommand;
 import edu.cmu.scs.fluorite.util.Utilities;
@@ -57,6 +60,20 @@ public class FluoriteXMLFormatter extends Formatter {
 		lineSeparator = lineSeparator.replace("\r", "\\r");
 		lineSeparator = lineSeparator.replace("\n", "\\n");
 		
+		final Display display = Display.getDefault();
+		MonitorBoundsExtractor mbe = new MonitorBoundsExtractor(display);
+		display.syncExec(mbe);
+		
+		Monitor[] monitors = mbe.getMonitors();
+		Rectangle[] bounds = mbe.getBounds();
+		int numMonitors = monitors != null ? monitors.length : 0;
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < numMonitors; ++i) {
+			if (i > 0) { builder.append(", "); }
+			Rectangle r = bounds[i];
+			builder.append(String.format("[%d, %d, %d, %d]", r.x, r.y, r.width, r.height));
+		}
+		
 		return String.format(
 				"<Events"
 				+ " startTimestamp=\"%1$s\""
@@ -64,17 +81,54 @@ public class FluoriteXMLFormatter extends Formatter {
 				+ " osName=\"%3$s\""
 				+ " osVersion=\"%4$s\""
 				+ " lineSeparator=\"%5$s\""
+				+ " numMonitors=\"%6$d\""
+				+ " monitorBounds=\"%7$s\""
 				+ ">%n",
 				mStartTimestamp,
 				mLogVersion,
 				System.getProperty("os.name"),
 				System.getProperty("os.version"),
-				lineSeparator);
+				lineSeparator,
+				numMonitors,
+				builder.toString());
 	}
 
 	@Override
 	public String getTail(Handler h) {
 		return "</Events>" + Utilities.NewLine;
+	}
+	
+	private static class MonitorBoundsExtractor implements Runnable {
+
+		private Display display;
+		private Monitor[] monitors;
+		private Rectangle[] bounds;
+		
+		public MonitorBoundsExtractor(Display display) {
+			this.display = display;
+			this.monitors = null;
+			this.bounds = null;
+		}
+		
+		public Monitor[] getMonitors() {
+			return this.monitors;
+		}
+		
+		public Rectangle[] getBounds() {
+			return this.bounds;
+		}
+		
+		@Override
+		public void run() {
+			this.monitors = this.display.getMonitors();
+			if (this.monitors != null) {
+				this.bounds = new Rectangle[this.monitors.length];
+				for (int i = 0; i < this.bounds.length; ++i) {
+					this.bounds[i] = this.monitors[i].getBounds();
+				}
+			}
+		}
+		
 	}
 
 }
