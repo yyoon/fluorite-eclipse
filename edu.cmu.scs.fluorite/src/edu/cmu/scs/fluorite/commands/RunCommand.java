@@ -13,16 +13,18 @@ public class RunCommand extends AbstractCommand {
 
 	public RunCommand() {
 	}
-	
-	public RunCommand(boolean debug, boolean terminate, String projectName) {
+
+	public RunCommand(boolean debug, boolean terminate, String projectName, int exitValue) {
 		mDebug = debug;
 		mTerminate = terminate;
 		mProjectName = projectName;
+		mExitValue = exitValue;
 	}
 
 	private boolean mDebug;
 	private boolean mTerminate;
 	private String mProjectName;
+	private int mExitValue;
 
 	public boolean execute(IEditorPart target) {
 		return false;
@@ -35,8 +37,11 @@ public class RunCommand extends AbstractCommand {
 		Map<String, String> attrMap = new HashMap<String, String>();
 		attrMap.put("type", mDebug ? "Debug" : "Run");
 		attrMap.put("kind", mTerminate ? "Terminate" : "Create");
-		attrMap.put("projectName", mProjectName == null ? "(Unknown)"
-				: mProjectName);
+		attrMap.put("projectName", mProjectName == null ? "(Unknown)" : mProjectName);
+		if (mTerminate) {
+			attrMap.put("exitValue", Integer.toString(mExitValue));
+		}
+		
 		return attrMap;
 	}
 
@@ -47,29 +52,26 @@ public class RunCommand extends AbstractCommand {
 	@Override
 	public void createFrom(Element commandElement) {
 		super.createFrom(commandElement);
-		
+
 		Attr attr = null;
 		String value = null;
-		
+
 		if ((attr = commandElement.getAttributeNode("type")) != null) {
 			mDebug = attr.getValue().equals("Debug");
-		}
-		else {
+		} else {
 			mDebug = false;
 		}
-		
+
 		if ((attr = commandElement.getAttributeNode("kind")) != null) {
 			mTerminate = attr.getValue().equals("Terminate");
-		}
-		else {
+		} else {
 			mTerminate = false;
 		}
-		
+
 		if ((attr = commandElement.getAttributeNode("projectName")) != null) {
 			value = attr.getValue();
 			mProjectName = value.equals("(Unknown)") ? null : value;
-		}
-		else {
+		} else {
 			mProjectName = null;
 		}
 	}
@@ -79,8 +81,8 @@ public class RunCommand extends AbstractCommand {
 	}
 
 	public String getName() {
-		return (mTerminate ? "Terminate" : "Create") + " "
-				+ (mDebug ? "Debug" : "Run") + " Application";
+		return (mTerminate ? "Terminate" : "Create") + " " + (mDebug ? "Debug" : "Run")
+				+ " Application";
 	}
 
 	public String getDescription() {

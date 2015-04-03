@@ -2,6 +2,7 @@ package edu.cmu.scs.fluorite.recorders;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -11,11 +12,9 @@ import org.eclipse.ui.IEditorPart;
 
 import edu.cmu.scs.fluorite.commands.RunCommand;
 
-public class RunRecorder extends BaseRecorder implements
-		IDebugEventSetListener {
-	
-	private static final String PROJECT_ATTR_KEY =
-			"org.eclipse.jdt.launching.PROJECT_ATTR";
+public class RunRecorder extends BaseRecorder implements IDebugEventSetListener {
+
+	private static final String PROJECT_ATTR_KEY = "org.eclipse.jdt.launching.PROJECT_ATTR";
 
 	private static RunRecorder instance = null;
 
@@ -46,7 +45,7 @@ public class RunRecorder extends BaseRecorder implements
 			handleDebugEvent(event);
 		}
 	}
-	
+
 	private void handleDebugEvent(DebugEvent event) {
 		int kind = event.getKind();
 		if (kind != DebugEvent.CREATE && kind != DebugEvent.TERMINATE) {
@@ -54,16 +53,23 @@ public class RunRecorder extends BaseRecorder implements
 		}
 
 		Object source = event.getSource();
-		boolean terminate = event.getKind() == DebugEvent.TERMINATE;
-		
+		boolean terminate = kind == DebugEvent.TERMINATE;
+
 		IProcess process = getProcess(source);
 		boolean debug = source instanceof IDebugTarget;
 		if (process == null) {
 			return;
 		}
 
-		ILaunchConfiguration config = process.getLaunch()
-				.getLaunchConfiguration();
+		int exitValue = 0;
+		if (terminate) {
+			try {
+				exitValue = process.getExitValue();
+			} catch (DebugException e1) {
+			}
+		}
+
+		ILaunchConfiguration config = process.getLaunch().getLaunchConfiguration();
 		if (config == null) {
 			return;
 		}
@@ -78,7 +84,7 @@ public class RunRecorder extends BaseRecorder implements
 		if (configType.getIdentifier().contains("junit")) {
 			return;
 		}
-		
+
 		String projectName = "null";
 		try {
 			projectName = config.getAttribute(PROJECT_ATTR_KEY, "null");
@@ -86,8 +92,7 @@ public class RunRecorder extends BaseRecorder implements
 			e.printStackTrace();
 		}
 
-		getRecorder().recordCommand(
-				new RunCommand(debug, terminate, projectName));
+		getRecorder().recordCommand(new RunCommand(debug, terminate, projectName, exitValue));
 	}
 
 	private IProcess getProcess(Object source) {
@@ -99,15 +104,14 @@ public class RunRecorder extends BaseRecorder implements
 		return null;
 	}
 
-	private ILaunchConfigurationType getConfigurationType(
-			ILaunchConfiguration config) {
+	private ILaunchConfigurationType getConfigurationType(ILaunchConfiguration config) {
 		ILaunchConfigurationType configType = null;
 		try {
 			configType = config.getType();
 		} catch (CoreException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		return configType;
 	}
 
