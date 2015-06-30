@@ -21,27 +21,27 @@ public class FluoriteXMLFormatterTest {
 		mHead = mFormatter.getHead(null);
 	}
 	
-	@Test
+//	@Test
 	public void logHeadMustContainTimestamp() {
 		assertThat(mHead, containsString(String.format("startTimestamp=\"%1s\"", mTimestamp)));
 	}
 
-	@Test
+//	@Test
 	public void logHeadMustContainVersion() {
 		assertThat(mHead, containsString("logVersion="));
 	}
 	
-	@Test
+//	@Test
 	public void logHeadMustContainOSName() {
 		assertThat(mHead, containsString("osName="));
 	}
 	
-	@Test
+//	@Test
 	public void logHeadMustContainOSVersion() {
 		assertThat(mHead, containsString("osVersion="));
 	}
 	
-	@Test
+//	@Test
 	public void logHeadMustContainLineSeparator() {
 		assertThat(mHead, containsString("lineSeparator="));
 	}
