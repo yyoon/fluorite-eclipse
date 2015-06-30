@@ -28,7 +28,7 @@
       <id>codeCoverage</id>
       <properties>
         <!-- Properties to enable jacoco code coverage analysis -->
-        <jacoco-version>0.6.3.201306030806</jacoco-version>
+        <jacoco-version>0.7.5.201505241946</jacoco-version>
         <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>../edu.cmu.scs.fluorite.parent/target/jacoco.exec</sonar.jacoco.reportPath>
